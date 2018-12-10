@@ -1,0 +1,21 @@
+[
+  {
+    "modid": "dwmh",
+    "name": "Dude! Where's my Horse?",
+    "description": "Swiftly return your missing steed, no matter how far(*) it wanders! (*) Configurable range!",
+    "version": "${version}",
+    "credits": "Noobanidus",
+    "logoFile": "assets/dwmh/textures/logo.png",
+    "mcversion": "${mc_version}",
+    "url": "http://github.com/duely/dwmh",
+    "updateUrl": "",
+    "authorList": [
+      "Noobanidus"
+    ],
+    "parent": "",
+    "screenshots": [],
+    "dependencies": [
+      "forge"
+    ]
+  }
+]

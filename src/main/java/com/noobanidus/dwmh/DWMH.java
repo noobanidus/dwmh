@@ -11,14 +11,16 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+// TODO:
+// Unset home when mounting horse
+
 @Mod.EventBusSubscriber
-@Mod(modid = DWMH.MODID, name = DWMH.MODNAME, version = DWMH.VERSION, dependencies = DWMH.DEPENDS)
+@Mod(modid = DWMH.MODID, name = DWMH.MODNAME, version = DWMH.VERSION)
 @SuppressWarnings("WeakerAccess")
 public class DWMH {
     public static final String MODID = "dwmh";
     public static final String MODNAME = "Dude! Where's my Horse?";
     public static final String VERSION = "GRADLE:VERSION";
-    public static final String DEPENDS = "after:circadian";
 
     public final static Logger LOG = LogManager.getLogger(MODID);
 

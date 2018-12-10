@@ -1,0 +1,25 @@
+{
+    "result": {
+        "item": "dwmh:whistle"
+    },
+    "pattern": [
+        "bbb",
+        "isi",
+        "bbb"
+    ],
+    "type": "forge:ore_shaped",
+    "key": {
+        "b": {
+            "type": "forge:ore_dict",
+            "ore": "dyeBlue"
+        },
+        "i": {
+            "type": "forge:ore_dict",
+            "ore": "ingotIron"
+        },
+        "s": {
+            "item": "minecraft:leather",
+            "data": 0
+        }
+    }
+}

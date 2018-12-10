@@ -29,7 +29,6 @@ public class ItemWhistle extends Item {
         setUnlocalizedName("dwmh.whistle");
     }
 
-    public static boolean enabled = DWMH.CONFIG.get("Whistle", "Enable", true, "Set to false to disable the whistle from being registered. But... why? You would be better off just uninstalling the mod!").getBoolean(true);
     private static double maxDistance = DWMH.CONFIG.get("Whistle", "MaxDistance", 200d, "Max distance to summon horses when using the horse whistle (set to 0 for infinite distance (excluding unloaded chunks and other dimensions)).").getDouble(200d);
     private static boolean swap = DWMH.CONFIG.get("Whistle", "SwapSneak", false, "Set true to require sneaking to actively summon horses instead of printing horse information. This is useful if you don't wish to accidentally right-click and summon your steed(s) in an unsafe location.").getBoolean(false);
     public static boolean home = DWMH.CONFIG.get("Whistle", "SetHome", true, "Set to true to set the home and max wander distance to the location you most recently used the whistle for each horse teleported.").getBoolean(true);

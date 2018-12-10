@@ -20,10 +20,8 @@ public class Registrar {
     public static ItemWhistle whistle = null;
 
     public static void preInit() {
-        if (ItemWhistle.enabled) {
-            whistle = new ItemWhistle();
-            whistle.init();
-        }
+        whistle = new ItemWhistle();
+        whistle.init();
     }
 
     @SubscribeEvent
@@ -36,16 +34,12 @@ public class Registrar {
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
-        if (ItemWhistle.enabled) {
-            event.getRegistry().register(whistle);
-        }
+        event.getRegistry().register(whistle);
     }
 
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public static void registerModels(ModelRegistryEvent event) {
-        if (ItemWhistle.enabled) {
-            ModelLoader.setCustomModelResourceLocation(whistle, 0, new ModelResourceLocation("dwmh:whistle", "inventory"));
-        }
+        ModelLoader.setCustomModelResourceLocation(whistle, 0, new ModelResourceLocation("dwmh:whistle", "inventory"));
     }
 }

@@ -1,6 +1,5 @@
 package com.noobanidus.dwmh.items;
 
-import com.google.common.base.Predicate;
 import com.noobanidus.dwmh.DWMH;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.passive.AbstractHorse;
@@ -10,18 +9,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
-import java.util.StringJoiner;
 
 public class ItemWhistle extends Item {
     public void init () {
@@ -44,7 +37,7 @@ public class ItemWhistle extends Item {
             return false;
         }
 
-        // I'm not sure under which circumstances dimensions may differ
+        // TODO: Test server setup cross-dimensions
         if (entity.dimension != player.dimension || (entity.getOwnerUniqueId() != null && !entity.getOwnerUniqueId().equals(player.getUniqueID()))) {
             return false;
         }
@@ -72,30 +65,51 @@ public class ItemWhistle extends Item {
                 List<AbstractHorse> nearbyHorses = world.getEntities(AbstractHorse.class, (entity) -> isValidHorse(entity, player, true));
                 for (AbstractHorse horse : nearbyHorses) {
                     didStuff = true;
-                    ITextComponent result = new TextComponentString("Your " + TextFormatting.YELLOW);
-                    result.appendSibling(new TextComponentTranslation(String.format("entity.%s.name", EntityList.getEntityString(horse))));
+
+                    ITextComponent result = new TextComponentTranslation(String.format("entity.%s.name", EntityList.getEntityString(horse)));
+                    result.getStyle().setColor(TextFormatting.YELLOW);
+
+                    ITextComponent temp;
                     if (horse.hasCustomName()) {
-                        result.appendText(TextFormatting.GOLD + String.format(" (named %s)", horse.getCustomNameTag()));
+                        temp = new TextComponentString(" (");
+                        temp.appendSibling(new TextComponentTranslation("dwmh.strings.named"));
+                        temp.appendText(horse.getCustomNameTag() + " )");
+                        result.appendSibling(temp);
                     }
-                    StringJoiner join = new StringJoiner(", ");
-                    result.appendText(TextFormatting.WHITE + " is");
 
+                    result.appendText(" ");
+                    result.appendSibling(new TextComponentTranslation("dwmh.strings.is"));
+                    result.appendText(" ");
 
+                    TextComponentTranslation summonable;
 
-
-                    if (horse.isHorseSaddled()) { join.add(TextFormatting.AQUA + "saddled"); if (!horse.getLeashed() && !horse.isBeingRidden()) join.add(TextFormatting.GREEN + "summonable"); } else { join.add(TextFormatting.DARK_RED + "unsaddled"); join.add(TextFormatting.DARK_RED + "unsummonable"); }
-                    if (horse.getLeashed() && horse.isHorseSaddled()) { join.add(TextFormatting.DARK_RED + "leashed"); join.add(TextFormatting.DARK_RED + "unsummonable"); }
-                    if (horse.getLeashed() && !horse.isHorseSaddled()) { join.add(TextFormatting.DARK_RED + "leashed"); }
-                    if (horse.isBeingRidden()) { join.add(TextFormatting.DARK_RED + "(being ridden by you)"); }
-                    if (join.length() != 0) {
-                        result.appendText(" " + join.toString());
+                    if (horse.getLeashed()) {
+                        summonable = new TextComponentTranslation("dwmh.strings.unsummonable.leashed");
+                        summonable.getStyle().setColor(TextFormatting.DARK_RED);
+                    } else if (!horse.isHorseSaddled()) {
+                        summonable = new TextComponentTranslation("dwmh.strings.unsummonable.unsaddled");
+                        summonable.getStyle().setColor(TextFormatting.DARK_RED);
+                    } else if (horse.isBeingRidden()) {
+                        summonable = new TextComponentTranslation("dwmh.strings.unsummonable.ridden");
+                        summonable.getStyle().setColor(TextFormatting.DARK_RED);
+                    } else {
+                        summonable = new TextComponentTranslation("dwmh.strings.summonable");
+                        summonable.getStyle().setColor(TextFormatting.AQUA);
                     }
+
+                    result.appendSibling(summonable);
+                    result.appendText(" ");
+                    result.appendSibling(new TextComponentTranslation("dwmh.strings.at"));
+                    result.appendText(" ");
+
                     BlockPos hpos = horse.getPosition();
-                    result.appendText(TextFormatting.WHITE + " at " + TextFormatting.GOLD + String.format("X: %d, Y: %d, Z: %d", hpos.getX(), hpos.getY(), hpos.getZ()));
+                    result.appendText(TextFormatting.GOLD + String.format("X: %d, Y: %d, Z: %d", hpos.getX(), hpos.getY(), hpos.getZ()));
                     player.sendMessage(result);
                 }
                 if (!didStuff) {
-                    player.sendMessage(new TextComponentString(TextFormatting.RED + "You don't have any horses in this dimension!"));
+                    ITextComponent temp = new TextComponentTranslation("dwmh.strings.no_eligible_to_list");
+                    temp.getStyle().setColor(TextFormatting.RED);
+                    player.sendMessage(temp);
                 } else {
                     player.swingArm(hand);
                 }
@@ -105,14 +119,18 @@ public class ItemWhistle extends Item {
                     if (horse.getDistanceSq(player) < (maxDistance * maxDistance) || maxDistance == 0) {
                         horse.moveToBlockPosAndAngles(pos, horse.rotationYaw, horse.rotationPitch);
                         didStuff = true;
-                        String message;
-                        if (horse.hasCustomName()) {
-                            message = String.format(TextFormatting.GOLD + "Teleported your steed, %s, to you!", horse.getCustomNameTag());
-                        } else {
-                            message = TextFormatting.GOLD + "Teleported your steed to you!";
-                        }
                         if (!quiet && !simple) {
-                            player.sendMessage(new TextComponentString(message));
+                            ITextComponent temp;
+                            if (horse.hasCustomName()) {
+                                temp = new TextComponentTranslation("dwmh.strings.complex_teleport_a");
+                                temp.appendText(", " + horse.getCustomNameTag() + ", ");
+                                temp.appendSibling(new TextComponentTranslation("dwmh.strings.complex_teleport_b"));
+                                temp.getStyle().setColor(TextFormatting.GOLD);
+                            } else {
+                                temp = new TextComponentTranslation("dwmh.strings.simple_teleport");
+                                temp.getStyle().setColor(TextFormatting.GOLD);
+                            }
+                            player.sendMessage(temp);
                         }
                         if (cooldown > 0) {
                             player.getCooldownTracker().setCooldown(this, cooldown);
@@ -124,14 +142,20 @@ public class ItemWhistle extends Item {
                         }
                     }
                 }
+                ITextComponent temp;
                 if (!didStuff) {
                     if (player.isRiding()) {
-                        player.sendMessage(new TextComponentString(TextFormatting.RED + "No other eligible steeds are within range, loaded chunks or this dimension! Apart from the one you're riding."));
+                        temp = new TextComponentTranslation("dwmh.strings.no_eligible_to_teleport_riding");
+                        temp.getStyle().setColor(TextFormatting.RED);
                     } else {
-                        player.sendMessage(new TextComponentString(TextFormatting.RED + "No other eligible steeds are within range, loaded chunks or this dimension!"));
+                        temp = new TextComponentTranslation("dwmh.strings.no_eligible_to_teleport");
+                        temp.getStyle().setColor(TextFormatting.RED);
                     }
+                    player.sendMessage(temp);
                 } else if (simple) {
-                    player.sendMessage(new TextComponentString(TextFormatting.GOLD + "Teleported horse(s) to you!"));
+                    temp = new TextComponentTranslation("dwmh.strings.simplest_teleport");
+                    temp.getStyle().setColor(TextFormatting.GOLD);
+                    player.sendMessage(temp);
                 }
             }
         }

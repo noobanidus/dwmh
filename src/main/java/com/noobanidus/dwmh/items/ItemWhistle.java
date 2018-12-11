@@ -1,5 +1,6 @@
 package com.noobanidus.dwmh.items;
 
+import com.google.common.base.Predicate;
 import com.noobanidus.dwmh.DWMH;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.passive.AbstractHorse;
@@ -18,6 +19,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.StringJoiner;
 
@@ -29,12 +31,34 @@ public class ItemWhistle extends Item {
         setUnlocalizedName("dwmh.whistle");
     }
 
-    private static double maxDistance = DWMH.CONFIG.get("Whistle", "MaxDistance", 200d, "Max distance to summon horses when using the horse whistle (set to 0 for infinite distance (excluding unloaded chunks and other dimensions)).").getDouble(200d);
+    private static double maxDistance = DWMH.CONFIG.get("Whistle", "MaxDistance", 200d, "Max distance to summon horses when using the horse whistle (set to 0 for infinite distance (excluding unloaded chunks and dimensions)).").getDouble(200d);
     private static boolean swap = DWMH.CONFIG.get("Whistle", "SwapSneak", false, "Set true to require sneaking to actively summon horses instead of printing horse information. This is useful if you don't wish to accidentally right-click and summon your steed(s) in an unsafe location.").getBoolean(false);
     public static boolean home = DWMH.CONFIG.get("Whistle", "SetHome", true, "Set to true to set the home and max wander distance to the location you most recently used the whistle for each horse teleported.").getBoolean(true);
+    public static boolean skipDismount = DWMH.CONFIG.get("Whistle", "SkipDismount", false, "Set to true to skip detaching home points when dismounting a horse. Do this if you are having weird interactions/failure of functionality with HorseTweaks' home functionality.").getBoolean(false);
     private static int cooldown = DWMH.CONFIG.get("Whistle", "Cooldown", 0, "Specify a cooldown in ticks for usage of the whistle. Set to 0 to disable.").getInt(0);
     private static boolean quiet = DWMH.CONFIG.get("Whistle", "Quiet", false, "Set to true to disable messages when teleporting a horse to you.").getBoolean(true);
     private static boolean simple = DWMH.CONFIG.get("Whistle", "Simpler", false, "Set to true to prevent multiple messages when teleporting a horse to you, instead printing one message if any horses are teleported.").getBoolean(true);
+
+    protected boolean isValidHorse (AbstractHorse entity, EntityPlayer player, boolean listing) {
+        if (entity == null || entity.isDead || entity.isChild() || !entity.isTame()) {
+            return false;
+        }
+
+        // I'm not sure under which circumstances dimensions may differ
+        if (entity.dimension != player.dimension || (entity.getOwnerUniqueId() != null && !entity.getOwnerUniqueId().equals(player.getUniqueID()))) {
+            return false;
+        }
+
+        if (listing) {
+            return true;
+        }
+
+        if (!entity.isHorseSaddled() || entity.getLeashed() || entity.isBeingRidden()) {
+            return false;
+        }
+
+        return true;
+    }
 
     @Override
     @Nonnull
@@ -45,7 +69,7 @@ public class ItemWhistle extends Item {
             boolean didStuff = false;
 
             if (player.isSneaking() && !swap || !player.isSneaking() && swap) {
-                List<AbstractHorse> nearbyHorses = world.getEntities(AbstractHorse.class, (entity) ->  entity != null && !entity.isDead && !entity.isChild() && entity.isTame() && entity.dimension == player.dimension && entity.getOwnerUniqueId() != null && entity.getOwnerUniqueId().equals(player.getUniqueID()));
+                List<AbstractHorse> nearbyHorses = world.getEntities(AbstractHorse.class, (entity) -> isValidHorse(entity, player, true));
                 for (AbstractHorse horse : nearbyHorses) {
                     didStuff = true;
                     ITextComponent result = new TextComponentString("Your " + TextFormatting.YELLOW);
@@ -55,6 +79,10 @@ public class ItemWhistle extends Item {
                     }
                     StringJoiner join = new StringJoiner(", ");
                     result.appendText(TextFormatting.WHITE + " is");
+
+
+
+
                     if (horse.isHorseSaddled()) { join.add(TextFormatting.AQUA + "saddled"); if (!horse.getLeashed() && !horse.isBeingRidden()) join.add(TextFormatting.GREEN + "summonable"); } else { join.add(TextFormatting.DARK_RED + "unsaddled"); join.add(TextFormatting.DARK_RED + "unsummonable"); }
                     if (horse.getLeashed() && horse.isHorseSaddled()) { join.add(TextFormatting.DARK_RED + "leashed"); join.add(TextFormatting.DARK_RED + "unsummonable"); }
                     if (horse.getLeashed() && !horse.isHorseSaddled()) { join.add(TextFormatting.DARK_RED + "leashed"); }
@@ -72,7 +100,7 @@ public class ItemWhistle extends Item {
                     player.swingArm(hand);
                 }
             } else {
-                List<AbstractHorse> nearbyHorses = world.getEntities(AbstractHorse.class, (entity) -> entity != null && !entity.isDead && !entity.isChild() && entity.isTame() && (entity.dimension == player.dimension) && entity.isHorseSaddled() && !entity.getLeashed() && entity.getOwnerUniqueId() != null && entity.getOwnerUniqueId().equals(player.getUniqueID()) && !entity.isBeingRidden());
+                List<AbstractHorse> nearbyHorses = world.getEntities(AbstractHorse.class, (entity) -> isValidHorse(entity, player, false));
                 for (AbstractHorse horse : nearbyHorses) {
                     if (horse.getDistanceSq(player) < (maxDistance * maxDistance) || maxDistance == 0) {
                         horse.moveToBlockPosAndAngles(pos, horse.rotationYaw, horse.rotationPitch);

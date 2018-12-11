@@ -55,7 +55,7 @@ public class ItemWhistle extends Item {
         }
 
         // Also prevents you from summoning your current mount that you're on to yourself.
-        if (!entity.isHorseSaddled() || entity.getLeashed() || (entity.isBeingRidden() && entity.getRidingEntity() == player)) {
+        if (!entity.isHorseSaddled() || entity.getLeashed() || (entity.isBeingRidden() && entity.isRidingSameEntity(player))) {
             return false;
         }
 
@@ -117,7 +117,7 @@ public class ItemWhistle extends Item {
                     } else if (!horse.isHorseSaddled()) {
                         summonable = new TextComponentTranslation("dwmh.strings.unsummonable.unsaddled");
                         summonable.getStyle().setColor(TextFormatting.DARK_RED);
-                    } else if (horse.isBeingRidden() && horse.getRidingEntity() == player) {
+                    } else if (horse.isBeingRidden() && horse.isRidingSameEntity(player)) {
                         summonable = new TextComponentTranslation("dwmh.strings.unsummonable.ridden");
                         summonable.getStyle().setColor(TextFormatting.DARK_RED);
                     } else if (horse.isBeingRidden() && !otherRiders) {

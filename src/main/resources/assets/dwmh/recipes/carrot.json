@@ -1,0 +1,25 @@
+{
+  "result": {
+    "item": "dwmh:carrot"
+  },
+  "pattern": [
+    " a ",
+    " b ",
+    " c "
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "a": {
+      "item": "minecraft:saddle",
+      "data": 0
+    },
+    "b": {
+      "item": "minecraft:golden_carrot",
+      "data": 0
+    },
+    "c": {
+      "item": "minecraft:experience_bottle",
+      "data": 0
+    }
+  }
+}

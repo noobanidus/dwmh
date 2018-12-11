@@ -1,9 +1,13 @@
 package com.noobanidus.dwmh.items;
 
 import com.noobanidus.dwmh.DWMH;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
@@ -12,17 +16,13 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.*;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import java.util.List;
 
 public class ItemWhistle extends Item {
-    public void init () {
-        setMaxStackSize(1);
-        setCreativeTab(DWMH.TAB);
-        setRegistryName("dwmh:whistle");
-        setUnlocalizedName("dwmh.whistle");
-    }
 
     private static double maxDistance = DWMH.CONFIG.get("Whistle", "MaxDistance", 200d, "Max distance to summon horses when using the horse whistle (set to 0 for infinite distance (excluding unloaded chunks and dimensions)).").getDouble(200d);
     private static boolean swap = DWMH.CONFIG.get("Whistle", "SwapSneak", false, "Set true to require sneaking to actively summon horses instead of printing horse information. This is useful if you don't wish to accidentally right-click and summon your steed(s) in an unsafe location.").getBoolean(false);
@@ -31,13 +31,21 @@ public class ItemWhistle extends Item {
     private static int cooldown = DWMH.CONFIG.get("Whistle", "Cooldown", 0, "Specify a cooldown in ticks for usage of the whistle. Set to 0 to disable.").getInt(0);
     private static boolean quiet = DWMH.CONFIG.get("Whistle", "Quiet", false, "Set to true to disable messages when teleporting a horse to you.").getBoolean(true);
     private static boolean simple = DWMH.CONFIG.get("Whistle", "Simpler", false, "Set to true to prevent multiple messages when teleporting a horse to you, instead printing one message if any horses are teleported.").getBoolean(true);
+    private static boolean otherRiders = DWMH.CONFIG.get("Whistle", "OtherRiders", false, "Set to true to enable summoning your horses that are being ridden by other people").getBoolean(false);
 
-    protected boolean isValidHorse (AbstractHorse entity, EntityPlayer player, boolean listing) {
+    public void init () {
+        setMaxStackSize(1);
+        setCreativeTab(DWMH.TAB);
+        setRegistryName("dwmh:whistle");
+        setUnlocalizedName("dwmh.whistle");
+    }
+
+    private boolean isValidHorse (AbstractHorse entity, EntityPlayer player, boolean listing) {
         if (entity == null || entity.isDead || entity.isChild() || !entity.isTame()) {
             return false;
         }
 
-        // TODO: Test server setup cross-dimensions
+        // There are no vaguely possible dimensional shenanigans I CBF to implement
         if (entity.dimension != player.dimension || (entity.getOwnerUniqueId() != null && !entity.getOwnerUniqueId().equals(player.getUniqueID()))) {
             return false;
         }
@@ -46,15 +54,32 @@ public class ItemWhistle extends Item {
             return true;
         }
 
-        if (!entity.isHorseSaddled() || entity.getLeashed() || entity.isBeingRidden()) {
+        // Also prevents you from summoning your current mount that you're on to yourself.
+        if (!entity.isHorseSaddled() || entity.getLeashed() || (entity.isBeingRidden() && entity.getRidingEntity() == player)) {
+            return false;
+        }
+
+        // And prevent you from summoning horses being ridden by other players
+        if (entity.isBeingRidden() && !otherRiders) {
+            return false;
+        }
+
+        // Compatibility for Horse Power device-attached horses
+        if (entity.hasHome() && entity.world.getTileEntity(entity.getHomePosition()) != null) {
             return false;
         }
 
         return true;
     }
 
-    @Override
     @Nonnull
+    @Override
+    public EnumRarity getRarity(ItemStack stack) {
+        return EnumRarity.RARE;
+    }
+
+    @Nonnull
+    @Override
     public ActionResult<ItemStack> onItemRightClick (World world, EntityPlayer player, @Nonnull EnumHand hand) {
         ItemStack stack = player.getHeldItem(hand);
         if (!world.isRemote) {
@@ -83,14 +108,20 @@ public class ItemWhistle extends Item {
 
                     TextComponentTranslation summonable;
 
-                    if (horse.getLeashed()) {
+                    if (horse.hasHome() && horse.world.getTileEntity(horse.getHomePosition()) != null) {
+                        summonable = new TextComponentTranslation("dwmh.strings.unsummonable.working");
+                        summonable.getStyle().setColor(TextFormatting.DARK_RED);
+                    } else if (horse.getLeashed()) {
                         summonable = new TextComponentTranslation("dwmh.strings.unsummonable.leashed");
                         summonable.getStyle().setColor(TextFormatting.DARK_RED);
                     } else if (!horse.isHorseSaddled()) {
                         summonable = new TextComponentTranslation("dwmh.strings.unsummonable.unsaddled");
                         summonable.getStyle().setColor(TextFormatting.DARK_RED);
-                    } else if (horse.isBeingRidden()) {
+                    } else if (horse.isBeingRidden() && horse.getRidingEntity() == player) {
                         summonable = new TextComponentTranslation("dwmh.strings.unsummonable.ridden");
+                        summonable.getStyle().setColor(TextFormatting.DARK_RED);
+                    } else if (horse.isBeingRidden() && !otherRiders) {
+                        summonable = new TextComponentTranslation("dwmh.strings.unsummonable.ridden_other");
                         summonable.getStyle().setColor(TextFormatting.DARK_RED);
                     } else {
                         summonable = new TextComponentTranslation("dwmh.strings.summonable");
@@ -161,4 +192,27 @@ public class ItemWhistle extends Item {
         }
         return new ActionResult<>(EnumActionResult.SUCCESS, stack);
     }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void addInformation(ItemStack par1ItemStack, World world, List<String> stacks, ITooltipFlag flags) {
+        if(GuiScreen.isShiftKeyDown()) {
+            String right_click;
+            String sneak_right_click;
+
+            if (swap) {
+                right_click = TextFormatting.GOLD + I18n.format("dwmh.strings.right_click") + " " + TextFormatting.WHITE + I18n.format("dwmh.strings.whistle.tooltip.list_horses");
+                sneak_right_click = TextFormatting.GOLD + I18n.format("dwmh.strings.shift_right_click") + " " + TextFormatting.WHITE + I18n.format("dwmh.strings.whistle.tooltip.teleport_horses");
+            } else {
+                right_click = TextFormatting.GOLD + I18n.format("dwmh.strings.right_click") + " " + TextFormatting.WHITE + I18n.format("dwmh.strings.whistle.tooltip.teleport_horses");
+                sneak_right_click = TextFormatting.GOLD + I18n.format("dwmh.strings.shift_right_click") + " " + TextFormatting.WHITE + I18n.format("dwmh.strings.whistle.tooltip.list_horses");
+            }
+
+            stacks.add(right_click);
+            stacks.add(sneak_right_click);
+        } else {
+            stacks.add(TextFormatting.DARK_GRAY + I18n.format("dwmh.strings.hold_shift"));
+        }
+    }
+
 }

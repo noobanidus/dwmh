@@ -11,9 +11,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-// TODO:
-// Unset home when mounting horse
-
 @Mod.EventBusSubscriber
 @Mod(modid = DWMH.MODID, name = DWMH.MODNAME, version = DWMH.VERSION)
 @SuppressWarnings("WeakerAccess")

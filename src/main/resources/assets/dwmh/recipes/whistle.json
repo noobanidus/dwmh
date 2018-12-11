@@ -3,22 +3,18 @@
         "item": "dwmh:whistle"
     },
     "pattern": [
-        "bbb",
+        "i  ",
         "isi",
-        "bbb"
+        "iii"
     ],
     "type": "forge:ore_shaped",
     "key": {
-        "b": {
-            "type": "forge:ore_dict",
-            "ore": "dyeBlue"
-        },
         "i": {
-            "type": "forge:ore_dict",
-            "ore": "ingotIron"
+            "item": "minecraft:blue_glazed_terracotta",
+            "data": 0
         },
         "s": {
-            "item": "minecraft:leather",
+            "item": "minecraft:saddle",
             "data": 0
         }
     }

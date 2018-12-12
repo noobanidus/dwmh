@@ -11,6 +11,7 @@ TODO:
 * Optionally allow a recipe that crafting the ocarina shapelessly with the repair item repairs one point of damage.
 * Optionally specify the material that can be used to repair the enchanted carrot in an anvil, with a default of, say, blocks of gold or emerald.
 * Update direction specification in "list" mode of ocarina to include intermediate cardinal directions.
+* Blacklist for specific instnances of AbstractHorse that should be ignored.
 
 TO NOT EVER DO:
 * Implement any form of unloaded-chunk or cross-dimension capability. It's your responsibility to keep your horses loaded or to get them to and from other dimensions.

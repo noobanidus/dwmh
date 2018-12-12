@@ -47,7 +47,7 @@ public class DWMH {
         CONFIG.save();
     }
 
-    public final class CreativeTabDWMH extends CreativeTabs {
+    private final class CreativeTabDWMH extends CreativeTabs {
         public CreativeTabDWMH(int id, String id2) {
             super(id, id2);
         }

@@ -17,11 +17,15 @@ import java.util.List;
 
 public class ItemEnchantedCarrot extends Item {
 
-    public static boolean enabled = DWMH.CONFIG.get("Carrot", "Enabled", true, "Set to false to disable the instant-taming carrot item.").getBoolean(true);
+    public static boolean enabled = DWMH.CONFIG.get("Carrot", "Enabled", true, "Set to false to disable the instant-taming carrot item. Disabling all three functionalities of the carrot has the same effect.").getBoolean(true);
     private static int maxUses = DWMH.CONFIG.get("Carrot", "MaxUses", 30, "Maximum number of uses before the enchanted carrot is destroyed.").getInt(30);
     public static boolean taming = DWMH.CONFIG.get("Carrot", "Taming", true, "Carrot can automatically tame untamed horses.").getBoolean(true);
     public static boolean healing = DWMH.CONFIG.get("Carrot", "Healing", true, "Carrot can fully heal damaged horses.").getBoolean(true);
     public static boolean ageing = DWMH.CONFIG.get("Carrot", "Ageing", true, "Carrot can age child horses into adults instantly.").getBoolean(true);
+
+    static {
+        if (!taming && !healing && !ageing) enabled = false;
+    }
 
     public void init () {
         setMaxStackSize(1);

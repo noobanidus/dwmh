@@ -44,7 +44,6 @@ public class DWMH {
 
     @Mod.EventHandler
     public void loadComplete(FMLLoadCompleteEvent event) {
-        LOG.info("DWMH: Load Complete.");
         CONFIG.save();
     }
 

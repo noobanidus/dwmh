@@ -45,7 +45,8 @@ public class ItemEnchantedCarrot extends Item {
 
     @SideOnly(Side.CLIENT)
     public boolean hasEffect(ItemStack stack) {
-        return true;
+        // If using the alternate static texture, instead return true.
+        return false;
     }
 
     @SideOnly(Side.CLIENT)

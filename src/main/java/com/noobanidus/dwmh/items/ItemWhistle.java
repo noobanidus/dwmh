@@ -87,6 +87,8 @@ public class ItemWhistle extends Item {
             BlockPos pos = player.getPosition();
             boolean didStuff = false;
 
+            ITextComponent temp;
+
             if (player.isSneaking() && !swap || !player.isSneaking() && swap) {
                 List<AbstractHorse> nearbyHorses = world.getEntities(AbstractHorse.class, (entity) -> isValidHorse(entity, player, true));
                 for (AbstractHorse horse : nearbyHorses) {
@@ -95,7 +97,6 @@ public class ItemWhistle extends Item {
                     ITextComponent result = new TextComponentTranslation(String.format("entity.%s.name", EntityList.getEntityString(horse)));
                     result.getStyle().setColor(TextFormatting.YELLOW);
 
-                    ITextComponent temp;
                     if (horse.hasCustomName()) {
                         temp = new TextComponentString(" (");
                         temp.appendSibling(new TextComponentTranslation("dwmh.strings.named"));
@@ -171,7 +172,7 @@ public class ItemWhistle extends Item {
                     player.sendMessage(result);
                 }
                 if (!didStuff) {
-                    ITextComponent temp = new TextComponentTranslation("dwmh.strings.no_eligible_to_list");
+                    temp = new TextComponentTranslation("dwmh.strings.no_eligible_to_list");
                     temp.getStyle().setColor(TextFormatting.RED);
                     player.sendMessage(temp);
                 } else {
@@ -184,7 +185,6 @@ public class ItemWhistle extends Item {
                         horse.moveToBlockPosAndAngles(pos, horse.rotationYaw, horse.rotationPitch);
                         didStuff = true;
                         if (!quiet && !simple) {
-                            ITextComponent temp;
                             if (horse.hasCustomName()) {
                                 temp = new TextComponentTranslation("dwmh.strings.complex_teleport_a");
                                 temp.appendText(", " + horse.getCustomNameTag() + ", ");
@@ -206,7 +206,6 @@ public class ItemWhistle extends Item {
                         }
                     }
                 }
-                ITextComponent temp;
                 if (!didStuff) {
                     if (player.isRiding()) {
                         temp = new TextComponentTranslation("dwmh.strings.no_eligible_to_teleport_riding");

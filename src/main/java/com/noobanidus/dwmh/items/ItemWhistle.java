@@ -103,7 +103,9 @@ public class ItemWhistle extends Item {
                     }
 
                     result.appendText(" ");
-                    result.appendSibling(new TextComponentTranslation("dwmh.strings.is"));
+                    temp = new TextComponentTranslation("dwmh.strings.is");
+                    temp.getStyle().setColor(TextFormatting.WHITE);
+                    result.appendSibling(temp);
                     result.appendText(" ");
 
                     TextComponentTranslation summonable;

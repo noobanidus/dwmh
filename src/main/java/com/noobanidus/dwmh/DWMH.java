@@ -19,6 +19,8 @@ public class DWMH {
     public static final String MODNAME = "Dude! Where's my Horse?";
     public static final String VERSION = "GRADLE:VERSION";
 
+    // This may eventually be used.
+    @SuppressWarnings("unused")
     public final static Logger LOG = LogManager.getLogger(MODID);
 
     public static Configuration CONFIG;

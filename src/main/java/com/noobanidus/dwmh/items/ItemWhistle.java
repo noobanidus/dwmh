@@ -32,6 +32,7 @@ public class ItemWhistle extends Item {
     private static boolean quiet = DWMH.CONFIG.get("Whistle", "Quiet", false, "Set to true to disable messages when teleporting a horse to you.").getBoolean(true);
     private static boolean simple = DWMH.CONFIG.get("Whistle", "Simpler", false, "Set to true to prevent multiple messages when teleporting a horse to you, instead printing one message if any horses are teleported.").getBoolean(true);
     private static boolean otherRiders = DWMH.CONFIG.get("Whistle", "OtherRiders", false, "Set to true to enable summoning your horses that are being ridden by other people").getBoolean(false);
+    private static boolean distance = DWMH.CONFIG.get("Whistle", "Distance", true, "Set to false to disable showing the distance horses are away from you when listing them.").getBoolean(true);
 
     public void init () {
         setMaxStackSize(1);
@@ -132,11 +133,41 @@ public class ItemWhistle extends Item {
 
                     result.appendSibling(summonable);
                     result.appendText(" ");
-                    result.appendSibling(new TextComponentTranslation("dwmh.strings.at"));
+                    temp = new TextComponentTranslation("dwmh.strings.at");
+                    temp.getStyle().setColor(TextFormatting.WHITE);
+                    result.appendSibling(temp);
                     result.appendText(" ");
 
                     BlockPos hpos = horse.getPosition();
-                    result.appendText(TextFormatting.GOLD + String.format("X: %d, Y: %d, Z: %d", hpos.getX(), hpos.getY(), hpos.getZ()));
+
+                    float dist = player.getDistance(horse);
+
+                    result.appendText(TextFormatting.WHITE + String.format("%d, %d, %d", hpos.getX(), hpos.getY(), hpos.getZ()));
+                    if (distance) {
+                        int rel_x = pos.getX() - hpos.getY();
+                        int rel_z = pos.getZ() - hpos.getZ();
+
+                        String key;
+
+                        // TODO: atan2(rel_x, rel_z) for angle. how this work
+
+                        if (Math.abs(rel_x) > Math.abs(rel_z)) {
+                            key = ((rel_x > 0) ? "east" : "west");
+                        } else {
+                            key = ((rel_z > 0) ? "north": "south");
+                        }
+
+                        result.appendText(" (");
+
+                        result.appendText(String.format("%d", (int) dist));
+                        result.appendText(" ");
+                        temp = new TextComponentTranslation("dwmh.strings.blocks");
+                        result.appendSibling(temp);
+                        result.appendText(" ");
+                        temp = new TextComponentTranslation(String.format("dwmh.strings.%s", key));
+                        result.appendSibling(temp);
+                        result.appendText(")");
+                    }
                     player.sendMessage(result);
                 }
                 if (!didStuff) {

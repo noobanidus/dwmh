@@ -1,11 +1,15 @@
 package com.noobanidus.dwmh.config;
 
 import com.noobanidus.dwmh.items.*;
+import com.noobanidus.dwmh.util.Util;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
@@ -56,7 +60,7 @@ public class Registrar {
     }
 
     @SubscribeEvent
-    public static void onInteract (PlayerInteractEvent.EntityInteract event) {
+    public static void onInteractCarrot (PlayerInteractEvent.EntityInteract event) {
         if (event.getWorld().isRemote) return;
 
         EntityPlayer player = event.getEntityPlayer();
@@ -72,11 +76,11 @@ public class Registrar {
 
         boolean didStuff = false;
 
-        if (horse.isChild() && ItemEnchantedCarrot.ageing) {
+        if (horse.isChild() && ItemEnchantedCarrot.ageing && !Util.isAnimania(horse)) {
             horse.setGrowingAge(0);
-            world.setEntityState(horse, (byte)7);
+            world.setEntityState(horse, (byte) 7);
             didStuff = true;
-        } else if (!horse.isTame() && ItemEnchantedCarrot.taming) {
+        } else if (!horse.isTame() && ItemEnchantedCarrot.taming && !Util.isAnimania(horse)) {
             horse.setTamedBy(player);
             didStuff = true;
         } else if (horse.getHealth() < horse.getMaxHealth() && ItemEnchantedCarrot.healing) {
@@ -90,7 +94,61 @@ public class Registrar {
         }
 
         if (didStuff) {
+            if (ItemEnchantedCarrot.warn) {
+                ITextComponent temp;
+                if (Util.isAnimania(horse)) {
+                    temp = new TextComponentTranslation("dwmh.strings.animania_heal");
+                    temp.getStyle().setColor(TextFormatting.YELLOW);
+                    player.sendMessage(temp);
+                }
+            }
+
             event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onInteractOcarina (PlayerInteractEvent.EntityInteract event) {
+        if (event.getWorld().isRemote) return;
+
+        EntityPlayer player = event.getEntityPlayer();
+        ItemStack item = event.getItemStack();
+
+        if (item.isEmpty() || !(item.getItem() instanceof ItemWhistle) || !(event.getTarget() instanceof AbstractHorse)) {
+            return;
+        }
+
+        if (!player.isSneaking()) return;
+
+        AbstractHorse horse = (AbstractHorse) event.getTarget();
+
+        if (!Util.isAnimania(horse)) return;
+
+        event.setCanceled(true);
+
+        ITextComponent temp;
+        String name = String.format("%s's Steed", player.getName());
+        if (horse.hasCustomName()) {
+            if (ItemWhistle.unname) {
+                if (horse.getCustomNameTag().equals(name)) {
+                    horse.setCustomNameTag("");
+                    temp = new TextComponentTranslation("dwmh.strings.unnamed");
+                    temp.getStyle().setColor(TextFormatting.YELLOW);
+                } else {
+                    temp = new TextComponentTranslation("dwmh.strings.not_your_horse");
+                    temp.getStyle().setColor(TextFormatting.RED);
+                }
+                player.sendMessage(temp);
+            } else {
+                temp = new TextComponentTranslation("dwmh.strings.already_named");
+                temp.getStyle().setColor(TextFormatting.RED);
+                player.sendMessage(temp);
+            }
+        } else {
+            horse.setCustomNameTag(name);
+            temp = new TextComponentTranslation("dwmh.strings.animania_named");
+            temp.getStyle().setColor(TextFormatting.GOLD);
+            player.sendMessage(temp);
         }
     }
 }

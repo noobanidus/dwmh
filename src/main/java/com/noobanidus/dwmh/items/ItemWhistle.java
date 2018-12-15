@@ -1,6 +1,7 @@
 package com.noobanidus.dwmh.items;
 
 import com.noobanidus.dwmh.DWMH;
+import com.noobanidus.dwmh.util.Util;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -21,6 +22,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import java.util.List;
+import java.util.concurrent.TransferQueue;
 
 public class ItemWhistle extends Item {
 
@@ -33,6 +35,7 @@ public class ItemWhistle extends Item {
     private static boolean simple = DWMH.CONFIG.get("Whistle", "Simpler", false, "Set to true to prevent multiple messages when teleporting a horse to you, instead printing one message if any horses are teleported.").getBoolean(true);
     private static boolean otherRiders = DWMH.CONFIG.get("Whistle", "OtherRiders", false, "Set to true to enable summoning your horses that are being ridden by other people").getBoolean(false);
     private static boolean distance = DWMH.CONFIG.get("Whistle", "Distance", true, "Set to false to disable showing the distance horses are away from you when listing them.").getBoolean(true);
+    public static boolean unname = DWMH.CONFIG.get("Animania", "Unnaming", true, "Set to false to disable clearing the custom name of a named animania horse by sneak-right-clicking on them.").getBoolean(true);
 
     public void init () {
         setMaxStackSize(1);
@@ -42,12 +45,12 @@ public class ItemWhistle extends Item {
     }
 
     private boolean isValidHorse (AbstractHorse entity, EntityPlayer player, boolean listing) {
-        if (entity == null || entity.isDead || entity.isChild() || !entity.isTame()) {
+        if (entity == null || entity.isDead || entity.isChild() || !Util.isAnimania(entity) && !entity.isTame()) {
             return false;
         }
 
         // There are no vaguely possible dimensional shenanigans I CBF to implement
-        if (entity.dimension != player.dimension || (entity.getOwnerUniqueId() != null && !entity.getOwnerUniqueId().equals(player.getUniqueID()))) {
+        if (entity.dimension != player.dimension || (entity.getOwnerUniqueId() != null && !entity.getOwnerUniqueId().equals(player.getUniqueID()) && !Util.isAnimania(entity))){
             return false;
         }
 
@@ -56,7 +59,7 @@ public class ItemWhistle extends Item {
         }
 
         // Also prevents you from summoning your current mount that you're on to yourself.
-        if (!entity.isHorseSaddled() || entity.getLeashed() || (entity.isBeingRidden() && entity.isRidingSameEntity(player))) {
+        if ((!Util.isAnimania(entity) && !entity.isHorseSaddled()) || entity.getLeashed() || (entity.isBeingRidden() && entity.isRidingSameEntity(player))) {
             return false;
         }
 
@@ -68,6 +71,16 @@ public class ItemWhistle extends Item {
         // Compatibility for Horse Power device-attached horses
         if (entity.hasHome() && entity.world.getTileEntity(entity.getHomePosition()) != null) {
             return false;
+        }
+
+        if (Util.isAnimania(entity)) {
+            String name = String.format("%s's Steed", player.getName());
+
+            if (entity.hasCustomName() && entity.getCustomNameTag().equals(name)) {
+                return true;
+            } else {
+                return false;
+            }
         }
 
         return true;
@@ -111,8 +124,18 @@ public class ItemWhistle extends Item {
                     result.appendText(" ");
 
                     TextComponentTranslation summonable;
+                    String name = String.format("%s's Steed", player.getName());
 
-                    if (horse.hasHome() && horse.world.getTileEntity(horse.getHomePosition()) != null) {
+                    if (Util.isAnimania(horse) && !horse.hasCustomName()) {
+                        summonable = new TextComponentTranslation("dwmh.strings.unsummonable.unnamed");
+                        summonable.getStyle().setColor(TextFormatting.DARK_RED);
+                    } else if (Util.isAnimania(horse) && horse.hasCustomName() && !horse.getCustomNameTag().equals(name)) {
+                        summonable = new TextComponentTranslation("dwmh.strings.unsummonable.notyours");
+                        summonable.getStyle().setColor(TextFormatting.DARK_RED);
+                    } else if (Util.isAnimania(horse) && horse.hasCustomName() && horse.getCustomNameTag().equals(name)) {
+                        summonable = new TextComponentTranslation("dwmh.strings.summonable");
+                        summonable.getStyle().setColor(TextFormatting.AQUA);
+                    } else if (horse.hasHome() && horse.world.getTileEntity(horse.getHomePosition()) != null) {
                         summonable = new TextComponentTranslation("dwmh.strings.unsummonable.working");
                         summonable.getStyle().setColor(TextFormatting.DARK_RED);
                     } else if (horse.getLeashed()) {

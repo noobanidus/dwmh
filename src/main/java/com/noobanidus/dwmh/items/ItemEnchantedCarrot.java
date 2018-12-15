@@ -22,6 +22,8 @@ public class ItemEnchantedCarrot extends Item {
     public static boolean taming = DWMH.CONFIG.get("Carrot", "Taming", true, "Carrot can automatically tame untamed horses.").getBoolean(true);
     public static boolean healing = DWMH.CONFIG.get("Carrot", "Healing", true, "Carrot can fully heal damaged horses.").getBoolean(true);
     public static boolean ageing = DWMH.CONFIG.get("Carrot", "Ageing", true, "Carrot can age child horses into adults instantly.").getBoolean(true);
+    private static boolean glint = DWMH.CONFIG.get("Carrot", "Glint", false, "Set to true to give the carrot the enchantment glint!").getBoolean(false);
+    public static boolean warn = DWMH.CONFIG.get("Animania", "Carrot", true, "Set to false to disable the warning message that is printed when using the enchanted carrot on an Animania horse.").getBoolean(true);
 
     static {
         if (!taming && !healing && !ageing) enabled = false;
@@ -50,8 +52,7 @@ public class ItemEnchantedCarrot extends Item {
     @SideOnly(Side.CLIENT)
     @Override
     public boolean hasEffect(ItemStack stack) {
-        // If using the alternate static texture, instead return true.
-        return false;
+        return glint;
     }
 
     @SideOnly(Side.CLIENT)

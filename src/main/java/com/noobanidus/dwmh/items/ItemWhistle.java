@@ -113,7 +113,7 @@ public class ItemWhistle extends Item {
                     if (horse.hasCustomName()) {
                         temp = new TextComponentString(" (");
                         temp.appendSibling(new TextComponentTranslation("dwmh.strings.named"));
-                        temp.appendText(horse.getCustomNameTag() + " )");
+                        temp.appendText(" " + horse.getCustomNameTag() + ")");
                         result.appendSibling(temp);
                     }
 

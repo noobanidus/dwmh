@@ -63,6 +63,8 @@ public class Registrar {
     public static void onInteractCarrot (PlayerInteractEvent.EntityInteract event) {
         if (event.getWorld().isRemote) return;
 
+        ITextComponent temp;
+
         EntityPlayer player = event.getEntityPlayer();
         ItemStack item  = event.getItemStack();
 
@@ -72,14 +74,24 @@ public class Registrar {
 
         AbstractHorse horse = (AbstractHorse) event.getTarget();
 
+        event.setCanceled(true);
+
         World world = event.getWorld();
 
         boolean didStuff = false;
 
         if (horse.isChild() && ItemEnchantedCarrot.ageing && !Util.isAnimania(horse)) {
-            horse.setGrowingAge(0);
-            world.setEntityState(horse, (byte) 7);
-            didStuff = true;
+            if (horse.getEntityData().getBoolean("quark:poison_potato_applied")) {
+                temp = new TextComponentTranslation("dwmh.strings.quark_poisoned");
+                temp.getStyle().setColor(TextFormatting.GREEN);
+                player.sendMessage(temp);
+                return;
+
+            } else {
+                horse.setGrowingAge(0);
+                world.setEntityState(horse, (byte) 7);
+                didStuff = true;
+            }
         } else if (!horse.isTame() && ItemEnchantedCarrot.taming && !Util.isAnimania(horse)) {
             horse.setTamedBy(player);
             didStuff = true;
@@ -95,15 +107,12 @@ public class Registrar {
 
         if (didStuff) {
             if (ItemEnchantedCarrot.warn) {
-                ITextComponent temp;
                 if (Util.isAnimania(horse)) {
                     temp = new TextComponentTranslation("dwmh.strings.animania_heal");
                     temp.getStyle().setColor(TextFormatting.YELLOW);
                     player.sendMessage(temp);
                 }
             }
-
-            event.setCanceled(true);
         }
     }
 

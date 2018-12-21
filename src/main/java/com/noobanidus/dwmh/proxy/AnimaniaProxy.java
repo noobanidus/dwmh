@@ -90,10 +90,7 @@ public class AnimaniaProxy implements ISteedProxy {
 
         EntityAnimaniaHorse animal = (EntityAnimaniaHorse) entity;
 
-        if (animal.isTame() && animal.getOwnerUniqueId() != null && animal.getOwnerUniqueId().equals(player.getUniqueID())) {
-            temp = new TextComponentTranslation("dwmh.strings.summonable");
-            temp.getStyle().setColor(TextFormatting.AQUA);
-        } else if (animal.isTame() && (animal.getOwnerUniqueId() == null || !animal.getOwnerUniqueId().equals(player.getUniqueID()))) {
+        if (animal.isTame() && (animal.getOwnerUniqueId() == null || !animal.getOwnerUniqueId().equals(player.getUniqueID()))) {
             temp = new TextComponentTranslation("dwmh.strings.unsummonable.notyours");
             temp.getStyle().setColor(TextFormatting.DARK_RED);
         } else if (animal.hasHome() && animal.world.getTileEntity(animal.getHomePosition()) != null) {
@@ -109,6 +106,9 @@ public class AnimaniaProxy implements ISteedProxy {
             temp = new TextComponentTranslation("dwmh.strings.unsummonable.notyours");
             temp.getStyle().setColor(TextFormatting.DARK_RED);
         } else if (animal.hasCustomName() && animal.getCustomNameTag().equals(name)) {
+            temp = new TextComponentTranslation("dwmh.strings.summonable");
+            temp.getStyle().setColor(TextFormatting.AQUA);
+        } else if (animal.isTame() && animal.getOwnerUniqueId() != null && animal.getOwnerUniqueId().equals(player.getUniqueID())) {
             temp = new TextComponentTranslation("dwmh.strings.summonable");
             temp.getStyle().setColor(TextFormatting.AQUA);
         }

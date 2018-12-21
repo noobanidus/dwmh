@@ -3,14 +3,19 @@ package com.noobanidus.dwmh;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Sets;
 import com.noobanidus.dwmh.config.Registrar;
 import com.noobanidus.dwmh.proxy.DummySteedProxy;
 import com.noobanidus.dwmh.proxy.ISteedProxy;
 import com.noobanidus.dwmh.proxy.SteedProxy;
 import com.noobanidus.dwmh.proxy.VanillaProxy;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.relauncher.Side;
@@ -48,6 +53,10 @@ public class DWMH {
     private Map<String, Boolean> proxyMap;
     private List<String> supportedMods = Arrays.asList("animania", "mocreatures", "zawa");
 
+    public static List<Class<?>> zawaClasses = new ArrayList<>();
+    public static List<Class<?>> animaniaClasses = new ArrayList<>();
+    public static Set<Class<? extends AbstractHorse>> ignoreList = Sets.newHashSet();
+
     @Mod.Instance(DWMH.MODID)
     public static DWMH instance;
 
@@ -63,7 +72,6 @@ public class DWMH {
         for (String mod : supportedMods) {
             proxyMap.put(mod, CONFIG.get("Proxy", mod, true, String.format("Set to false to permanently disable compatibility with %s.", mod)).getBoolean(true));
         }
-
     }
 
     @Mod.EventHandler
@@ -84,6 +92,29 @@ public class DWMH {
         }
 
         proxyList = Iterables.filter(Arrays.asList(animaniaProxy, mocProxy, zawaProxy, vanillaProxy), ISteedProxy::isLoaded);
+
+        String[] animaniaConfigClasses = CONFIG.get("Animania", "HorsesClasses", new String[]{"com.animania.common.entities.horses.EntityMareBase", "com.animania.common.entities.horses.EntityStallionBase"}, "Specify list of Animania classes that are considered horses.").getStringList();
+
+        if (Loader.isModLoaded("animania")) {
+            DWMH.resolveClasses(DWMH.animaniaClasses, animaniaConfigClasses);
+        }
+
+        String[] zawaConfigClasses = CONFIG.get("ZAWA", "HorsesClasses", new String[]{"org.zawamod.entity.land.EntityAsianElephant", "org.zawamod.entity.land.EntityGaur", "org.zawamod.entity.land.EntityGrevysZebra", "org.zawamod.entity.land.EntityOkapi", "org.zawamod.entity.land.EntityReticulatedGiraffe"}, "Specify list of ZAWA classes that are considered rideable or horses.").getStringList();
+
+        if (Loader.isModLoaded("zawa")) {
+            DWMH.resolveClasses(DWMH.zawaClasses, zawaConfigClasses);
+        }
+    }
+
+    private static void resolveClasses(List<Class<?>> list, String[] classes) {
+        for (String c: classes) {
+            try {
+                Class clz = Class.forName(c);
+                list.add(clz);
+            } catch (ClassNotFoundException e) {
+                DWMH.LOG.error(String.format("Could not find entity |%s|. The mod isn't loaded.", c));
+            }
+        }
     }
 
     @Mod.EventHandler

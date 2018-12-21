@@ -1,11 +1,14 @@
-package com.noobanidus.dwmh.proxy.vanilla;
+package com.noobanidus.dwmh.proxy;
 
 import com.noobanidus.dwmh.items.ItemWhistle;
-import com.noobanidus.dwmh.proxy.ISteedProxy;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
 
+// Always instantiated by default
 public class VanillaProxy implements ISteedProxy {
      public boolean isTeleportable (Entity entity, EntityPlayer player) {
         if (!isListable(entity, player)) {
@@ -14,21 +17,7 @@ public class VanillaProxy implements ISteedProxy {
 
         AbstractHorse horse = (AbstractHorse) entity;
 
-        if (!horse.isHorseSaddled() || horse.getLeashed() || (horse.isBeingRidden() && horse.isRidingSameEntity(player))) {
-            return false;
-        }
-
-        // And prevent you from summoning horses being ridden by other players
-        if (horse.isBeingRidden() && !ItemWhistle.otherRiders) {
-            return false;
-        }
-
-        // Compatibility for Horse Power device-attached horses
-        if (horse.hasHome() && horse.world.getTileEntity(horse.getHomePosition()) != null) {
-            return false;
-        }
-
-        return true;
+        return horse.isHorseSaddled() && globalTeleportCheck(entity, player);
     }
 
     public boolean isListable (Entity entity, EntityPlayer player) {
@@ -38,11 +27,11 @@ public class VanillaProxy implements ISteedProxy {
 
         AbstractHorse horse = (AbstractHorse) entity;
 
-        if (horse.isChild() || !horse.isTame() || horse.dimension != player.dimension || (horse.getOwnerUniqueId() != null && !horse.getOwnerUniqueId().equals(player.getUniqueID()))) {
+        if (horse.isChild() || !horse.isTame() || horse.dimension != player.dimension) {
             return false;
         }
 
-        return true;
+        return horse.getOwnerUniqueId() != null && horse.getOwnerUniqueId().equals(player.getUniqueID());
     }
 
     // Carrot
@@ -53,11 +42,7 @@ public class VanillaProxy implements ISteedProxy {
 
          AbstractHorse horse = (AbstractHorse) entity;
 
-         if (horse.isChild() || horse.isTame()) {
-             return false;
-         }
-
-        return true;
+         return !horse.isChild() && !horse.isTame();
     }
 
     public void tame (Entity entity, EntityPlayer player) {
@@ -71,15 +56,7 @@ public class VanillaProxy implements ISteedProxy {
 
          AbstractHorse horse = (AbstractHorse) entity;
 
-         if (!horse.isChild()) {
-             return false;
-         }
-
-         if (horse.getEntityData().getBoolean("quark:poison_potato_applied")) {
-             return false;
-         }
-
-         return true;
+         return horse.isChild();
     }
 
     public void age (Entity entity, EntityPlayer player) {
@@ -112,5 +89,39 @@ public class VanillaProxy implements ISteedProxy {
     }
 
     public void breed (Entity entity, EntityPlayer player) {
+    }
+
+    public boolean isMyMod (Entity entity) {
+         return entity instanceof AbstractHorse;
+    }
+
+    public ITextComponent getResponseKey (Entity entity, EntityPlayer player) {
+         if (!isMyMod(entity)) return null;
+
+         AbstractHorse horse = (AbstractHorse) entity;
+
+         ITextComponent temp = null;
+
+        if (horse.hasHome() && horse.world.getTileEntity(horse.getHomePosition()) != null) {
+            temp = new TextComponentTranslation("dwmh.strings.unsummonable.working");
+            temp.getStyle().setColor(TextFormatting.DARK_RED);
+        } else if (horse.getLeashed()) {
+            temp = new TextComponentTranslation("dwmh.strings.unsummonable.leashed");
+            temp.getStyle().setColor(TextFormatting.DARK_RED);
+        } else if (!horse.isHorseSaddled()) {
+            temp = new TextComponentTranslation("dwmh.strings.unsummonable.unsaddled");
+            temp.getStyle().setColor(TextFormatting.DARK_RED);
+        } else if (horse.isBeingRidden() && horse.isRidingSameEntity(player)) {
+            temp = new TextComponentTranslation("dwmh.strings.unsummonable.ridden");
+            temp.getStyle().setColor(TextFormatting.DARK_RED);
+        } else if (horse.isBeingRidden() && !ItemWhistle.otherRiders) {
+            temp = new TextComponentTranslation("dwmh.strings.unsummonable.ridden_other");
+            temp.getStyle().setColor(TextFormatting.DARK_RED);
+        } else {
+            temp = new TextComponentTranslation("dwmh.strings.summonable");
+            temp.getStyle().setColor(TextFormatting.AQUA);
+        }
+
+        return temp;
     }
 }

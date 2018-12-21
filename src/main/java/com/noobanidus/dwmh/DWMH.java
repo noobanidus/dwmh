@@ -18,9 +18,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Mod.EventBusSubscriber
 @Mod(modid = DWMH.MODID, name = DWMH.MODNAME, version = DWMH.VERSION)
@@ -47,6 +45,9 @@ public class DWMH {
 
     public static Iterable<ISteedProxy> proxyList;
 
+    private Map<String, Boolean> proxyMap;
+    private List<String> supportedMods = Arrays.asList("animania", "mocreatures", "zawa");
+
     @Mod.Instance(DWMH.MODID)
     public static DWMH instance;
 
@@ -56,6 +57,13 @@ public class DWMH {
         TAB = new CreativeTabDWMH(CreativeTabs.getNextID(), MODID);
         Registrar.preInit();
         proxy = new SteedProxy();
+
+        // set up proxy config
+        proxyMap = new HashMap<>();
+        for (String mod : supportedMods) {
+            proxyMap.put(mod, CONFIG.get("Proxy", mod, true, String.format("Set to false to permanently disable compatibility with %s.", mod)).getBoolean(true));
+        }
+
     }
 
     @Mod.EventHandler
@@ -65,9 +73,15 @@ public class DWMH {
     @SuppressWarnings("unchecked")
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent e) {
-        animaniaProxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("animania", "com.noobanidus.dwmh.proxy.AnimaniaProxy")).orElse(new DummySteedProxy());
-        mocProxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("mocreatures", "com.noobanidus.dwmh.proxy.MOCProxy")).orElse(new DummySteedProxy());
-        zawaProxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("zawa", "com.noobanidus.dwmh.proxy.ZawaProxy")).orElse(new DummySteedProxy());
+        if (proxyMap.get("animania")) {
+            animaniaProxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("animania", "com.noobanidus.dwmh.proxy.AnimaniaProxy")).orElse(new DummySteedProxy());
+        }
+        if (proxyMap.get("mocreatures")) {
+            mocProxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("mocreatures", "com.noobanidus.dwmh.proxy.MOCProxy")).orElse(new DummySteedProxy());
+        }
+        if (proxyMap.get("zawa")) {
+            zawaProxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("zawa", "com.noobanidus.dwmh.proxy.ZawaProxy")).orElse(new DummySteedProxy());
+        }
 
         proxyList = Iterables.filter(Arrays.asList(animaniaProxy, mocProxy, zawaProxy, vanillaProxy), ISteedProxy::isLoaded);
     }

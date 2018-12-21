@@ -36,13 +36,13 @@ public class VanillaProxy implements ISteedProxy {
 
     // Carrot
     public boolean isTameable (Entity entity, EntityPlayer player) {
-         if (!(entity instanceof AbstractHorse)) {
-             return false;
-         }
+        if (!(entity instanceof AbstractHorse)) {
+            return false;
+        }
 
-         AbstractHorse horse = (AbstractHorse) entity;
+        AbstractHorse horse = (AbstractHorse) entity;
 
-         return !horse.isChild() && !horse.isTame();
+        return !horse.isChild() && !horse.isTame();
     }
 
     public void tame (Entity entity, EntityPlayer player) {
@@ -50,13 +50,13 @@ public class VanillaProxy implements ISteedProxy {
     }
 
     public boolean isAgeable (Entity entity, EntityPlayer player) {
-         if (!(entity instanceof AbstractHorse)) {
-             return false;
-         }
+        if (!(entity instanceof AbstractHorse)) {
+            return false;
+        }
 
-         AbstractHorse horse = (AbstractHorse) entity;
+        AbstractHorse horse = (AbstractHorse) entity;
 
-         return horse.isChild();
+        return horse.isChild();
     }
 
     public void age (Entity entity, EntityPlayer player) {
@@ -67,28 +67,40 @@ public class VanillaProxy implements ISteedProxy {
     }
 
     public boolean isHealable (Entity entity, EntityPlayer player) {
-         if (!(entity instanceof AbstractHorse)) {
-             return false;
-         }
+        if (!(entity instanceof AbstractHorse)) {
+            return false;
+        }
 
-         AbstractHorse horse = (AbstractHorse) entity;
+        AbstractHorse horse = (AbstractHorse) entity;
 
-         return horse.getHealth() < horse.getMaxHealth();
+        return horse.getHealth() < horse.getMaxHealth();
     }
 
     public void heal (Entity entity, EntityPlayer player) {
-         AbstractHorse horse = (AbstractHorse) entity;
+        AbstractHorse horse = (AbstractHorse) entity;
 
-         horse.heal(horse.getMaxHealth() - horse.getHealth());
-         horse.world.setEntityState(horse, (byte)7);
+        horse.heal(horse.getMaxHealth() - horse.getHealth());
+        horse.world.setEntityState(horse, (byte)7);
     }
 
     // Not currently implemented
     public boolean isBreedable (Entity entity, EntityPlayer player) {
-        return false;
+        if (!isMyMod(entity)) return false;
+
+        AbstractHorse horse = (AbstractHorse) entity;
+
+        // Yes, I know this can be simplified
+        // but then it becomes unreadable
+        if (horse.isChild() || horse.getGrowingAge() != 0 || horse.isInLove()) return false;
+
+        return true;
     }
 
     public void breed (Entity entity, EntityPlayer player) {
+        if (!isMyMod(entity)) return;
+
+        AbstractHorse horse = (AbstractHorse) entity;
+        horse.setInLove(player);
     }
 
     public boolean isMyMod (Entity entity) {
@@ -96,11 +108,11 @@ public class VanillaProxy implements ISteedProxy {
     }
 
     public ITextComponent getResponseKey (Entity entity, EntityPlayer player) {
-         if (!isMyMod(entity)) return null;
+        if (!isMyMod(entity)) return null;
 
-         AbstractHorse horse = (AbstractHorse) entity;
+        AbstractHorse horse = (AbstractHorse) entity;
 
-         ITextComponent temp = null;
+        ITextComponent temp = null;
 
         if (horse.hasHome() && horse.world.getTileEntity(horse.getHomePosition()) != null) {
             temp = new TextComponentTranslation("dwmh.strings.unsummonable.working");

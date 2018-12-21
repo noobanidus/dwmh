@@ -81,7 +81,16 @@ public class AnimaniaProxy implements ISteedProxy {
     public void breed (Entity entity, EntityPlayer player) { }
 
     public boolean isMyMod (Entity entity) {
-        return entity instanceof EntityMareBase || entity instanceof EntityStallionBase;
+        if (!(entity instanceof EntityAnimaniaHorse)) return false;
+
+        for (Class<?> clz : DWMH.animaniaClasses) {
+            if (clz.isAssignableFrom(entity.getClass())) {
+                return true;
+            }
+        }
+
+        DWMH.ignoreList.add(((AbstractHorse) entity).getClass());
+        return false;
     }
 
     public ITextComponent getResponseKey (Entity entity, EntityPlayer player) {

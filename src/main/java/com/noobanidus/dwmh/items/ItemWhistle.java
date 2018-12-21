@@ -44,46 +44,20 @@ public class ItemWhistle extends Item {
         setUnlocalizedName("dwmh.whistle");
     }
 
-    private boolean isValidHorse (AbstractHorse entity, EntityPlayer player, boolean listing) {
-        if (entity == null || entity.isDead || entity.isChild() || !Util.isAnimania(entity) && !entity.isTame()) {
-            return false;
-        }
+    private boolean isValidHorse (Entity entity, EntityPlayer player) {
+        return isValidHorse(entity, player, false);
+    }
 
-        // There are no vaguely possible dimensional shenanigans I CBF to implement
-        if (entity.dimension != player.dimension || (entity.getOwnerUniqueId() != null && !entity.getOwnerUniqueId().equals(player.getUniqueID()) && !Util.isAnimania(entity))){
-            return false;
-        }
-
-        if (listing) {
-            return true;
-        }
-
-        // Also prevents you from summoning your current mount that you're on to yourself.
-        if ((!Util.isAnimania(entity) && !entity.isHorseSaddled()) || entity.getLeashed() || (entity.isBeingRidden() && entity.isRidingSameEntity(player))) {
-            return false;
-        }
-
-        // And prevent you from summoning horses being ridden by other players
-        if (entity.isBeingRidden() && !otherRiders) {
-            return false;
-        }
-
-        // Compatibility for Horse Power device-attached horses
-        if (entity.hasHome() && entity.world.getTileEntity(entity.getHomePosition()) != null) {
-            return false;
-        }
-
-        if (Util.isAnimania(entity)) {
-            String name = String.format("%s's Steed", player.getName());
-
-            if (entity.hasCustomName() && entity.getCustomNameTag().equals(name)) {
+    private boolean isValidHorse (Entity entity, EntityPlayer player, boolean listing) {
+        if (DWMH.proxy.isListable(entity, player)) {
+            if (listing) {
                 return true;
-            } else {
-                return false;
             }
+        } else {
+            return false;
         }
 
-        return true;
+        return DWMH.proxy.isTeleportable(entity, player);
     }
 
     @Nonnull
@@ -103,17 +77,17 @@ public class ItemWhistle extends Item {
             ITextComponent temp;
 
             if (player.isSneaking() && !swap || !player.isSneaking() && swap) {
-                List<AbstractHorse> nearbyHorses = world.getEntities(AbstractHorse.class, (entity) -> isValidHorse(entity, player, true));
-                for (AbstractHorse horse : nearbyHorses) {
+                List<Entity> nearbyHorses = world.getEntities(Entity.class, (entity) -> isValidHorse(entity, player, true));
+                for (Entity horse : nearbyHorses) {
                     didStuff = true;
 
                     ITextComponent result = new TextComponentTranslation(String.format("entity.%s.name", EntityList.getEntityString(horse)));
                     result.getStyle().setColor(TextFormatting.YELLOW);
 
-                    if (horse.hasCustomName()) {
+                    if (DWMH.proxy.hasCustomName(horse)) {
                         temp = new TextComponentString(" (");
                         temp.appendSibling(new TextComponentTranslation("dwmh.strings.named"));
-                        temp.appendText(" " + horse.getCustomNameTag() + ")");
+                        temp.appendText(" " + DWMH.proxy.getCustomNameTag(horse) + ")");
                         result.appendSibling(temp);
                     }
 
@@ -123,40 +97,12 @@ public class ItemWhistle extends Item {
                     result.appendSibling(temp);
                     result.appendText(" ");
 
-                    TextComponentTranslation summonable;
-                    String name = String.format("%s's Steed", player.getName());
+                    ITextComponent summonable = DWMH.proxy.getResponseKey(horse, player);
 
-                    if (Util.isAnimania(horse) && !horse.hasCustomName()) {
-                        summonable = new TextComponentTranslation("dwmh.strings.unsummonable.unnamed");
-                        summonable.getStyle().setColor(TextFormatting.DARK_RED);
-                    } else if (Util.isAnimania(horse) && horse.hasCustomName() && !horse.getCustomNameTag().equals(name)) {
-                        summonable = new TextComponentTranslation("dwmh.strings.unsummonable.notyours");
-                        summonable.getStyle().setColor(TextFormatting.DARK_RED);
-                    } else if (Util.isAnimania(horse) && horse.hasCustomName() && horse.getCustomNameTag().equals(name)) {
-                        summonable = new TextComponentTranslation("dwmh.strings.summonable");
-                        summonable.getStyle().setColor(TextFormatting.AQUA);
-                    } else if (horse.hasHome() && horse.world.getTileEntity(horse.getHomePosition()) != null) {
-                        summonable = new TextComponentTranslation("dwmh.strings.unsummonable.working");
-                        summonable.getStyle().setColor(TextFormatting.DARK_RED);
-                    } else if (horse.getLeashed()) {
-                        summonable = new TextComponentTranslation("dwmh.strings.unsummonable.leashed");
-                        summonable.getStyle().setColor(TextFormatting.DARK_RED);
-                    } else if (!horse.isHorseSaddled()) {
-                        summonable = new TextComponentTranslation("dwmh.strings.unsummonable.unsaddled");
-                        summonable.getStyle().setColor(TextFormatting.DARK_RED);
-                    } else if (horse.isBeingRidden() && horse.isRidingSameEntity(player)) {
-                        summonable = new TextComponentTranslation("dwmh.strings.unsummonable.ridden");
-                        summonable.getStyle().setColor(TextFormatting.DARK_RED);
-                    } else if (horse.isBeingRidden() && !otherRiders) {
-                        summonable = new TextComponentTranslation("dwmh.strings.unsummonable.ridden_other");
-                        summonable.getStyle().setColor(TextFormatting.DARK_RED);
-                    } else {
-                        summonable = new TextComponentTranslation("dwmh.strings.summonable");
-                        summonable.getStyle().setColor(TextFormatting.AQUA);
+                    if (summonable != null) {
+                        result.appendSibling(summonable);
+                        result.appendText(" ");
                     }
-
-                    result.appendSibling(summonable);
-                    result.appendText(" ");
                     temp = new TextComponentTranslation("dwmh.strings.at");
                     temp.getStyle().setColor(TextFormatting.WHITE);
                     result.appendSibling(temp);
@@ -198,19 +144,19 @@ public class ItemWhistle extends Item {
                     temp = new TextComponentTranslation("dwmh.strings.no_eligible_to_list");
                     temp.getStyle().setColor(TextFormatting.RED);
                     player.sendMessage(temp);
-                } else {
-                    player.swingArm(hand);
                 }
+                player.swingArm(hand);
             } else {
-                List<AbstractHorse> nearbyHorses = world.getEntities(AbstractHorse.class, (entity) -> isValidHorse(entity, player, false));
-                for (AbstractHorse horse : nearbyHorses) {
+                List<Entity> nearbyHorses = world.getEntities(Entity.class, (entity) -> isValidHorse(entity, player));
+                for (Entity entity : nearbyHorses) {
+                    EntityAnimal horse = (EntityAnimal) entity;
                     if (horse.getDistanceSq(player) < (maxDistance * maxDistance) || maxDistance == 0) {
                         horse.moveToBlockPosAndAngles(pos, horse.rotationYaw, horse.rotationPitch);
                         didStuff = true;
                         if (!quiet && !simple) {
-                            if (horse.hasCustomName()) {
+                            if (DWMH.proxy.hasCustomName(horse)) {
                                 temp = new TextComponentTranslation("dwmh.strings.complex_teleport_a");
-                                temp.appendText(", " + horse.getCustomNameTag() + ", ");
+                                temp.appendText(", " + DWMH.proxy.getCustomNameTag(horse) + ", ");
                                 temp.appendSibling(new TextComponentTranslation("dwmh.strings.complex_teleport_b"));
                                 temp.getStyle().setColor(TextFormatting.GOLD);
                             } else {

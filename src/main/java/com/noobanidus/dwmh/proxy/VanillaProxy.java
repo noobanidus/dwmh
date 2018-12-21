@@ -1,5 +1,6 @@
 package com.noobanidus.dwmh.proxy;
 
+import com.noobanidus.dwmh.DWMH;
 import com.noobanidus.dwmh.items.ItemWhistle;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.AbstractHorse;
@@ -8,9 +9,12 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 
+import java.util.ArrayList;
+import java.util.List;
+
 // Always instantiated by default
 public class VanillaProxy implements ISteedProxy {
-     public boolean isTeleportable (Entity entity, EntityPlayer player) {
+    public boolean isTeleportable (Entity entity, EntityPlayer player) {
         if (!isListable(entity, player)) {
             return false;
         }
@@ -104,7 +108,15 @@ public class VanillaProxy implements ISteedProxy {
     }
 
     public boolean isMyMod (Entity entity) {
-         return entity instanceof AbstractHorse;
+        if (!(entity instanceof AbstractHorse)) return false;
+
+        for (Class<? extends AbstractHorse> clz : DWMH.ignoreList) {
+            if (clz.isAssignableFrom(entity.getClass())) {
+                return false;
+            }
+        }
+
+        return false;
     }
 
     public ITextComponent getResponseKey (Entity entity, EntityPlayer player) {

@@ -1,21 +1,31 @@
 package com.noobanidus.dwmh.proxy;
 
+import com.noobanidus.dwmh.DWMH;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import org.zawamod.entity.base.ZAWABaseLand;
+import org.zawamod.entity.data.AnimalData;
 import org.zawamod.entity.land.*;
+import org.zawamod.init.advancement.Triggers;
 
 public class ZawaProxy implements ISteedProxy {
+    ZAWABaseLand.AIFight aifight = null;
+    EntityAINearestAttackableTarget ainearatt = null;
+
     public boolean isTeleportable (Entity entity, EntityPlayer player) {
         if (!isListable(entity, player)) {
             return false;
         }
 
-        return isSaddled((ZAWABaseLand) entity);
+        return isSaddled((ZAWABaseLand) entity) && globalTeleportCheck(entity, player);
     }
 
     public boolean isListable (Entity entity, EntityPlayer player) {
@@ -28,7 +38,7 @@ public class ZawaProxy implements ISteedProxy {
             return false;
         }
 
-        return rideableEntity(entity);
+        return true;
     }
 
     private boolean isSaddled (ZAWABaseLand entity) {
@@ -40,20 +50,65 @@ public class ZawaProxy implements ISteedProxy {
         return false;
     }
 
-    private boolean rideableEntity (Entity entity) {
-        if (entity instanceof EntityAsianElephant || entity instanceof EntityGaur || entity instanceof EntityGrevysZebra || entity instanceof EntityOkapi || entity instanceof EntityReticulatedGiraffe) {
-            return true;
-        }
-
-        return false;
-    }
-
     //  These do nothing
     public boolean isTameable (Entity entity, EntityPlayer player) {
-        return false;
+        if (!isMyMod(entity)) return false;
+
+        ZAWABaseLand animal = (ZAWABaseLand) entity;
+        if (animal.isTamed()) return false;
+
+        return true;
     }
 
-    public void tame (Entity entity, EntityPlayer player) { }
+    public void tame (Entity entity, EntityPlayer player) {
+        if (!isMyMod(entity)) return;
+
+        ZAWABaseLand animal = (ZAWABaseLand) entity;
+
+        animal.setTamedBy(player);
+        if (animal.world.isRemote) {
+            animal.playTameEffect();
+        }
+
+        if (player instanceof EntityPlayerMP) {
+            Triggers.TAME_ANIMAL_ZAWA.trigger((EntityPlayerMP)player);
+        }
+
+        animal.setOwnerId(player.getUniqueID());
+
+        if (aifight == null || ainearatt == null) {
+            aifight = ReflectionHelper.getPrivateValue(ZAWABaseLand.class, animal, "AIFight");
+            ainearatt = ReflectionHelper.getPrivateValue(ZAWABaseLand.class, animal, "AINearAtt");
+        }
+
+        if (aifight != null && ainearatt != null) {
+            animal.tasks.removeTask(aifight);
+            animal.targetTasks.removeTask(ainearatt);
+        } else {
+            DWMH.LOG.error("Unable to remove AI tasks for recently tamed entity.");
+        }
+
+        if (animal.setNature() == AnimalData.EnumNature.AGGRESSIVE && player instanceof EntityPlayerMP) {
+            Triggers.RISK_TAME.trigger((EntityPlayerMP)player);
+        }
+
+        if (animal.world.isRemote) {
+            animal.playTameEffect();
+        }
+
+        ITextComponent temp = new TextComponentTranslation("dwmh.strings.zawa.tamed");
+        temp.appendText(" ");
+        if (animal.hasCustomName()) {
+            temp.appendText(" " + animal.getCustomNameTag());
+        } else {
+            temp.appendSibling(new TextComponentTranslation(String.format("entity.%s.name", EntityList.getEntityString(animal))));
+        }
+
+        temp.appendText("!");
+        temp.getStyle().setColor(TextFormatting.GOLD);
+
+        player.sendMessage(temp);
+    }
 
     public boolean isAgeable (Entity entity, EntityPlayer player) {
         return false;
@@ -75,7 +130,15 @@ public class ZawaProxy implements ISteedProxy {
 
         ITextComponent temp;
 
-        if (isSaddled((ZAWABaseLand) entity)) {
+        ZAWABaseLand animal = (ZAWABaseLand) entity;
+
+        if (animal.hasHome() && animal.world.getTileEntity(animal.getHomePosition()) != null) {
+            temp = new TextComponentTranslation("dwmh.strings.unsummonable.working");
+            temp.getStyle().setColor(TextFormatting.DARK_RED);
+        } else if (animal.getLeashed()) {
+            temp = new TextComponentTranslation("dwmh.strings.unsummonable.leashed");
+            temp.getStyle().setColor(TextFormatting.DARK_RED);
+        } else if (isSaddled(animal)) {
             temp = new TextComponentTranslation("dwmh.strings.summonable");
             temp.getStyle().setColor(TextFormatting.AQUA);
         } else {
@@ -87,7 +150,13 @@ public class ZawaProxy implements ISteedProxy {
     }
 
     public boolean isMyMod (Entity entity) {
-        return rideableEntity(entity);
+        for (Class<?> clz : DWMH.zawaClasses) {
+            if (clz.isAssignableFrom(entity.getClass())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public String proxyName () {

@@ -195,8 +195,6 @@ public class ItemWhistle extends Item {
     }
 
     public static void onInteractOcarina (PlayerInteractEvent.EntityInteract event) {
-        if (event.getWorld().isRemote) return;
-
         if (!DWMH.animaniaProxy.isLoaded()) return;
 
         EntityPlayer player = event.getEntityPlayer();
@@ -205,6 +203,11 @@ public class ItemWhistle extends Item {
         if (item.isEmpty() || !(item.getItem() instanceof ItemWhistle) || !(event.getTarget() instanceof AbstractHorse)) {
             return;
         }
+
+        event.setCanceled(true);
+        event.setCancellationResult(EnumActionResult.SUCCESS);
+
+        if (event.getWorld().isRemote) return;
 
         if (!player.isSneaking()) return;
 

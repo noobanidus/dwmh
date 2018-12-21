@@ -65,12 +65,10 @@ public class Registrar {
     @SubscribeEvent()
     public static void onInteractCarrot (PlayerInteractEvent.EntityInteract event) {
         ItemEnchantedCarrot.onInteractCarrot(event);
-        event.setResult(Event.Result.DENY);
     }
 
     @SubscribeEvent
     public static void onInteractOcarina (PlayerInteractEvent.EntityInteract event) {
         ItemWhistle.onInteractOcarina(event);
-        event.setResult(Event.Result.DENY);
     }
 }

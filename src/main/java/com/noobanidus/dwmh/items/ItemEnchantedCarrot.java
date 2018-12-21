@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
@@ -55,8 +56,6 @@ public class ItemEnchantedCarrot extends Item {
     }
 
     public static void onInteractCarrot (PlayerInteractEvent.EntityInteract event) {
-        if (event.getWorld().isRemote) return;
-
         ITextComponent temp;
 
         EntityPlayer player = event.getEntityPlayer();
@@ -66,6 +65,11 @@ public class ItemEnchantedCarrot extends Item {
         if (item.isEmpty() || !(item.getItem() instanceof ItemEnchantedCarrot) || !DWMH.proxy.isMyMod(entity)) {
             return;
         }
+
+        event.setCanceled(true);
+        event.setCancellationResult(EnumActionResult.SUCCESS);
+
+        if (event.getWorld().isRemote) return;
 
         boolean didStuff = false;
 

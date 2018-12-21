@@ -27,11 +27,12 @@ public class ItemEnchantedCarrot extends Item {
     public static boolean taming = DWMH.CONFIG.get("Carrot", "Taming", true, "Carrot can automatically tame untamed horses.").getBoolean(true);
     public static boolean healing = DWMH.CONFIG.get("Carrot", "Healing", true, "Carrot can fully heal damaged horses.").getBoolean(true);
     public static boolean ageing = DWMH.CONFIG.get("Carrot", "Ageing", true, "Carrot can age child horses into adults instantly.").getBoolean(true);
+    public static boolean breeding = DWMH.CONFIG.get("Carrot", "Breeding", true, "Carrot can put horses into breeding mode").getBoolean(true);
     private static boolean glint = DWMH.CONFIG.get("Carrot", "Glint", false, "Set to true to give the carrot the enchantment glint!").getBoolean(false);
     public static boolean tameAnimania = DWMH.CONFIG.get("Animania", "TameHorsesWithCarrot", false, "Set to true to enable taming of Animania horses. This allows you to summon them without having to name them, meaning you can set a custom name if you so wish.").getBoolean(false);
 
     static {
-        if (!taming && !healing && !ageing) enabled = false;
+        if (!taming && !healing && !ageing && !breeding) enabled = false;
     }
 
     public void init () {
@@ -83,6 +84,9 @@ public class ItemEnchantedCarrot extends Item {
             didStuff = true;
         } else if (DWMH.proxy.isHealable(entity, player) && ItemEnchantedCarrot.healing) {
             DWMH.proxy.heal(entity, player);
+            didStuff = true;
+        } else if (DWMH.proxy.isBreedable(entity, player) && ItemEnchantedCarrot.breeding) {
+            DWMH.proxy.breed(entity, player);
             didStuff = true;
         }
 

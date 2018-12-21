@@ -3,6 +3,7 @@ package com.noobanidus.dwmh.proxy;
 import com.animania.common.entities.horses.EntityAnimaniaHorse;
 import com.animania.common.entities.horses.EntityMareBase;
 import com.animania.common.entities.horses.EntityStallionBase;
+import com.noobanidus.dwmh.DWMH;
 import com.noobanidus.dwmh.items.ItemEnchantedCarrot;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.AbstractHorse;
@@ -21,13 +22,15 @@ public class AnimaniaProxy implements ISteedProxy {
 
         EntityAnimaniaHorse horse = (EntityAnimaniaHorse) entity;
 
+        if (!globalTeleportCheck(entity, player)) return false;
+
         if (horse.isTame() && horse.getOwnerUniqueId() != null && horse.getOwnerUniqueId().equals(player.getUniqueID())) return true;
 
         if (!entity.hasCustomName()) {
             return false;
         }
 
-        return entity.getCustomNameTag().equals(generateName(player)) && globalTeleportCheck(entity, player);
+        return entity.getCustomNameTag().equals(generateName(player));
     }
 
     private String generateName (EntityPlayer player) {

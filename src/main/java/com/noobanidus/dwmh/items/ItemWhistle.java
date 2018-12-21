@@ -1,12 +1,13 @@
 package com.noobanidus.dwmh.items;
 
 import com.noobanidus.dwmh.DWMH;
-import com.noobanidus.dwmh.util.Util;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.passive.AbstractHorse;
+import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
@@ -17,25 +18,24 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.*;
 import net.minecraft.world.World;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import java.util.List;
-import java.util.concurrent.TransferQueue;
 
 public class ItemWhistle extends Item {
 
-    private static double maxDistance = DWMH.CONFIG.get("Whistle", "MaxDistance", 200d, "Max distance to summon horses when using the horse whistle (set to 0 for infinite distance (excluding unloaded chunks and dimensions)).").getDouble(200d);
-    private static boolean swap = DWMH.CONFIG.get("Whistle", "SwapSneak", false, "Set true to require sneaking to actively summon horses instead of printing horse information. This is useful if you don't wish to accidentally right-click and summon your steed(s) in an unsafe location.").getBoolean(false);
+    public static double maxDistance = DWMH.CONFIG.get("Whistle", "MaxDistance", 200d, "Max distance to summon horses when using the horse whistle (set to 0 for infinite distance (excluding unloaded chunks and dimensions)).").getDouble(200d);
+    public static boolean swap = DWMH.CONFIG.get("Whistle", "SwapSneak", false, "Set true to require sneaking to actively summon horses instead of printing horse information. This is useful if you don't wish to accidentally right-click and summon your steed(s) in an unsafe location.").getBoolean(false);
     public static boolean home = DWMH.CONFIG.get("Whistle", "SetHome", true, "Set to true to set the home and max wander distance to the location you most recently used the whistle for each horse teleported.").getBoolean(true);
     public static boolean skipDismount = DWMH.CONFIG.get("Whistle", "SkipDismount", false, "Set to true to skip detaching home points when dismounting a horse. Do this if you are having weird interactions/failure of functionality with HorseTweaks' home functionality.").getBoolean(false);
-    private static int cooldown = DWMH.CONFIG.get("Whistle", "Cooldown", 0, "Specify a cooldown in ticks for usage of the whistle. Set to 0 to disable.").getInt(0);
-    private static boolean quiet = DWMH.CONFIG.get("Whistle", "Quiet", false, "Set to true to disable messages when teleporting a horse to you.").getBoolean(true);
-    private static boolean simple = DWMH.CONFIG.get("Whistle", "Simpler", false, "Set to true to prevent multiple messages when teleporting a horse to you, instead printing one message if any horses are teleported.").getBoolean(true);
-    private static boolean otherRiders = DWMH.CONFIG.get("Whistle", "OtherRiders", false, "Set to true to enable summoning your horses that are being ridden by other people").getBoolean(false);
-    private static boolean distance = DWMH.CONFIG.get("Whistle", "Distance", true, "Set to false to disable showing the distance horses are away from you when listing them.").getBoolean(true);
-    public static boolean unname = DWMH.CONFIG.get("Animania", "Unnaming", true, "Set to false to disable clearing the custom name of a named animania horse by sneak-right-clicking on them.").getBoolean(true);
+    public static int cooldown = DWMH.CONFIG.get("Whistle", "Cooldown", 0, "Specify a cooldown in ticks for usage of the whistle. Set to 0 to disable.").getInt(0);
+    public static boolean quiet = DWMH.CONFIG.get("Whistle", "Quiet", false, "Set to true to disable messages when teleporting a horse to you.").getBoolean(true);
+    public static boolean simple = DWMH.CONFIG.get("Whistle", "Simpler", false, "Set to true to prevent multiple messages when teleporting a horse to you, instead printing one message if any horses are teleported.").getBoolean(true);
+    public static boolean otherRiders = DWMH.CONFIG.get("Whistle", "OtherRiders", false, "Set to true to enable summoning your horses that are being ridden by other people").getBoolean(false);
+    public static boolean distance = DWMH.CONFIG.get("Whistle", "Distance", true, "Set to false to disable showing the distance horses are away from you when listing them.").getBoolean(true);
 
     public void init () {
         setMaxStackSize(1);
@@ -246,6 +246,44 @@ public class ItemWhistle extends Item {
             }
         }
         return new ActionResult<>(EnumActionResult.SUCCESS, stack);
+    }
+
+    public static void onInteractOcarina (PlayerInteractEvent.EntityInteract event) {
+        if (event.getWorld().isRemote) return;
+
+        if (!DWMH.animaniaProxy.isLoaded()) return;
+
+        EntityPlayer player = event.getEntityPlayer();
+        ItemStack item = event.getItemStack();
+
+        if (item.isEmpty() || !(item.getItem() instanceof ItemWhistle) || !(event.getTarget() instanceof AbstractHorse)) {
+            return;
+        }
+
+        if (!player.isSneaking()) return;
+
+        AbstractHorse horse = (AbstractHorse) event.getTarget();
+
+        event.setCanceled(true);
+
+        ITextComponent temp;
+        String name = String.format("%s's Steed", player.getName());
+        if (DWMH.proxy.hasCustomName(horse)) {
+            if (DWMH.proxy.getCustomNameTag(horse).contains("'s Steed") && !DWMH.proxy.getCustomNameTag(horse).equals(name)) {
+                temp = new TextComponentTranslation("dwmh.strings.not_your_horse");
+                temp.getStyle().setColor(TextFormatting.RED);
+            } else {
+                DWMH.proxy.setCustomNameTag(horse, "");
+                temp = new TextComponentTranslation("dwmh.strings.unnamed");
+                temp.getStyle().setColor(TextFormatting.YELLOW);
+            }
+            player.sendMessage(temp);
+        } else {
+            horse.setCustomNameTag(name);
+            temp = new TextComponentTranslation("dwmh.strings.animania_named");
+            temp.getStyle().setColor(TextFormatting.GOLD);
+            player.sendMessage(temp);
+        }
     }
 
     @SideOnly(Side.CLIENT)

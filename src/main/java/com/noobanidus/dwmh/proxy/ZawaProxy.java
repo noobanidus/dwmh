@@ -12,9 +12,10 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import org.zawamod.entity.base.ZAWABaseLand;
-import org.zawamod.entity.data.AnimalData;
-import org.zawamod.entity.land.*;
+import org.zawamod.entity.core.AnimalData;
 import org.zawamod.init.advancement.Triggers;
+
+import static org.zawamod.entity.core.AnimalData.EnumNature.AGGRESSIVE;
 
 public class ZawaProxy implements ISteedProxy {
     ZAWABaseLand.AIFight aifight = null;
@@ -66,15 +67,14 @@ public class ZawaProxy implements ISteedProxy {
         ZAWABaseLand animal = (ZAWABaseLand) entity;
 
         animal.setTamedBy(player);
-        if (animal.world.isRemote) {
-            animal.playTameEffect();
+        animal.setOwnerId(player.getUniqueID());
+        if (!player.capabilities.isCreativeMode) {
+            player.inventory.getCurrentItem().shrink(1);
         }
 
         if (player instanceof EntityPlayerMP) {
             Triggers.TAME_ANIMAL_ZAWA.trigger((EntityPlayerMP)player);
         }
-
-        animal.setOwnerId(player.getUniqueID());
 
         if (aifight == null || ainearatt == null) {
             aifight = ReflectionHelper.getPrivateValue(ZAWABaseLand.class, animal, "AIFight");
@@ -92,11 +92,11 @@ public class ZawaProxy implements ISteedProxy {
             Triggers.RISK_TAME.trigger((EntityPlayerMP)player);
         }
 
-        if (animal.world.isRemote) {
-            animal.playTameEffect();
-        }
+        animal.setHunger(animal.getMaxFood());
+        animal.setEnrichment(animal.getMaxEnrichment());
+        animal.world.setEntityState(animal, (byte)7);
 
-        ITextComponent temp = new TextComponentTranslation("dwmh.strings.zawa.tamed");
+        /*ITextComponent temp = new TextComponentTranslation("dwmh.strings.zawa.tamed");
         temp.appendText(" ");
         if (animal.hasCustomName()) {
             temp.appendText(" " + animal.getCustomNameTag());
@@ -107,7 +107,7 @@ public class ZawaProxy implements ISteedProxy {
         temp.appendText("!");
         temp.getStyle().setColor(TextFormatting.GOLD);
 
-        player.sendMessage(temp);
+        player.sendMessage(temp);*/
     }
 
     public boolean isAgeable (Entity entity, EntityPlayer player) {

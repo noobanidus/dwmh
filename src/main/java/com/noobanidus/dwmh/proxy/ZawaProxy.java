@@ -2,7 +2,6 @@ package com.noobanidus.dwmh.proxy;
 
 import com.noobanidus.dwmh.DWMH;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -14,8 +13,6 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import org.zawamod.entity.base.ZAWABaseLand;
 import org.zawamod.entity.core.AnimalData;
 import org.zawamod.init.advancement.Triggers;
-
-import static org.zawamod.entity.core.AnimalData.EnumNature.AGGRESSIVE;
 
 public class ZawaProxy implements ISteedProxy {
     ZAWABaseLand.AIFight aifight = null;

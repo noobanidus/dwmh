@@ -108,22 +108,19 @@ public class VanillaProxy implements ISteedProxy {
     }
 
     public boolean isMyMod (Entity entity) {
-        if (!(entity instanceof AbstractHorse)) return false;
-
         for (Class<? extends AbstractHorse> clz : DWMH.ignoreList) {
             if (clz.isAssignableFrom(entity.getClass())) {
                 return false;
             }
         }
 
-        return false;
+        return entity instanceof AbstractHorse;
     }
 
     public ITextComponent getResponseKey (Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return null;
 
         AbstractHorse horse = (AbstractHorse) entity;
-
         ITextComponent temp = null;
 
         if (horse.hasHome() && horse.world.getTileEntity(horse.getHomePosition()) != null) {

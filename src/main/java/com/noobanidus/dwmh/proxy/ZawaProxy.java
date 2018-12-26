@@ -3,17 +3,15 @@ package com.noobanidus.dwmh.proxy;
 import com.noobanidus.dwmh.DWMH;
 import com.noobanidus.dwmh.items.ItemWhistle;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import org.zawamod.entity.base.ZAWABaseLand;
-import org.zawamod.entity.core.AnimalData;
-import org.zawamod.init.advancement.Triggers;
 
 public class ZawaProxy implements ISteedProxy {
     ZAWABaseLand.AIFight aifight = null;
@@ -66,12 +64,22 @@ public class ZawaProxy implements ISteedProxy {
 
         animal.setTamedBy(player);
         animal.setOwnerId(player.getUniqueID());
+        if (animal.world.isRemote) {
+            ITextComponent temp = new TextComponentTranslation("dwmh.strings.zawa.tamed");
+            temp.appendText(" ");
+            if (animal.hasCustomName()) {
+                temp.appendText(" " + animal.getCustomNameTag());
+            } else {
+                temp.appendSibling(new TextComponentTranslation(String.format("entity.%s.name", EntityList.getEntityString(animal))));
+            }
+
+            temp.appendText("!");
+            temp.getStyle().setColor(TextFormatting.GOLD);
+
+            player.sendMessage(temp);
+        }
         if (!player.capabilities.isCreativeMode) {
             player.inventory.getCurrentItem().shrink(1);
-        }
-
-        if (player instanceof EntityPlayerMP) {
-            Triggers.TAME_ANIMAL_ZAWA.trigger((EntityPlayerMP)player);
         }
 
         if (aifight == null || ainearatt == null) {
@@ -86,26 +94,11 @@ public class ZawaProxy implements ISteedProxy {
             DWMH.LOG.error("Unable to remove AI tasks for recently tamed entity.");
         }
 
-        if (animal.setNature() == AnimalData.EnumNature.AGGRESSIVE && player instanceof EntityPlayerMP) {
-            Triggers.RISK_TAME.trigger((EntityPlayerMP)player);
-        }
-
         animal.setHunger(animal.getMaxFood());
         animal.setEnrichment(animal.getMaxEnrichment());
         animal.world.setEntityState(animal, (byte)7);
 
-        /*ITextComponent temp = new TextComponentTranslation("dwmh.strings.zawa.tamed");
-        temp.appendText(" ");
-        if (animal.hasCustomName()) {
-            temp.appendText(" " + animal.getCustomNameTag());
-        } else {
-            temp.appendSibling(new TextComponentTranslation(String.format("entity.%s.name", EntityList.getEntityString(animal))));
-        }
 
-        temp.appendText("!");
-        temp.getStyle().setColor(TextFormatting.GOLD);
-
-        player.sendMessage(temp);*/
     }
 
     public boolean isAgeable (Entity entity, EntityPlayer player) {

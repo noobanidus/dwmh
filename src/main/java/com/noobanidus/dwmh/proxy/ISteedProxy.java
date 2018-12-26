@@ -40,6 +40,10 @@ public interface ISteedProxy {
             return false;
         }
 
+        if (ItemWhistle.path && animal.getEntityData().hasKey(ItemWhistle.TAG_MOVING_TO_LOCATION) && animal.getEntityData().getBoolean(ItemWhistle.TAG_MOVING_TO_LOCATION)) {
+            return false;
+        }
+
         return true;
     }
 

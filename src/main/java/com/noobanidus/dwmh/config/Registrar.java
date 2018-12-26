@@ -17,6 +17,7 @@ import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.EntityMountEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.Event;
@@ -70,5 +71,10 @@ public class Registrar {
     @SubscribeEvent
     public static void onInteractOcarina (PlayerInteractEvent.EntityInteract event) {
         ItemWhistle.onInteractOcarina(event);
+    }
+
+    @SubscribeEvent
+    public static void onLivingUpdate (LivingEvent.LivingUpdateEvent event) {
+        ItemWhistle.onLivingUpdate(event);
     }
 }

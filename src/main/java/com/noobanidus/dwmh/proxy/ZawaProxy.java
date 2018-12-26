@@ -1,6 +1,7 @@
 package com.noobanidus.dwmh.proxy;
 
 import com.noobanidus.dwmh.DWMH;
+import com.noobanidus.dwmh.items.ItemWhistle;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.player.EntityPlayer;
@@ -134,6 +135,12 @@ public class ZawaProxy implements ISteedProxy {
             temp.getStyle().setColor(TextFormatting.DARK_RED);
         } else if (animal.getLeashed()) {
             temp = new TextComponentTranslation("dwmh.strings.unsummonable.leashed");
+            temp.getStyle().setColor(TextFormatting.DARK_RED);
+        } else if (animal.isBeingRidden() && animal.isRidingSameEntity(player)) {
+            temp = new TextComponentTranslation("dwmh.strings.unsummonable.ridden");
+            temp.getStyle().setColor(TextFormatting.DARK_RED);
+        } else if (animal.isBeingRidden() && !ItemWhistle.otherRiders) {
+            temp = new TextComponentTranslation("dwmh.strings.unsummonable.ridden_other");
             temp.getStyle().setColor(TextFormatting.DARK_RED);
         } else if (isSaddled(animal)) {
             temp = new TextComponentTranslation("dwmh.strings.summonable");

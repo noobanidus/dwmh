@@ -52,18 +52,15 @@ public class AnimaniaProxy implements ISteedProxy {
         return true;
     }
 
-    // Can't tame Animania animals
+    // Can't tame Animania animals -- OR CAN YOU?
     public boolean isTameable (Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return false;
 
         EntityAnimaniaHorse horse = (EntityAnimaniaHorse) entity;
 
-        if (ItemEnchantedCarrot.tameAnimania && !horse.isTame()) {
-            return true;
-        }
-
-        return false;
+        return !horse.isTame();
     }
+
     public void tame (Entity entity, EntityPlayer player) {
         ((AbstractHorse) entity).setTamedBy(player);
     }
@@ -111,10 +108,10 @@ public class AnimaniaProxy implements ISteedProxy {
         } else if (animal.getLeashed()) {
             temp = new TextComponentTranslation("dwmh.strings.unsummonable.leashed");
             temp.getStyle().setColor(TextFormatting.DARK_RED);
-        } else if (!animal.hasCustomName()) {
+        } else if (!animal.hasCustomName() && !animal.isTame()) {
             temp = new TextComponentTranslation("dwmh.strings.unsummonable.unnamed");
             temp.getStyle().setColor(TextFormatting.DARK_RED);
-        } else if (animal.hasCustomName() && !animal.getCustomNameTag().equals(name)) {
+        } else if (animal.hasCustomName() && !animal.getCustomNameTag().equals(name) && !animal.isTame()) {
             temp = new TextComponentTranslation("dwmh.strings.unsummonable.notyours");
             temp.getStyle().setColor(TextFormatting.DARK_RED);
         } else if (animal.hasCustomName() && animal.getCustomNameTag().equals(name)) {

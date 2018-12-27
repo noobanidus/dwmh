@@ -174,6 +174,10 @@ public class ItemEnchantedCarrot extends Item {
     @SideOnly(Side.CLIENT)
     @Override
     public boolean hasEffect(ItemStack stack) {
+        if (unbreakable && !useableCarrot(stack)) {
+            return false;
+        }
+
         return glint;
     }
 

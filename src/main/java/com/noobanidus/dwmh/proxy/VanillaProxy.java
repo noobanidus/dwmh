@@ -47,7 +47,11 @@ public class VanillaProxy implements ISteedProxy {
 
         AbstractHorse horse = (AbstractHorse) entity;
 
-        return !horse.isChild() && !horse.isTame();
+        if (horse.isChild()) return false;
+
+        if (horse.isTame() && horse.getOwnerUniqueId() == null) return true;
+
+        return !horse.isTame();
     }
 
     public void tame (Entity entity, EntityPlayer player) {

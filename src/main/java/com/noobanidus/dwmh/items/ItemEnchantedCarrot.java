@@ -105,7 +105,7 @@ public class ItemEnchantedCarrot extends Item {
         Entity entity = event.getTarget();
         ItemStack item  = event.getItemStack();
 
-        if (item.isEmpty() || !(item.getItem() instanceof ItemEnchantedCarrot) || !DWMH.proxy.isMyMod(entity)) {
+        if (item.isEmpty() || player.isSneaking() || !(item.getItem() instanceof ItemEnchantedCarrot) || !DWMH.proxy.isMyMod(entity)) {
             return;
         }
 

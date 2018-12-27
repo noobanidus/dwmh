@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.event.entity.EntityMountEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -144,5 +145,15 @@ public class VanillaProxy implements ISteedProxy {
         }
 
         return temp;
+    }
+
+    public boolean onDismount (EntityMountEvent event) {
+        if (event.isDismounting() && event.getEntityMounting() instanceof EntityPlayer && event.getEntityBeingMounted() instanceof AbstractHorse && ItemWhistle.home && !ItemWhistle.skipDismount) {
+            AbstractHorse entity = (AbstractHorse) event.getEntityBeingMounted();
+            entity.detachHome();
+            return true;
+        }
+
+        return false;
     }
 }

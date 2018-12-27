@@ -4,6 +4,7 @@ import com.noobanidus.dwmh.DWMH;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.event.entity.EntityMountEvent;
 
 public class SteedProxy implements ISteedProxy {
     public static boolean onlyNamed = DWMH.CONFIG.get("Animania", "OnlyNamed", true, "Only list named Animania steeds.").getBoolean(true);
@@ -154,6 +155,17 @@ public class SteedProxy implements ISteedProxy {
 
         return false;
     }
+
+    public boolean onDismount (EntityMountEvent event) {
+        for (ISteedProxy proxy : DWMH.proxyList) {
+            if (proxy.onDismount(event)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 
     public String proxyName () {
         return "main";

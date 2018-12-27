@@ -1,6 +1,7 @@
 package com.noobanidus.dwmh.items;
 
 import com.noobanidus.dwmh.DWMH;
+import com.noobanidus.dwmh.config.Sound;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -15,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.*;
 import net.minecraft.world.World;
@@ -38,6 +40,7 @@ public class ItemWhistle extends ItemDWMHRepairable {
     public static boolean distance = DWMH.CONFIG.get("Whistle", "Distance", true, "Set to false to disable showing the distance horses are away from you when listing them.").getBoolean(true);
     public static int maxUses = DWMH.CONFIG.get("Whistle", "MaxUses", 250, "Set to 0 to disable the summoning of horses costing durability").getInt();
     public static String repairItem = DWMH.CONFIG.get("Whistle", "RepairItem", "minecraft:golden_carrot:0", "When durability is specified, these items can be used to repair the ocarina. Format: mod:item:metadata. Items with NBT are not supported, use 0 for no metadata.").getString();
+    public static boolean sounds = DWMH.CONFIG.get("Whistle", "Sounds", true, "Set to false to disable whistle sounds from being played when the Ocarina is used. This whistle sound is played on the PLAYERS channel.").getBoolean(true);
 
     public void init () {
         setMaxStackSize(1);
@@ -154,6 +157,10 @@ public class ItemWhistle extends ItemDWMHRepairable {
                 }
                 player.swingArm(hand);
             } else {
+                if (sounds) {
+                    player.world.playSound(null, player.getPosition(), Sound.getRandomWhistle(), SoundCategory.PLAYERS, 16.0f, 1.0f);
+                }
+
                 if (!useableItem(stack)) {
                     temp = new TextComponentTranslation("dwmh.strings.broken_whistle");
                     temp.getStyle().setColor(TextFormatting.BLUE);

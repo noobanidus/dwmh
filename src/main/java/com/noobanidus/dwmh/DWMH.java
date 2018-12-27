@@ -1,7 +1,5 @@
 package com.noobanidus.dwmh;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 import com.noobanidus.dwmh.config.Registrar;
@@ -10,8 +8,6 @@ import com.noobanidus.dwmh.proxy.ISteedProxy;
 import com.noobanidus.dwmh.proxy.SteedProxy;
 import com.noobanidus.dwmh.proxy.VanillaProxy;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
@@ -34,8 +30,6 @@ public class DWMH {
     public static final String MODNAME = "Dude! Where's my Horse?";
     public static final String VERSION = "GRADLE:VERSION";
 
-    // This may eventually be used.
-    @SuppressWarnings("unused")
     public final static Logger LOG = LogManager.getLogger(MODID);
 
     public static Configuration CONFIG;

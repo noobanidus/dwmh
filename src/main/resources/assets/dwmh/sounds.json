@@ -1,0 +1,8 @@
+{
+    "whistle.1": { "category": "ambient", "sounds": [ "dwmh:whistle1" ] },
+    "whistle.2": { "category": "ambient", "sounds": [ "dwmh:whistle2" ] },
+    "whistle.3": { "category": "ambient", "sounds": [ "dwmh:whistle3" ] },
+    "whistle.4": { "category": "ambient", "sounds": [ "dwmh:whistle4" ] },
+    "whistle.5": { "category": "ambient", "sounds": [ "dwmh:whistle5" ] },
+    "whistle.special": { "category": "ambient", "sounds": [ "dwmh:whistle_special" ] }
+}

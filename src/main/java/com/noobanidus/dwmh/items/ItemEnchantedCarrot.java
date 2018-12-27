@@ -10,6 +10,7 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
@@ -29,6 +30,8 @@ public class ItemEnchantedCarrot extends Item {
     public static boolean healing = DWMH.CONFIG.get("Carrot", "Healing", true, "Carrot can fully heal damaged horses.").getBoolean(true);
     public static boolean ageing = DWMH.CONFIG.get("Carrot", "Ageing", true, "Carrot can age child horses into adults instantly.").getBoolean(true);
     public static boolean breeding = DWMH.CONFIG.get("Carrot", "Breeding", true, "Carrot can put horses into breeding mode").getBoolean(true);
+    public static boolean unbreakable = DWMH.CONFIG.get("Carrot", "Unbreakable", true, "Set to false to allow the carrot to be completely destroyed when all durability is used up.").getBoolean(true);
+    public static String repairItem = DWMH.CONFIG.get("Carrot", "RepairItem", "minecraft:gold_block:0", "When in \"unbreakable\" mode, this item can be used in an anvil to repair the Enchanted Carrot. Format: mod:item:metadata. Items with NBT are not supported, use 0 for no metadata.").getString();
     private static boolean glint = DWMH.CONFIG.get("Carrot", "Glint", false, "Set to true to give the carrot the enchantment glint!").getBoolean(false);
 
     static {
@@ -41,6 +44,47 @@ public class ItemEnchantedCarrot extends Item {
         setRegistryName("dwmh:carrot");
         setUnlocalizedName("dwmh.carrot");
         setMaxDamage(maxUses);
+    }
+
+    public ItemStack getRepairItem () {
+        if (!unbreakable) return ItemStack.EMPTY;
+
+        String[] parts = repairItem.split(":");
+        if (parts.length != 3) {
+            DWMH.LOG.error(String.format("Repair item specified in configuration invalid: |%s|", repairItem));
+            return ItemStack.EMPTY;
+        }
+
+        Item repairInt = Item.REGISTRY.getObject(new ResourceLocation(parts[0], parts[1]));
+        if (repairInt == null) {
+            DWMH.LOG.error(String.format("Repair item specified in configuration does not exist: |%s|", repairItem));
+            return ItemStack.EMPTY;
+        }
+
+        int metadata;
+        try {
+            metadata = Integer.parseInt(parts[2]);
+        } catch (NumberFormatException nfe) {
+            DWMH.LOG.error(String.format("Repair item metadata is not a valid integer: |%s|", repairItem));
+            return ItemStack.EMPTY;
+        }
+
+        ItemStack repair = new ItemStack(repairInt, 1, metadata);
+        return repair;
+    }
+
+    @Override
+    public boolean getIsRepairable (ItemStack carrot, ItemStack repairingItem) {
+        if (!unbreakable) return false;
+
+        if (!(carrot.getItem() instanceof ItemEnchantedCarrot)) return false;
+
+        ItemStack myRepair = getRepairItem();
+        if (repairingItem.getItem().equals(myRepair.getItem()) && repairingItem.getMetadata() == myRepair.getMetadata()) {
+            return true;
+        }
+
+        return false;
     }
 
     @Override
@@ -68,7 +112,7 @@ public class ItemEnchantedCarrot extends Item {
         event.setCanceled(true);
         event.setCancellationResult(EnumActionResult.SUCCESS);
 
-        if (event.getWorld().isRemote) return;
+        if (!useableCarrot(item) || event.getWorld().isRemote) return;
 
         boolean didStuff = false;
 
@@ -94,11 +138,36 @@ public class ItemEnchantedCarrot extends Item {
         }
 
         if (!player.capabilities.isCreativeMode && didStuff) {
-            item.damageItem(1, player);
+            damageCarrot(item, player);
         }
 
         if (didStuff) {
             event.setCanceled(true);
+        }
+    }
+
+    public static boolean useableCarrot (ItemStack item) {
+        if (unbreakable) {
+            if (item.getItemDamage() == maxUses) {
+                return false;
+            }
+
+            return true;
+        } else {
+            return true;
+        }
+    }
+
+    public static void damageCarrot (ItemStack item, EntityPlayer player) {
+        // Most calls to this should be wrapped in this but it doesn't hurt
+        if (player.capabilities.isCreativeMode) return;
+
+        if (item.getItem() instanceof ItemEnchantedCarrot) {
+            if (useableCarrot(item)) {
+                item.damageItem(1, player);
+            }
+        } else {
+            DWMH.LOG.error(String.format("Attempted to damage a non-carrot item! |%s|", item.getDisplayName()));
         }
     }
 
@@ -112,6 +181,9 @@ public class ItemEnchantedCarrot extends Item {
     @Override
     public void addInformation(ItemStack par1ItemStack, World world, List<String> stacks, ITooltipFlag flags) {
         if(GuiScreen.isShiftKeyDown()) {
+            if (unbreakable && !useableCarrot(par1ItemStack)) {
+                stacks.add(TextFormatting.DARK_RED + I18n.format("dwmh.strings.carrot.tooltip.broken"));
+            }
             if (taming) {
                 stacks.add(TextFormatting.GOLD + I18n.format("dwmh.strings.right_click") + " " + TextFormatting.WHITE + I18n.format("dwmh.strings.carrot.tooltip.taming"));
             }
@@ -120,6 +192,9 @@ public class ItemEnchantedCarrot extends Item {
             }
             if (ageing) {
                 stacks.add(TextFormatting.GOLD + I18n.format("dwmh.strings.right_click") + " " + TextFormatting.WHITE + I18n.format("dwmh.strings.carrot.tooltip.ageing"));
+            }
+            if (breeding) {
+                stacks.add(TextFormatting.GOLD + I18n.format("dwmh.strings.right_click") + " " + TextFormatting.WHITE + I18n.format("dwmh.strings.carrot.tooltip.breeding"));
             }
         } else {
             stacks.add(TextFormatting.DARK_GRAY + I18n.format("dwmh.strings.hold_shift"));

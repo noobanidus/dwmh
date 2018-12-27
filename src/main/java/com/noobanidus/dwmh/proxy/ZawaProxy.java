@@ -1,11 +1,13 @@
 package com.noobanidus.dwmh.proxy;
 
 import com.noobanidus.dwmh.DWMH;
+import com.noobanidus.dwmh.items.ItemEnchantedCarrot;
 import com.noobanidus.dwmh.items.ItemWhistle;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -67,7 +69,8 @@ public class ZawaProxy implements ISteedProxy {
         animal.setTamedBy(player);
         animal.setOwnerId(player.getUniqueID());
         if (!player.capabilities.isCreativeMode) {
-            player.inventory.getCurrentItem().shrink(1);
+            ItemStack item = player.inventory.getCurrentItem();
+            ItemEnchantedCarrot.damageCarrot(item, player);
         }
 
         if (player instanceof EntityPlayerMP) {

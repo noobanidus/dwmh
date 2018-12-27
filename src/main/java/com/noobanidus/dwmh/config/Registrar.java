@@ -37,7 +37,8 @@ public class Registrar {
     public static void registerModels(ModelRegistryEvent event) {
         ModelLoader.setCustomModelResourceLocation(whistle, 0, new ModelResourceLocation("dwmh:whistle", "inventory"));
         if (ItemEnchantedCarrot.enabled) {
-            ModelLoader.setCustomModelResourceLocation(carrot, 0, new ModelResourceLocation("dwmh:carrot", "inventory"));
+            ModelLoader.setCustomModelResourceLocation(carrot, 1, new ModelResourceLocation("dwmh:carrot", "type=normal"));
+            ModelLoader.setCustomModelResourceLocation(carrot, 0, new ModelResourceLocation("dwmh:carrot", "type=broken"));
         }
     }
 }

@@ -5,8 +5,10 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
+import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumActionResult;
@@ -20,12 +22,13 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemEnchantedCarrot extends Item {
 
     public static boolean enabled = DWMH.CONFIG.get("Carrot", "Enabled", true, "Set to false to disable the instant-taming carrot item. Disabling all three functionalities of the carrot has the same effect.").getBoolean(true);
-    private static int maxUses = DWMH.CONFIG.get("Carrot", "MaxUses", 30, "Maximum number of uses before the enchanted carrot is destroyed.").getInt(30);
+    public static int maxUses = DWMH.CONFIG.get("Carrot", "MaxUses", 30, "Maximum number of uses before the enchanted carrot is destroyed.").getInt(30);
     public static boolean taming = DWMH.CONFIG.get("Carrot", "Taming", true, "Carrot can automatically tame untamed horses.").getBoolean(true);
     public static boolean healing = DWMH.CONFIG.get("Carrot", "Healing", true, "Carrot can fully heal damaged horses.").getBoolean(true);
     public static boolean ageing = DWMH.CONFIG.get("Carrot", "Ageing", true, "Carrot can age child horses into adults instantly.").getBoolean(true);
@@ -44,6 +47,16 @@ public class ItemEnchantedCarrot extends Item {
         setRegistryName("dwmh:carrot");
         setUnlocalizedName("dwmh.carrot");
         setMaxDamage(maxUses);
+
+        addPropertyOverride(new ResourceLocation("dwmh", "carrot_damage"), new IItemPropertyGetter() {
+            @SideOnly(Side.CLIENT)
+            @Override
+            public float apply (ItemStack stack, @Nullable World world, @Nullable EntityLivingBase entity) {
+                int dam = stack.getItemDamage();
+                if (dam == maxUses) return 1.0f;
+                return 0.0f;
+            }
+        });
     }
 
     public ItemStack getRepairItem () {
@@ -71,6 +84,13 @@ public class ItemEnchantedCarrot extends Item {
 
         ItemStack repair = new ItemStack(repairInt, 1, metadata);
         return repair;
+    }
+
+    @Override
+    public int getMetadata (ItemStack carrot) {
+        if (useableCarrot(carrot)) return 0;
+
+        return 1;
     }
 
     @Override

@@ -10,6 +10,7 @@ dwmh.strings.unsummonable.unnamed=unsummonable (unnamed)
 dwmh.strings.unsummonable.notyours=unsummonable (not owned by you)
 dwmh.strings.unsummonable.child=unsummonable (still a child)
 dwmh.strings.summonable=summonable
+dwmh.strings.summonable.ridden_other=summonable (but ridden by someone else)
 dwmh.strings.named=named
 dwmh.strings.is=is
 dwmh.strings.at=at

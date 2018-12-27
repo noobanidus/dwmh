@@ -145,6 +145,9 @@ public class ZawaProxy implements ISteedProxy {
         } else if (animal.isBeingRidden() && !ItemWhistle.otherRiders) {
             temp = new TextComponentTranslation("dwmh.strings.unsummonable.ridden_other");
             temp.getStyle().setColor(TextFormatting.DARK_RED);
+        } else if (animal.isBeingRidden() && ItemWhistle.otherRiders) {
+            temp = new TextComponentTranslation("dwmh.strings.summonable.ridden_other");
+            temp.getStyle().setColor(TextFormatting.DARK_AQUA);
         } else if (isSaddled(animal)) {
             temp = new TextComponentTranslation("dwmh.strings.summonable");
             temp.getStyle().setColor(TextFormatting.AQUA);

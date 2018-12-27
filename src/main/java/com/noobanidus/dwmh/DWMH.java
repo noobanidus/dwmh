@@ -17,6 +17,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -89,6 +90,13 @@ public class DWMH {
         }
         if (proxyMap.get("zawa")) {
             zawaProxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("zawa", "com.noobanidus.dwmh.proxy.ZawaProxy")).orElse(new DummySteedProxy());
+            if (Loader.isModLoaded("zawa")) {
+                ModContainer zawa = Loader.instance().getIndexedModList().get("zawa");
+                if (!zawa.getVersion().equals("1.12.2-1.4.0")) {
+                    zawaProxy = new DummySteedProxy();
+                    DWMH.LOG.error("ZAWA is only supported for version 1.4.0. ZAWA compatibility has been disabled");
+                }
+            }
         }
 
         proxyList = Iterables.filter(Arrays.asList(animaniaProxy, mocProxy, zawaProxy, vanillaProxy), ISteedProxy::isLoaded);

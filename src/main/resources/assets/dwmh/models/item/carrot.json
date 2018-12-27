@@ -1,6 +1,10 @@
 {
   "parent": "item/handheld",
-  "textures": {
+  "textures" : {
     "layer0": "dwmh:items/carrot"
-  }
+  },
+  "overrides": [
+    { "predicate": { "dwmh:carrot_damage": 0.0   }, "model": "dwmh:item/normal" },
+    { "predicate": { "dwmh:carrot_damage": 1.0 }, "model": "dwmh:item/broken" }
+  ]
 }

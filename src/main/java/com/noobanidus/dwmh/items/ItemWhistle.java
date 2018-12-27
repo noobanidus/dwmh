@@ -25,7 +25,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-public class ItemWhistle extends Item {
+public class ItemWhistle extends ItemDWMHRepairable {
 
     public static double maxDistance = DWMH.CONFIG.get("Whistle", "MaxDistance", 200d, "Max distance to summon horses when using the horse whistle (set to 0 for infinite distance (excluding unloaded chunks and dimensions)).").getDouble(200d);
     public static boolean swap = DWMH.CONFIG.get("Whistle", "SwapSneak", false, "Set true to require sneaking to actively summon horses instead of printing horse information. This is useful if you don't wish to accidentally right-click and summon your steed(s) in an unsafe location.").getBoolean(false);
@@ -36,12 +36,19 @@ public class ItemWhistle extends Item {
     public static boolean simple = DWMH.CONFIG.get("Whistle", "Simpler", false, "Set to true to prevent multiple messages when teleporting a horse to you, instead printing one message if any horses are teleported.").getBoolean(true);
     public static boolean otherRiders = DWMH.CONFIG.get("Whistle", "OtherRiders", false, "Set to true to enable summoning your horses that are being ridden by other people").getBoolean(false);
     public static boolean distance = DWMH.CONFIG.get("Whistle", "Distance", true, "Set to false to disable showing the distance horses are away from you when listing them.").getBoolean(true);
+    public static int maxUses = DWMH.CONFIG.get("Whistle", "MaxUses", 250, "Set to 0 to disable the summoning of horses costing durability").getInt();
+    public static String repairItem = DWMH.CONFIG.get("Whistle", "RepairItem", "minecraft:golden_carrot:0", "When durability is specified, these items can be used to repair the ocarina. Format: mod:item:metadata. Items with NBT are not supported, use 0 for no metadata.").getString();
 
     public void init () {
         setMaxStackSize(1);
         setCreativeTab(DWMH.TAB);
         setRegistryName("dwmh:whistle");
         setUnlocalizedName("dwmh.whistle");
+        if (maxUses != 0) {
+            setMaxDamage(maxUses);
+            setInternalRepair(repairItem);
+        }
+        registerPredicate("whistle_damage");
     }
 
     private boolean isValidHorse (Entity entity, EntityPlayer player) {
@@ -147,12 +154,19 @@ public class ItemWhistle extends Item {
                 }
                 player.swingArm(hand);
             } else {
+                if (!useableItem(stack)) {
+                    temp = new TextComponentTranslation("dwmh.strings.broken_whistle");
+                    temp.getStyle().setColor(TextFormatting.BLUE);
+                    player.sendMessage(temp);
+                    return new ActionResult<>(EnumActionResult.SUCCESS, stack);
+                }
                 List<Entity> nearbyHorses = world.getEntities(Entity.class, (entity) -> isValidHorse(entity, player));
                 for (Entity entity : nearbyHorses) {
                     EntityAnimal horse = (EntityAnimal) entity;
                     if (horse.getDistanceSq(player) < (maxDistance * maxDistance) || maxDistance == 0) {
                         horse.moveToBlockPosAndAngles(pos, horse.rotationYaw, horse.rotationPitch);
                         didStuff = true;
+                        if (maxUses != 0) damageItem(stack, player);
                         if (!quiet && !simple) {
                             if (DWMH.proxy.hasCustomName(horse)) {
                                 temp = new TextComponentTranslation("dwmh.strings.complex_teleport_a");
@@ -239,6 +253,10 @@ public class ItemWhistle extends Item {
     @Override
     public void addInformation(ItemStack par1ItemStack, World world, List<String> stacks, ITooltipFlag flags) {
         if(GuiScreen.isShiftKeyDown()) {
+            if (!useableItem(par1ItemStack) && maxUses != 0) {
+                stacks.add(TextFormatting.DARK_RED + I18n.format("dwmh.strings.carrot.tooltip.broken"));
+            }
+
             String right_click;
             String sneak_right_click;
 
@@ -252,6 +270,14 @@ public class ItemWhistle extends Item {
 
             stacks.add(right_click);
             stacks.add(sneak_right_click);
+
+            if (DWMH.animaniaProxy.isLoaded()) {
+                stacks.add(TextFormatting.GOLD + I18n.format("dwmh.strings.shift_right_click") + " " + TextFormatting.WHITE + I18n.format("dwmh.strings.animania_naming"));
+            }
+
+            if (maxUses != 0) {
+                stacks.add(TextFormatting.AQUA + I18n.format("dwmh.strings.repair_carrot", getRepairItem().getDisplayName()));
+            }
         } else {
             stacks.add(TextFormatting.DARK_GRAY + I18n.format("dwmh.strings.hold_shift"));
         }

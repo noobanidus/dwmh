@@ -70,7 +70,7 @@ public class ZawaProxy implements ISteedProxy {
         animal.setOwnerId(player.getUniqueID());
         if (!player.capabilities.isCreativeMode) {
             ItemStack item = player.inventory.getCurrentItem();
-            ItemEnchantedCarrot.damageCarrot(item, player);
+            ItemEnchantedCarrot.damageItem(item, player, ItemEnchantedCarrot.unbreakable);
         }
 
         if (player instanceof EntityPlayerMP) {

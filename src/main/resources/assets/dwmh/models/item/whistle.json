@@ -1,6 +1,10 @@
 {
   "parent": "item/handheld",
-  "textures": {
+  "textures" : {
     "layer0": "dwmh:items/whistle"
-  }
+  },
+  "overrides": [
+    { "predicate": { "dwmh:whistle_damage": 0.0   }, "model": "dwmh:item/normal_whistle" },
+    { "predicate": { "dwmh:whistle_damage": 1.0 }, "model": "dwmh:item/broken_whistle" }
+  ]
 }

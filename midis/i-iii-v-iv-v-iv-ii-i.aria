@@ -33,8 +33,8 @@
   <note pitch="49" start="960" end="1680" volume="80"/>
   <note pitch="47" start="1680" end="1920" volume="80"/>
   <note pitch="49" start="1920" end="2160" volume="80"/>
-  <note pitch="45" start="2160" end="2880" volume="80"/>
-  <note pitch="43" start="2880" end="3840" volume="80" selected="true"/>
+  <note pitch="52" start="2160" end="2640" volume="80" selected="true"/>
+  <note pitch="54" start="2640" end="3840" volume="80"/>
 </track>
 
 </sequence></seqview>

@@ -1,14 +1,25 @@
 package com.noobanidus.dwmh.proxy;
 
+import com.google.common.collect.Lists;
+import com.noobanidus.dwmh.DWMH;
 import com.noobanidus.dwmh.items.ItemWhistle;
 import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.entity.MoCEntityTameableAnimal;
 import drzhark.mocreatures.entity.passive.MoCEntityElephant;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.client.event.ClientChatReceivedEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.List;
+import java.util.StringJoiner;
 
 // Instantiated by buildSoftDependProxy if Mo' Creatures is installed
 @SuppressWarnings("unused")
@@ -146,6 +157,34 @@ public class MOCProxy implements ISteedProxy {
         }
 
         return false;
+    }
+
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent
+    public static void onClientChatReceived (ClientChatReceivedEvent event) {
+        if (event.getMessage() instanceof TextComponentTranslation) {
+            TextComponentTranslation comp = (TextComponentTranslation) event.getMessage();
+
+            String key = comp.getKey();
+
+            if (key.contains("entity.") && key.contains(".name")) {
+                String res = I18n.format(key);
+
+                if (!res.contains(" ")) {
+                    List<String> parts = Lists.newArrayList(res.split("(?=\\p{Upper})"));
+
+                    StringJoiner s = new StringJoiner(" ");
+                    parts.forEach(s::add);
+
+                    TextComponentString temp = new TextComponentString(s.toString());
+                    temp.setStyle(comp.getStyle());
+
+                    comp.getSiblings().forEach(temp::appendSibling);
+
+                    event.setMessage(temp);
+                }
+            }
+        }
     }
 
     public String proxyName () {

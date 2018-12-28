@@ -83,6 +83,9 @@ public class DWMH {
         }
         if (proxyMap.get("mocreatures")) {
             mocProxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("mocreatures", "com.noobanidus.dwmh.proxy.MOCProxy")).orElse(new DummySteedProxy());
+            if (Loader.isModLoaded("mocreatures")) {
+                MinecraftForge.EVENT_BUS.register(mocProxy.getClass());
+            }
         }
         if (proxyMap.get("zawa")) {
             zawaProxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("zawa", "com.noobanidus.dwmh.proxy.ZawaProxy")).orElse(new DummySteedProxy());

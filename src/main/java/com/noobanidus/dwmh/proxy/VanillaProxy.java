@@ -154,13 +154,5 @@ public class VanillaProxy implements ISteedProxy {
         return temp;
     }
 
-    public boolean onDismount (EntityMountEvent event) {
-        if (event.isDismounting() && event.getEntityMounting() instanceof EntityPlayer && event.getEntityBeingMounted() instanceof AbstractHorse && ItemWhistle.home && !ItemWhistle.skipDismount) {
-            AbstractHorse entity = (AbstractHorse) event.getEntityBeingMounted();
-            entity.detachHome();
-            return true;
-        }
 
-        return false;
-    }
 }

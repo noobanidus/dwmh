@@ -3,7 +3,6 @@ package com.noobanidus.dwmh.events;
 import com.noobanidus.dwmh.DWMH;
 import com.noobanidus.dwmh.items.ItemEnchantedCarrot;
 import com.noobanidus.dwmh.items.ItemWhistle;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

@@ -1,6 +1,6 @@
 package com.noobanidus.dwmh;
 
-import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.noobanidus.dwmh.config.Registrar;
 import com.noobanidus.dwmh.proxy.DummySteedProxy;
@@ -10,6 +10,7 @@ import com.noobanidus.dwmh.proxy.VanillaProxy;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
@@ -39,14 +40,15 @@ public class DWMH {
     public static ISteedProxy animaniaProxy = new DummySteedProxy();
     public static ISteedProxy mocProxy = new DummySteedProxy();
     public static ISteedProxy zawaProxy = new DummySteedProxy();
+    public static ISteedProxy unicornProxy = new DummySteedProxy();
 
     // This is more of an overall helper class that checks everything
     public static ISteedProxy proxy;
 
-    public static Iterable<ISteedProxy> proxyList;
+    public static List<ISteedProxy> proxyList;
 
     private Map<String, Boolean> proxyMap;
-    private List<String> supportedMods = Arrays.asList("animania", "mocreatures", "zawa");
+    private List<String> supportedMods = Arrays.asList("animania", "mocreatures", "zawa", "ultimate_unicorn_mod");
 
     public static List<Class<?>> zawaClasses = new ArrayList<>();
     public static List<Class<?>> animaniaClasses = new ArrayList<>();
@@ -92,8 +94,15 @@ public class DWMH {
                 }
             }
         }
+        if (proxyMap.get("ultimate_unicorn_mod")) {
+            unicornProxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("ultimate_unicorn_mod", "com.noobanidus.dwmh.proxy.UnicornProxy")).orElse(new DummySteedProxy());
+            if (Loader.isModLoaded("ultimate_unicorn_mod")) {
+                MinecraftForge.EVENT_BUS.register(unicornProxy.getClass());
+            }
+        }
 
-        proxyList = Iterables.filter(Arrays.asList(animaniaProxy, mocProxy, zawaProxy, vanillaProxy), ISteedProxy::isLoaded);
+        proxyList = Lists.newArrayList(animaniaProxy, mocProxy, zawaProxy, unicornProxy, vanillaProxy);
+        proxyList.removeIf(i -> !i.isLoaded());
 
         String[] animaniaConfigClasses = CONFIG.get("Animania", "HorsesClasses", new String[]{"com.animania.common.entities.horses.EntityMareBase", "com.animania.common.entities.horses.EntityStallionBase"}, "Specify list of Animania classes that are considered horses.").getStringList();
 

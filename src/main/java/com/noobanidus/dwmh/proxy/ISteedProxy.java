@@ -3,6 +3,7 @@ package com.noobanidus.dwmh.proxy;
 import com.noobanidus.dwmh.DWMH;
 import com.noobanidus.dwmh.items.ItemWhistle;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityTameable;
@@ -90,6 +91,13 @@ public interface ISteedProxy {
     }
 
     default boolean onDismount (EntityMountEvent event) {
+        if (event.isDismounting() && event.getEntityMounting() instanceof EntityPlayer && isMyMod(event.getEntityBeingMounted()) && ItemWhistle.home && !ItemWhistle.skipDismount) {
+            EntityCreature entity = (EntityCreature) event.getEntityBeingMounted();
+            entity.detachHome();
+            DWMH.LOG.info("Removed home for " + entity.getDisplayName());
+            return true;
+        }
+
         return false;
     }
 }

@@ -9,6 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class ItemDWMHRepairable extends Item {
@@ -17,7 +18,7 @@ public class ItemDWMHRepairable extends Item {
     public void registerPredicate (String predicate_name) {
          addPropertyOverride(new ResourceLocation("dwmh", predicate_name), new IItemPropertyGetter() {
             @Override
-            public float apply(ItemStack stack, @Nullable World worldIn, @Nullable EntityLivingBase entityIn) {
+            public float apply(@Nonnull ItemStack stack, @Nullable World worldIn, @Nullable EntityLivingBase entityIn) {
                 if (stack.getItem() instanceof ItemEnchantedCarrot) {
                     if (ItemEnchantedCarrot.unbreakable && stack.getItemDamage() == ItemEnchantedCarrot.maxUses)
                         return 1;

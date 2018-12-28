@@ -97,4 +97,9 @@ public class UnicornProxy extends VanillaProxy {
             }
         }
     }
+
+    @Override
+    public String proxyName () {
+        return "Unicorn";
+    }
 }

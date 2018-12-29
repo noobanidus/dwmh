@@ -2,7 +2,7 @@ package com.noobanidus.dwmh.events;
 
 import com.noobanidus.dwmh.DWMH;
 import com.noobanidus.dwmh.items.ItemEnchantedCarrot;
-import com.noobanidus.dwmh.items.ItemWhistle;
+import com.noobanidus.dwmh.items.ItemOcarina;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -26,7 +26,7 @@ public class EventHandler {
 
     @SubscribeEvent
     public static void onInteractOcarina (PlayerInteractEvent.EntityInteract event) {
-        ItemWhistle.onInteractOcarina(event);
+        ItemOcarina.onInteractOcarina(event);
     }
 
     @SubscribeEvent
@@ -37,7 +37,7 @@ public class EventHandler {
 
         Item item = is.getItem();
 
-        if (item instanceof ItemWhistle || item instanceof ItemEnchantedCarrot) {
+        if (item instanceof ItemOcarina || item instanceof ItemEnchantedCarrot) {
             event.setCanceled(true);
         }
     }

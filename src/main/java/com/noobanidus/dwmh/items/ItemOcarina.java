@@ -28,7 +28,7 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemWhistle extends ItemDWMHRepairable {
+public class ItemOcarina extends ItemDWMHRepairable {
 
 
 
@@ -37,6 +37,8 @@ public class ItemWhistle extends ItemDWMHRepairable {
     public void init () {
         setMaxStackSize(1);
         setCreativeTab(DWMH.TAB);
+        // These are the only "whistles" that hang around because I don't
+        // want to break any backwards compatibility to people upgrading.
         setRegistryName("dwmh:whistle");
         setUnlocalizedName("dwmh.whistle");
         if (DWMHConfig.ocarina.functionality.maxUses != 0) {
@@ -213,7 +215,7 @@ public class ItemWhistle extends ItemDWMHRepairable {
         EntityPlayer player = event.getEntityPlayer();
         ItemStack item = event.getItemStack();
 
-        if (item.isEmpty() || !(item.getItem() instanceof ItemWhistle) || !(event.getTarget() instanceof AbstractHorse)) {
+        if (item.isEmpty() || !(item.getItem() instanceof ItemOcarina) || !(event.getTarget() instanceof AbstractHorse)) {
             return;
         }
 

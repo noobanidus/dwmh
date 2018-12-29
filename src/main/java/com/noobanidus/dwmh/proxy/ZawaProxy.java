@@ -3,7 +3,6 @@ package com.noobanidus.dwmh.proxy;
 import com.noobanidus.dwmh.DWMH;
 import com.noobanidus.dwmh.config.DWMHConfig;
 import com.noobanidus.dwmh.items.ItemEnchantedCarrot;
-import com.noobanidus.dwmh.items.ItemWhistle;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.player.EntityPlayer;

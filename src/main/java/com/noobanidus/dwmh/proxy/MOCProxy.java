@@ -1,9 +1,7 @@
 package com.noobanidus.dwmh.proxy;
 
 import com.google.common.collect.Lists;
-import com.noobanidus.dwmh.DWMH;
 import com.noobanidus.dwmh.config.DWMHConfig;
-import com.noobanidus.dwmh.items.ItemWhistle;
 import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.entity.MoCEntityTameableAnimal;
 import drzhark.mocreatures.entity.passive.MoCEntityElephant;

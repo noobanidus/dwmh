@@ -13,12 +13,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 @Mod.EventBusSubscriber
 public class Registrar {
-    public static ItemWhistle whistle = null;
+    public static ItemOcarina ocarina = null;
     public static ItemEnchantedCarrot carrot = null;
 
     public static void preInit() {
-        whistle = new ItemWhistle();
-        whistle.init();
+        ocarina = new ItemOcarina();
+        ocarina.init();
 
         carrot = new ItemEnchantedCarrot();
         carrot.init();
@@ -26,7 +26,7 @@ public class Registrar {
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
-        event.getRegistry().register(whistle);
+        event.getRegistry().register(ocarina);
         if (DWMHConfig.carrot.enabled) {
             event.getRegistry().register(carrot);
         }
@@ -35,7 +35,7 @@ public class Registrar {
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public static void registerModels(ModelRegistryEvent event) {
-        ModelLoader.setCustomModelResourceLocation(whistle, 0, new ModelResourceLocation("dwmh:whistle", "inventory"));
+        ModelLoader.setCustomModelResourceLocation(ocarina, 0, new ModelResourceLocation("dwmh:ocarina", "inventory"));
         if (DWMHConfig.carrot.enabled) {
             ModelLoader.setCustomModelResourceLocation(carrot, 0, new ModelResourceLocation("dwmh:carrot", "inventory"));
         }

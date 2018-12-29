@@ -24,7 +24,7 @@ public class ItemDWMHRepairable extends Item {
                     if (DWMHConfig.carrot.durability.unbreakable && stack.getItemDamage() == DWMHConfig.carrot.durability.maxUses)
                         return 1;
                     return 0;
-                } else if (stack.getItem() instanceof ItemWhistle) {
+                } else if (stack.getItem() instanceof ItemOcarina) {
                     if (DWMHConfig.ocarina.functionality.maxUses != 0 && stack.getItemDamage() == DWMHConfig.ocarina.functionality.maxUses)
                         return 1;
                     return 0;

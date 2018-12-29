@@ -4,6 +4,7 @@ import com.animania.common.entities.horses.EntityAnimaniaHorse;
 import com.animania.common.entities.horses.EntityMareBase;
 import com.animania.common.entities.horses.EntityStallionBase;
 import com.noobanidus.dwmh.DWMH;
+import com.noobanidus.dwmh.config.DWMHConfig;
 import com.noobanidus.dwmh.items.ItemEnchantedCarrot;
 import com.noobanidus.dwmh.items.ItemWhistle;
 import net.minecraft.entity.Entity;
@@ -115,10 +116,10 @@ public class AnimaniaProxy implements ISteedProxy {
         } else if (animal.hasCustomName() && !animal.getCustomNameTag().equals(name) && !animal.isTame()) {
             temp = new TextComponentTranslation("dwmh.strings.unsummonable.notyours");
             temp.getStyle().setColor(TextFormatting.DARK_RED);
-        } else if (animal.isBeingRidden() && !ItemWhistle.otherRiders) {
+        } else if (animal.isBeingRidden() && !DWMHConfig.ocarina.otherRiders) {
             temp = new TextComponentTranslation("dwmh.strings.unsummonable.ridden_other");
             temp.getStyle().setColor(TextFormatting.DARK_RED);
-        } else if (animal.isBeingRidden() && ItemWhistle.otherRiders) {
+        } else if (animal.isBeingRidden() && DWMHConfig.ocarina.otherRiders) {
             temp = new TextComponentTranslation("dwmh.strings.summonable.ridden_other");
             temp.getStyle().setColor(TextFormatting.DARK_AQUA);
         } else if (animal.hasCustomName() && animal.getCustomNameTag().equals(name)) {

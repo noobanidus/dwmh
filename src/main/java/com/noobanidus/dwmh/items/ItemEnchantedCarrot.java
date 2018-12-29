@@ -1,18 +1,15 @@
 package com.noobanidus.dwmh.items;
 
 import com.noobanidus.dwmh.DWMH;
+import com.noobanidus.dwmh.config.DWMHConfig;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
-import net.minecraft.item.IItemPropertyGetter;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
@@ -22,23 +19,11 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemEnchantedCarrot extends ItemDWMHRepairable {
-
-    public static boolean enabled = DWMH.CONFIG.get("Carrot", "Enabled", true, "Set to false to disable the instant-taming carrot item. Disabling all three functionalities of the carrot has the same effect.").getBoolean(true);
-    public static int maxUses = DWMH.CONFIG.get("Carrot", "MaxUses", 30, "Maximum number of uses before the enchanted carrot is destroyed.").getInt(30);
-    public static boolean taming = DWMH.CONFIG.get("Carrot", "Taming", true, "Carrot can automatically tame untamed horses.").getBoolean(true);
-    public static boolean healing = DWMH.CONFIG.get("Carrot", "Healing", true, "Carrot can fully heal damaged horses.").getBoolean(true);
-    public static boolean ageing = DWMH.CONFIG.get("Carrot", "Ageing", true, "Carrot can age child horses into adults instantly.").getBoolean(true);
-    public static boolean breeding = DWMH.CONFIG.get("Carrot", "Breeding", true, "Carrot can put horses into breeding mode").getBoolean(true);
-    public static boolean unbreakable = DWMH.CONFIG.get("Carrot", "Unbreakable", true, "Set to false to allow the carrot to be completely destroyed when all durability is used up.").getBoolean(true);
-    public static String repairItem = DWMH.CONFIG.get("Carrot", "RepairItem", "minecraft:gold_block:0", "This item can be used in an anvil to repair the Enchanted Carrot. Format: mod:item:metadata. Items with NBT are not supported, use 0 for no metadata.").getString();
-    private static boolean glint = DWMH.CONFIG.get("Carrot", "Glint", false, "Set to true to give the carrot the enchantment glint!").getBoolean(false);
-
     static {
-        if (!taming && !healing && !ageing && !breeding) enabled = false;
+        if (!DWMHConfig.carrot.effects.taming && !DWMHConfig.carrot.effects.healing && !DWMHConfig.carrot.effects.ageing && !DWMHConfig.carrot.effects.breeding) DWMHConfig.carrot.enabled = false;
     }
 
     public void init () {
@@ -46,25 +31,10 @@ public class ItemEnchantedCarrot extends ItemDWMHRepairable {
         setCreativeTab(DWMH.TAB);
         setRegistryName("dwmh:carrot");
         setUnlocalizedName("dwmh.carrot");
-        setMaxDamage(maxUses);
-        setInternalRepair(repairItem);
+        setMaxDamage(DWMHConfig.carrot.durability.maxUses);
+        setInternalRepair(DWMHConfig.carrot.durability.repairItem);
         registerPredicate("carrot_damage");
 
-    }
-
-    public ItemStack getRepairItem () {
-        if (!unbreakable) return ItemStack.EMPTY;
-
-        return super.getRepairItem();
-    }
-
-    @Override
-    public boolean getIsRepairable (ItemStack carrot, ItemStack repairingItem) {
-        if (!unbreakable) return false;
-
-        if (!(carrot.getItem() instanceof ItemEnchantedCarrot)) return false;
-
-        return super.getIsRepairable(carrot, repairingItem);
     }
 
     @Override
@@ -96,7 +66,7 @@ public class ItemEnchantedCarrot extends ItemDWMHRepairable {
 
         boolean didStuff = false;
 
-        if (DWMH.proxy.isAgeable(entity, player) && ItemEnchantedCarrot.ageing) {
+        if (DWMH.proxy.isAgeable(entity, player) && DWMHConfig.carrot.effects.ageing) {
             if (entity.getEntityData().getBoolean("quark:poison_potato_applied")) {
                 temp = new TextComponentTranslation("dwmh.strings.quark_poisoned");
                 temp.getStyle().setColor(TextFormatting.GREEN);
@@ -106,19 +76,19 @@ public class ItemEnchantedCarrot extends ItemDWMHRepairable {
 
             DWMH.proxy.age(entity, player);
             didStuff = true;
-        } else if (DWMH.proxy.isTameable(entity, player) && ItemEnchantedCarrot.taming) {
+        } else if (DWMH.proxy.isTameable(entity, player) && DWMHConfig.carrot.effects.taming) {
             DWMH.proxy.tame(entity, player);
             didStuff = true;
-        } else if (DWMH.proxy.isHealable(entity, player) && ItemEnchantedCarrot.healing) {
+        } else if (DWMH.proxy.isHealable(entity, player) && DWMHConfig.carrot.effects.healing) {
             DWMH.proxy.heal(entity, player);
             didStuff = true;
-        } else if (DWMH.proxy.isBreedable(entity, player) && ItemEnchantedCarrot.breeding) {
+        } else if (DWMH.proxy.isBreedable(entity, player) && DWMHConfig.carrot.effects.breeding) {
             DWMH.proxy.breed(entity, player);
             didStuff = true;
         }
 
         if (!player.capabilities.isCreativeMode && didStuff) {
-            damageItem(item, player, unbreakable);
+            damageItem(item, player, DWMHConfig.carrot.durability.unbreakable);
         }
 
         if (didStuff) {
@@ -130,30 +100,30 @@ public class ItemEnchantedCarrot extends ItemDWMHRepairable {
     @SideOnly(Side.CLIENT)
     @Override
     public boolean hasEffect(ItemStack stack) {
-        if (unbreakable && !useableItem(stack)) {
+        if (DWMHConfig.carrot.durability.unbreakable && !useableItem(stack)) {
             return false;
         }
 
-        return glint;
+        return DWMHConfig.carrot.glint;
     }
 
     @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack par1ItemStack, World world, List<String> stacks, ITooltipFlag flags) {
         if(GuiScreen.isShiftKeyDown()) {
-            if (unbreakable && !useableItem(par1ItemStack)) {
+            if (DWMHConfig.carrot.durability.unbreakable && !useableItem(par1ItemStack)) {
                 stacks.add(TextFormatting.DARK_RED + I18n.format("dwmh.strings.carrot.tooltip.broken"));
             }
-            if (taming) {
+            if (DWMHConfig.carrot.effects.taming) {
                 stacks.add(TextFormatting.GOLD + I18n.format("dwmh.strings.right_click") + " " + TextFormatting.WHITE + I18n.format("dwmh.strings.carrot.tooltip.taming"));
             }
-            if (healing) {
+            if (DWMHConfig.carrot.effects.healing) {
                 stacks.add(TextFormatting.GOLD + I18n.format("dwmh.strings.right_click") + " " + TextFormatting.WHITE + I18n.format("dwmh.strings.carrot.tooltip.healing"));
             }
-            if (ageing) {
+            if (DWMHConfig.carrot.effects.ageing) {
                 stacks.add(TextFormatting.GOLD + I18n.format("dwmh.strings.right_click") + " " + TextFormatting.WHITE + I18n.format("dwmh.strings.carrot.tooltip.ageing"));
             }
-            if (breeding) {
+            if (DWMHConfig.carrot.effects.breeding) {
                 stacks.add(TextFormatting.GOLD + I18n.format("dwmh.strings.right_click") + " " + TextFormatting.WHITE + I18n.format("dwmh.strings.carrot.tooltip.breeding"));
             }
             stacks.add(TextFormatting.AQUA + I18n.format("dwmh.strings.repair_carrot", getRepairItem().getDisplayName()));

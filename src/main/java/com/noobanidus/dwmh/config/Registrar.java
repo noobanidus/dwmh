@@ -27,7 +27,7 @@ public class Registrar {
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
         event.getRegistry().register(whistle);
-        if (ItemEnchantedCarrot.enabled) {
+        if (DWMHConfig.carrot.enabled) {
             event.getRegistry().register(carrot);
         }
     }
@@ -36,7 +36,7 @@ public class Registrar {
     @SubscribeEvent
     public static void registerModels(ModelRegistryEvent event) {
         ModelLoader.setCustomModelResourceLocation(whistle, 0, new ModelResourceLocation("dwmh:whistle", "inventory"));
-        if (ItemEnchantedCarrot.enabled) {
+        if (DWMHConfig.carrot.enabled) {
             ModelLoader.setCustomModelResourceLocation(carrot, 0, new ModelResourceLocation("dwmh:carrot", "inventory"));
         }
     }

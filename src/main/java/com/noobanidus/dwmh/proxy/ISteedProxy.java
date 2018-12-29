@@ -1,6 +1,7 @@
 package com.noobanidus.dwmh.proxy;
 
 import com.noobanidus.dwmh.DWMH;
+import com.noobanidus.dwmh.config.DWMHConfig;
 import com.noobanidus.dwmh.items.ItemWhistle;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
@@ -34,7 +35,7 @@ public interface ISteedProxy {
         }
 
         // And prevent you from summoning animals being ridden by other players
-        if (animal.isBeingRidden() && !ItemWhistle.otherRiders) {
+        if (animal.isBeingRidden() && !DWMHConfig.ocarina.otherRiders) {
             return false;
         }
 
@@ -91,7 +92,7 @@ public interface ISteedProxy {
     }
 
     default boolean onDismount (EntityMountEvent event) {
-        if (event.isDismounting() && event.getEntityMounting() instanceof EntityPlayer && isMyMod(event.getEntityBeingMounted()) && ItemWhistle.home && !ItemWhistle.skipDismount) {
+        if (event.isDismounting() && event.getEntityMounting() instanceof EntityPlayer && isMyMod(event.getEntityBeingMounted()) && DWMHConfig.ocarina.home && !DWMHConfig.ocarina.skipDismount) {
             EntityCreature entity = (EntityCreature) event.getEntityBeingMounted();
             entity.detachHome();
             DWMH.LOG.info("Removed home for " + entity.getDisplayName());

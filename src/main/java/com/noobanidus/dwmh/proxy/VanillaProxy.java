@@ -1,6 +1,7 @@
 package com.noobanidus.dwmh.proxy;
 
 import com.noobanidus.dwmh.DWMH;
+import com.noobanidus.dwmh.config.DWMHConfig;
 import com.noobanidus.dwmh.items.ItemWhistle;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.AbstractHorse;
@@ -140,10 +141,10 @@ public class VanillaProxy implements ISteedProxy {
         } else if (horse.isBeingRidden() && horse.isRidingSameEntity(player)) {
             temp = new TextComponentTranslation("dwmh.strings.unsummonable.ridden");
             temp.getStyle().setColor(TextFormatting.DARK_RED);
-        } else if (horse.isBeingRidden() && !ItemWhistle.otherRiders) {
+        } else if (horse.isBeingRidden() && !DWMHConfig.ocarina.otherRiders) {
             temp = new TextComponentTranslation("dwmh.strings.unsummonable.ridden_other");
             temp.getStyle().setColor(TextFormatting.DARK_RED);
-        } else if (horse.isBeingRidden() && ItemWhistle.otherRiders) {
+        } else if (horse.isBeingRidden() && DWMHConfig.ocarina.otherRiders) {
             temp = new TextComponentTranslation("dwmh.strings.summonable.ridden_other");
             temp.getStyle().setColor(TextFormatting.DARK_AQUA);
         } else {

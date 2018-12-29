@@ -2,6 +2,7 @@ package com.noobanidus.dwmh.proxy;
 
 import com.google.common.collect.Lists;
 import com.noobanidus.dwmh.DWMH;
+import com.noobanidus.dwmh.config.DWMHConfig;
 import com.noobanidus.dwmh.items.ItemWhistle;
 import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.entity.MoCEntityTameableAnimal;
@@ -136,10 +137,10 @@ public class MOCProxy implements ISteedProxy {
         } else if (animal.isBeingRidden() && animal.isRidingSameEntity(player)) {
             temp = new TextComponentTranslation("dwmh.strings.unsummonable.ridden");
             temp.getStyle().setColor(TextFormatting.DARK_RED);
-        } else if (animal.isBeingRidden() && !ItemWhistle.otherRiders) {
+        } else if (animal.isBeingRidden() && !DWMHConfig.ocarina.otherRiders) {
             temp = new TextComponentTranslation("dwmh.strings.unsummonable.ridden_other");
             temp.getStyle().setColor(TextFormatting.DARK_RED);
-        } else if (animal.isBeingRidden() && ItemWhistle.otherRiders) {
+        } else if (animal.isBeingRidden() && DWMHConfig.ocarina.otherRiders) {
             temp = new TextComponentTranslation("dwmh.strings.summonable.ridden_other");
             temp.getStyle().setColor(TextFormatting.DARK_AQUA);
         } else {

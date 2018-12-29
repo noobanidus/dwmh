@@ -1,6 +1,7 @@
 package com.noobanidus.dwmh.items;
 
 import com.noobanidus.dwmh.DWMH;
+import com.noobanidus.dwmh.config.DWMHConfig;
 import com.noobanidus.dwmh.config.Sound;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
@@ -29,18 +30,7 @@ import java.util.List;
 
 public class ItemWhistle extends ItemDWMHRepairable {
 
-    public static double maxDistance = DWMH.CONFIG.get("Whistle", "MaxDistance", 200d, "Max distance to summon horses when using the horse whistle (set to 0 for infinite distance (excluding unloaded chunks and dimensions)).").getDouble(200d);
-    public static boolean swap = DWMH.CONFIG.get("Whistle", "SwapSneak", false, "Set true to require sneaking to actively summon horses instead of printing horse information. This is useful if you don't wish to accidentally right-click and summon your steed(s) in an unsafe location.").getBoolean(false);
-    public static boolean home = DWMH.CONFIG.get("Whistle", "SetHome", true, "Set to true to set the home and max wander distance to the location you most recently used the whistle for each horse teleported.").getBoolean(true);
-    public static boolean skipDismount = DWMH.CONFIG.get("Whistle", "SkipDismount", false, "Set to true to skip detaching home points when dismounting a horse. Do this if you are having weird interactions/failure of functionality with HorseTweaks' home functionality.").getBoolean(false);
-    public static int cooldown = DWMH.CONFIG.get("Whistle", "Cooldown", 0, "Specify a cooldown in ticks for usage of the whistle. Set to 0 to disable.").getInt(0);
-    public static boolean quiet = DWMH.CONFIG.get("Whistle", "Quiet", false, "Set to true to disable messages when teleporting a horse to you.").getBoolean(true);
-    public static boolean simple = DWMH.CONFIG.get("Whistle", "Simpler", false, "Set to true to prevent multiple messages when teleporting a horse to you, instead printing one message if any horses are teleported.").getBoolean(true);
-    public static boolean otherRiders = DWMH.CONFIG.get("Whistle", "OtherRiders", false, "Set to true to enable summoning your horses that are being ridden by other people").getBoolean(false);
-    public static boolean distance = DWMH.CONFIG.get("Whistle", "Distance", true, "Set to false to disable showing the distance horses are away from you when listing them.").getBoolean(true);
-    public static int maxUses = DWMH.CONFIG.get("Whistle", "MaxUses", 250, "Set to 0 to disable the summoning of horses costing durability").getInt();
-    public static String repairItem = DWMH.CONFIG.get("Whistle", "RepairItem", "minecraft:golden_carrot:0", "When durability is specified, these items can be used to repair the ocarina. Format: mod:item:metadata. Items with NBT are not supported, use 0 for no metadata.").getString();
-    public static boolean sounds = DWMH.CONFIG.get("Whistle", "Sounds", true, "Set to false to disable whistle sounds from being played when the Ocarina is used. This whistle sound is played on the PLAYERS channel.").getBoolean(true);
+
 
     public List<TextComponentTranslation> directions = new ArrayList<>();
 
@@ -49,9 +39,9 @@ public class ItemWhistle extends ItemDWMHRepairable {
         setCreativeTab(DWMH.TAB);
         setRegistryName("dwmh:whistle");
         setUnlocalizedName("dwmh.whistle");
-        if (maxUses != 0) {
-            setMaxDamage(maxUses);
-            setInternalRepair(repairItem);
+        if (DWMHConfig.ocarina.functionality.maxUses != 0) {
+            setMaxDamage(DWMHConfig.ocarina.functionality.maxUses);
+            setInternalRepair(DWMHConfig.ocarina.functionality.repairItem);
         }
         registerPredicate("whistle_damage");
 
@@ -82,6 +72,12 @@ public class ItemWhistle extends ItemDWMHRepairable {
         return EnumRarity.RARE;
     }
 
+    public static boolean useableItem (ItemStack item) {
+        if (DWMHConfig.ocarina.functionality.maxUses == 0) return true;
+
+        return ItemDWMHRepairable.useableItem(item);
+    }
+
     @Nonnull
     @Override
     public ActionResult<ItemStack> onItemRightClick (World world, EntityPlayer player, @Nonnull EnumHand hand) {
@@ -92,7 +88,7 @@ public class ItemWhistle extends ItemDWMHRepairable {
 
             ITextComponent temp;
 
-            if (player.isSneaking() && !swap || !player.isSneaking() && swap) {
+            if (player.isSneaking() && !DWMHConfig.ocarina.swap || !player.isSneaking() && DWMHConfig.ocarina.swap) {
                 List<Entity> nearbyHorses = world.getEntities(Entity.class, (entity) -> isValidHorse(entity, player, true));
                 for (Entity horse : nearbyHorses) {
                     didStuff = true;
@@ -129,7 +125,7 @@ public class ItemWhistle extends ItemDWMHRepairable {
                     float dist = player.getDistance(horse);
 
                     result.appendText(TextFormatting.WHITE + String.format("%d, %d, %d", hpos.getX(), hpos.getY(), hpos.getZ()));
-                    if (distance) {
+                    if (DWMHConfig.ocarina.responses.distance) {
                         result.appendText(" (");
 
                         double angle = Math.atan2(hpos.getZ() - pos.getZ(), hpos.getX() - pos.getX());
@@ -152,7 +148,7 @@ public class ItemWhistle extends ItemDWMHRepairable {
                 }
                 player.swingArm(hand);
             } else {
-                if (sounds) {
+                if (DWMHConfig.ocarina.responses.sounds) {
                     player.world.playSound(null, player.getPosition(), Sound.getRandomWhistle(), SoundCategory.PLAYERS, 16.0f, 1.0f);
                 }
 
@@ -165,11 +161,12 @@ public class ItemWhistle extends ItemDWMHRepairable {
                 List<Entity> nearbyHorses = world.getEntities(Entity.class, (entity) -> isValidHorse(entity, player));
                 for (Entity entity : nearbyHorses) {
                     EntityAnimal horse = (EntityAnimal) entity;
-                    if (horse.getDistanceSq(player) < (maxDistance * maxDistance) || maxDistance == 0) {
+                    double max = DWMHConfig.ocarina.maxDistance;
+                    if (horse.getDistanceSq(player) < (max * max) || max == 0) {
                         horse.moveToBlockPosAndAngles(pos, horse.rotationYaw, horse.rotationPitch);
                         didStuff = true;
-                        if (maxUses != 0) damageItem(stack, player);
-                        if (!quiet && !simple) {
+                        if (DWMHConfig.ocarina.functionality.maxUses != 0) damageItem(stack, player);
+                        if (!DWMHConfig.ocarina.responses.quiet && !DWMHConfig.ocarina.responses.simple) {
                             if (DWMH.proxy.hasCustomName(horse)) {
                                 temp = new TextComponentTranslation("dwmh.strings.complex_teleport_a");
                                 temp.appendText(", " + DWMH.proxy.getCustomNameTag(horse) + ", ");
@@ -181,12 +178,12 @@ public class ItemWhistle extends ItemDWMHRepairable {
                             }
                             player.sendMessage(temp);
                         }
-                        if (cooldown > 0) {
-                            player.getCooldownTracker().setCooldown(this, cooldown);
+                        if (DWMHConfig.ocarina.functionality.cooldown > 0) {
+                            player.getCooldownTracker().setCooldown(this, DWMHConfig.ocarina.functionality.cooldown);
                         }
                         player.swingArm(hand);
                         horse.getNavigator().clearPath();
-                        if (home) {
+                        if (DWMHConfig.ocarina.home) {
                             horse.setHomePosAndDistance(pos, 5);
                         }
                     }
@@ -200,7 +197,7 @@ public class ItemWhistle extends ItemDWMHRepairable {
                         temp.getStyle().setColor(TextFormatting.RED);
                     }
                     player.sendMessage(temp);
-                } else if (simple) {
+                } else if (DWMHConfig.ocarina.responses.simple) {
                     temp = new TextComponentTranslation("dwmh.strings.simplest_teleport");
                     temp.getStyle().setColor(TextFormatting.GOLD);
                     player.sendMessage(temp);
@@ -255,14 +252,14 @@ public class ItemWhistle extends ItemDWMHRepairable {
     @Override
     public void addInformation(ItemStack par1ItemStack, World world, List<String> stacks, ITooltipFlag flags) {
         if(GuiScreen.isShiftKeyDown()) {
-            if (!useableItem(par1ItemStack) && maxUses != 0) {
+            if (!useableItem(par1ItemStack) && DWMHConfig.ocarina.functionality.maxUses != 0) {
                 stacks.add(TextFormatting.DARK_RED + I18n.format("dwmh.strings.carrot.tooltip.broken"));
             }
 
             String right_click;
             String sneak_right_click;
 
-            if (swap) {
+            if (DWMHConfig.ocarina.swap) {
                 right_click = TextFormatting.GOLD + I18n.format("dwmh.strings.right_click") + " " + TextFormatting.WHITE + I18n.format("dwmh.strings.whistle.tooltip.list_horses");
                 sneak_right_click = TextFormatting.GOLD + I18n.format("dwmh.strings.shift_right_click") + " " + TextFormatting.WHITE + I18n.format("dwmh.strings.whistle.tooltip.teleport_horses");
             } else {
@@ -277,9 +274,7 @@ public class ItemWhistle extends ItemDWMHRepairable {
                 stacks.add(TextFormatting.GOLD + I18n.format("dwmh.strings.shift_right_click") + " " + TextFormatting.WHITE + I18n.format("dwmh.strings.animania_naming"));
             }
 
-            if (maxUses != 0) {
-                stacks.add(TextFormatting.AQUA + I18n.format("dwmh.strings.repair_carrot", getRepairItem().getDisplayName()));
-            }
+            stacks.add(TextFormatting.AQUA + I18n.format("dwmh.strings.repair_carrot", getRepairItem().getDisplayName()));
         } else {
             stacks.add(TextFormatting.DARK_GRAY + I18n.format("dwmh.strings.hold_shift"));
         }

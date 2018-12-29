@@ -1,6 +1,7 @@
 package com.noobanidus.dwmh.items;
 
 import com.noobanidus.dwmh.DWMH;
+import com.noobanidus.dwmh.config.DWMHConfig;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.IItemPropertyGetter;
@@ -20,11 +21,11 @@ public class ItemDWMHRepairable extends Item {
             @Override
             public float apply(@Nonnull ItemStack stack, @Nullable World worldIn, @Nullable EntityLivingBase entityIn) {
                 if (stack.getItem() instanceof ItemEnchantedCarrot) {
-                    if (ItemEnchantedCarrot.unbreakable && stack.getItemDamage() == ItemEnchantedCarrot.maxUses)
+                    if (DWMHConfig.carrot.durability.unbreakable && stack.getItemDamage() == DWMHConfig.carrot.durability.maxUses)
                         return 1;
                     return 0;
                 } else if (stack.getItem() instanceof ItemWhistle) {
-                    if (stack.getItemDamage() == ItemWhistle.maxUses)
+                    if (DWMHConfig.ocarina.functionality.maxUses != 0 && stack.getItemDamage() == DWMHConfig.ocarina.functionality.maxUses)
                         return 1;
                     return 0;
                 }

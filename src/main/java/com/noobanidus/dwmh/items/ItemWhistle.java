@@ -124,7 +124,7 @@ public class ItemWhistle extends ItemDWMHRepairable {
 
                     result.appendText(TextFormatting.WHITE + String.format("%d, %d, %d", hpos.getX(), hpos.getY(), hpos.getZ()));
                     if (distance) {
-                        int rel_x = pos.getX() - hpos.getY();
+                        int rel_x = pos.getX() - hpos.getX();
                         int rel_z = pos.getZ() - hpos.getZ();
 
                         String key;

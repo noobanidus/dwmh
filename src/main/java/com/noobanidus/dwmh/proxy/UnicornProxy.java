@@ -37,6 +37,8 @@ public class UnicornProxy extends VanillaProxy {
 
     @Override
     public boolean isTeleportable (Entity entity, EntityPlayer player) {
+        if (!isMyMod(entity)) return false;
+
         boolean res = super.isListable(entity, player);
 
         if (!isMyMod(entity)) return res;
@@ -50,6 +52,8 @@ public class UnicornProxy extends VanillaProxy {
 
     @Override
     public boolean isListable (Entity entity, EntityPlayer player) {
+        if (!isMyMod(entity)) return false;
+
         boolean res = super.isListable(entity, player);
 
         if (res) return true;

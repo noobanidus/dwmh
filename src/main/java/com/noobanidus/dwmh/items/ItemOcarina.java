@@ -215,7 +215,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
         EntityPlayer player = event.getEntityPlayer();
         ItemStack item = event.getItemStack();
 
-        if (item.isEmpty() || !(item.getItem() instanceof ItemOcarina) || !(event.getTarget() instanceof AbstractHorse)) {
+        if (item.isEmpty() || !(item.getItem() instanceof ItemOcarina) || !(DWMH.animaniaProxy.isMyMod(event.getTarget()))) {
             return;
         }
 

@@ -32,7 +32,7 @@ public interface ISteedProxy {
         }
 
         // And prevent you from summoning animals being ridden by other players
-        if (animal.isBeingRidden() && !DWMHConfig.ocarina.otherRiders) {
+        if (animal.isBeingRidden() && !DWMHConfig.Ocarina.otherRiders) {
             return false;
         }
 
@@ -89,7 +89,7 @@ public interface ISteedProxy {
     }
 
     default boolean onDismount (EntityMountEvent event) {
-        if (event.isDismounting() && event.getEntityMounting() instanceof EntityPlayer && isMyMod(event.getEntityBeingMounted()) && DWMHConfig.ocarina.home && !DWMHConfig.ocarina.skipDismount) {
+        if (event.isDismounting() && event.getEntityMounting() instanceof EntityPlayer && isMyMod(event.getEntityBeingMounted()) && DWMHConfig.Ocarina.home && !DWMHConfig.Ocarina.skipDismount) {
             EntityCreature entity = (EntityCreature) event.getEntityBeingMounted();
             entity.detachHome();
             DWMH.LOG.info("Removed home for " + entity.getDisplayName());

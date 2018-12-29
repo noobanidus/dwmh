@@ -2,6 +2,7 @@ package com.noobanidus.dwmh;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.noobanidus.dwmh.config.DWMHConfig;
 import com.noobanidus.dwmh.config.Registrar;
 import com.noobanidus.dwmh.proxy.DummySteedProxy;
 import com.noobanidus.dwmh.proxy.ISteedProxy;
@@ -11,7 +12,6 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ModContainer;
@@ -33,7 +33,6 @@ public class DWMH {
 
     public final static Logger LOG = LogManager.getLogger(MODID);
 
-    public static Configuration CONFIG;
     public static CreativeTabDWMH TAB;
 
     public static ISteedProxy vanillaProxy = new VanillaProxy();
@@ -47,28 +46,22 @@ public class DWMH {
 
     public static List<ISteedProxy> proxyList;
 
-    private Map<String, Boolean> proxyMap;
+    @SuppressWarnings("unused")
     private List<String> supportedMods = Arrays.asList("animania", "mocreatures", "zawa", "ultimate_unicorn_mod");
 
     public static List<Class<?>> zawaClasses = new ArrayList<>();
     public static List<Class<?>> animaniaClasses = new ArrayList<>();
     public static Set<Class<? extends AbstractHorse>> ignoreList = Sets.newHashSet();
+    public static Set<Class<?>> entityBlacklist = Sets.newHashSet();
 
     @Mod.Instance(DWMH.MODID)
     public static DWMH instance;
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        CONFIG = new Configuration(event.getSuggestedConfigurationFile(), true);
         TAB = new CreativeTabDWMH(CreativeTabs.getNextID(), MODID);
         Registrar.preInit();
         proxy = new SteedProxy();
-
-        // set up proxy config
-        proxyMap = new HashMap<>();
-        for (String mod : supportedMods) {
-            proxyMap.put(mod, CONFIG.get("Proxy", mod, true, String.format("Set to false to permanently disable compatibility with %s.", mod)).getBoolean(true));
-        }
     }
 
     @Mod.EventHandler
@@ -78,16 +71,16 @@ public class DWMH {
     @SuppressWarnings("unchecked")
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent e) {
-        if (proxyMap.get("animania")) {
+        if (DWMHConfig.proxies.enable.animania) {
             animaniaProxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("animania", "com.noobanidus.dwmh.proxy.AnimaniaProxy")).orElse(new DummySteedProxy());
         }
-        if (proxyMap.get("mocreatures")) {
+        if (DWMHConfig.proxies.enable.mocreatures) {
             mocProxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("mocreatures", "com.noobanidus.dwmh.proxy.MOCProxy")).orElse(new DummySteedProxy());
             if (Loader.isModLoaded("mocreatures")) {
                 MinecraftForge.EVENT_BUS.register(mocProxy.getClass());
             }
         }
-        if (proxyMap.get("zawa")) {
+        if (DWMHConfig.proxies.enable.zawa) {
             zawaProxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("zawa", "com.noobanidus.dwmh.proxy.ZawaProxy")).orElse(new DummySteedProxy());
             if (Loader.isModLoaded("zawa")) {
                 ModContainer zawa = Loader.instance().getIndexedModList().get("zawa");
@@ -97,7 +90,7 @@ public class DWMH {
                 }
             }
         }
-        if (proxyMap.get("ultimate_unicorn_mod")) {
+        if (DWMHConfig.proxies.enable.ultimate_unicorn_mod) {
             unicornProxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("ultimate_unicorn_mod", "com.noobanidus.dwmh.proxy.UnicornProxy")).orElse(new DummySteedProxy());
             if (Loader.isModLoaded("ultimate_unicorn_mod")) {
                 MinecraftForge.EVENT_BUS.register(unicornProxy.getClass());
@@ -107,20 +100,18 @@ public class DWMH {
         proxyList = Lists.newArrayList(animaniaProxy, mocProxy, zawaProxy, unicornProxy, vanillaProxy);
         proxyList.removeIf(i -> !i.isLoaded());
 
-        String[] animaniaConfigClasses = CONFIG.get("Animania", "HorsesClasses", new String[]{"com.animania.common.entities.horses.EntityMareBase", "com.animania.common.entities.horses.EntityStallionBase"}, "Specify list of Animania classes that are considered horses.").getStringList();
-
         if (Loader.isModLoaded("animania")) {
-            DWMH.resolveClasses(DWMH.animaniaClasses, animaniaConfigClasses);
+            DWMH.resolveClasses(DWMH.animaniaClasses, DWMHConfig.proxies.Animania.classes);
         }
-
-        String[] zawaConfigClasses = CONFIG.get("ZAWA", "HorsesClasses", new String[]{"org.zawamod.entity.land.EntityAsianElephant", "org.zawamod.entity.land.EntityGaur", "org.zawamod.entity.land.EntityGrevysZebra", "org.zawamod.entity.land.EntityOkapi", "org.zawamod.entity.land.EntityReticulatedGiraffe"}, "Specify list of ZAWA classes that are considered rideable or horses.").getStringList();
 
         if (Loader.isModLoaded("zawa")) {
-            DWMH.resolveClasses(DWMH.zawaClasses, zawaConfigClasses);
+            DWMH.resolveClasses(DWMH.zawaClasses, DWMHConfig.proxies.ZAWA.classes);
         }
+
+        DWMH.resolveClasses(DWMH.entityBlacklist, DWMHConfig.proxies.blacklist);
     }
 
-    private static void resolveClasses(List<Class<?>> list, String[] classes) {
+    private static void resolveClasses(Collection<Class<?>> list, String[] classes) {
         for (String c: classes) {
             try {
                 Class clz = Class.forName(c);
@@ -133,7 +124,6 @@ public class DWMH {
 
     @Mod.EventHandler
     public void loadComplete(FMLLoadCompleteEvent event) {
-        CONFIG.save();
     }
 
     private final class CreativeTabDWMH extends CreativeTabs {

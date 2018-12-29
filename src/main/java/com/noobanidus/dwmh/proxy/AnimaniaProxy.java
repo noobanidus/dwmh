@@ -43,7 +43,7 @@ public class AnimaniaProxy implements ISteedProxy {
 
         if (horse.isTame()) return true;
 
-        if (SteedProxy.onlyNamed) {
+        if (DWMHConfig.proxies.Animania.onlyNamed) {
             return entity.hasCustomName();
         }
 
@@ -112,10 +112,10 @@ public class AnimaniaProxy implements ISteedProxy {
         } else if (animal.hasCustomName() && !animal.getCustomNameTag().equals(name) && !animal.isTame()) {
             temp = new TextComponentTranslation("dwmh.strings.unsummonable.notyours");
             temp.getStyle().setColor(TextFormatting.DARK_RED);
-        } else if (animal.isBeingRidden() && !DWMHConfig.ocarina.otherRiders) {
+        } else if (animal.isBeingRidden() && !DWMHConfig.Ocarina.otherRiders) {
             temp = new TextComponentTranslation("dwmh.strings.unsummonable.ridden_other");
             temp.getStyle().setColor(TextFormatting.DARK_RED);
-        } else if (animal.isBeingRidden() && DWMHConfig.ocarina.otherRiders) {
+        } else if (animal.isBeingRidden() && DWMHConfig.Ocarina.otherRiders) {
             temp = new TextComponentTranslation("dwmh.strings.summonable.ridden_other");
             temp.getStyle().setColor(TextFormatting.DARK_AQUA);
         } else if (animal.hasCustomName() && animal.getCustomNameTag().equals(name)) {

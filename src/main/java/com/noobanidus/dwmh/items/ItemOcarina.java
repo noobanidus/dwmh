@@ -41,9 +41,9 @@ public class ItemOcarina extends ItemDWMHRepairable {
         // want to break any backwards compatibility to people upgrading.
         setRegistryName("dwmh:whistle");
         setUnlocalizedName("dwmh.whistle");
-        if (DWMHConfig.ocarina.functionality.maxUses != 0) {
-            setMaxDamage(DWMHConfig.ocarina.functionality.maxUses);
-            setInternalRepair(DWMHConfig.ocarina.functionality.repairItem);
+        if (DWMHConfig.Ocarina.functionality.maxUses != 0) {
+            setMaxDamage(DWMHConfig.Ocarina.functionality.maxUses);
+            setInternalRepair(DWMHConfig.Ocarina.functionality.repairItem);
         }
         registerPredicate("whistle_damage");
 
@@ -75,7 +75,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
     }
 
     public static boolean useableItem (ItemStack item) {
-        if (DWMHConfig.ocarina.functionality.maxUses == 0) return true;
+        if (DWMHConfig.Ocarina.functionality.maxUses == 0) return true;
 
         return ItemDWMHRepairable.useableItem(item);
     }
@@ -90,7 +90,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
 
             ITextComponent temp;
 
-            if (player.isSneaking() && !DWMHConfig.ocarina.swap || !player.isSneaking() && DWMHConfig.ocarina.swap) {
+            if (player.isSneaking() && !DWMHConfig.Ocarina.swap || !player.isSneaking() && DWMHConfig.Ocarina.swap) {
                 List<Entity> nearbyHorses = world.getEntities(Entity.class, (entity) -> isValidHorse(entity, player, true));
                 for (Entity horse : nearbyHorses) {
                     didStuff = true;
@@ -127,7 +127,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
                     float dist = player.getDistance(horse);
 
                     result.appendText(TextFormatting.WHITE + String.format("%d, %d, %d", hpos.getX(), hpos.getY(), hpos.getZ()));
-                    if (DWMHConfig.ocarina.responses.distance) {
+                    if (DWMHConfig.Ocarina.responses.distance) {
                         result.appendText(" (");
 
                         double angle = Math.atan2(hpos.getZ() - pos.getZ(), hpos.getX() - pos.getX());
@@ -150,7 +150,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
                 }
                 player.swingArm(hand);
             } else {
-                if (DWMHConfig.ocarina.responses.sounds) {
+                if (DWMHConfig.Ocarina.responses.sounds) {
                     player.world.playSound(null, player.getPosition(), Sound.getRandomWhistle(), SoundCategory.PLAYERS, 16.0f, 1.0f);
                 }
 
@@ -163,12 +163,12 @@ public class ItemOcarina extends ItemDWMHRepairable {
                 List<Entity> nearbyHorses = world.getEntities(Entity.class, (entity) -> isValidHorse(entity, player));
                 for (Entity entity : nearbyHorses) {
                     EntityAnimal horse = (EntityAnimal) entity;
-                    double max = DWMHConfig.ocarina.maxDistance;
+                    double max = DWMHConfig.Ocarina.maxDistance;
                     if (horse.getDistanceSq(player) < (max * max) || max == 0) {
                         horse.moveToBlockPosAndAngles(pos, horse.rotationYaw, horse.rotationPitch);
                         didStuff = true;
-                        if (DWMHConfig.ocarina.functionality.maxUses != 0) damageItem(stack, player);
-                        if (!DWMHConfig.ocarina.responses.quiet && !DWMHConfig.ocarina.responses.simple) {
+                        if (DWMHConfig.Ocarina.functionality.maxUses != 0) damageItem(stack, player);
+                        if (!DWMHConfig.Ocarina.responses.quiet && !DWMHConfig.Ocarina.responses.simple) {
                             if (DWMH.proxy.hasCustomName(horse)) {
                                 temp = new TextComponentTranslation("dwmh.strings.complex_teleport_a");
                                 temp.appendText(", " + DWMH.proxy.getCustomNameTag(horse) + ", ");
@@ -180,12 +180,12 @@ public class ItemOcarina extends ItemDWMHRepairable {
                             }
                             player.sendMessage(temp);
                         }
-                        if (DWMHConfig.ocarina.functionality.cooldown > 0) {
-                            player.getCooldownTracker().setCooldown(this, DWMHConfig.ocarina.functionality.cooldown);
+                        if (DWMHConfig.Ocarina.functionality.cooldown > 0) {
+                            player.getCooldownTracker().setCooldown(this, DWMHConfig.Ocarina.functionality.cooldown);
                         }
                         player.swingArm(hand);
                         horse.getNavigator().clearPath();
-                        if (DWMHConfig.ocarina.home) {
+                        if (DWMHConfig.Ocarina.home) {
                             horse.setHomePosAndDistance(pos, 5);
                         }
                     }
@@ -199,7 +199,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
                         temp.getStyle().setColor(TextFormatting.RED);
                     }
                     player.sendMessage(temp);
-                } else if (DWMHConfig.ocarina.responses.simple) {
+                } else if (DWMHConfig.Ocarina.responses.simple) {
                     temp = new TextComponentTranslation("dwmh.strings.simplest_teleport");
                     temp.getStyle().setColor(TextFormatting.GOLD);
                     player.sendMessage(temp);
@@ -254,14 +254,14 @@ public class ItemOcarina extends ItemDWMHRepairable {
     @Override
     public void addInformation(ItemStack par1ItemStack, World world, List<String> stacks, ITooltipFlag flags) {
         if(GuiScreen.isShiftKeyDown()) {
-            if (!useableItem(par1ItemStack) && DWMHConfig.ocarina.functionality.maxUses != 0) {
+            if (!useableItem(par1ItemStack) && DWMHConfig.Ocarina.functionality.maxUses != 0) {
                 stacks.add(TextFormatting.DARK_RED + I18n.format("dwmh.strings.carrot.tooltip.broken"));
             }
 
             String right_click;
             String sneak_right_click;
 
-            if (DWMHConfig.ocarina.swap) {
+            if (DWMHConfig.Ocarina.swap) {
                 right_click = TextFormatting.GOLD + I18n.format("dwmh.strings.right_click") + " " + TextFormatting.WHITE + I18n.format("dwmh.strings.whistle.tooltip.list_horses");
                 sneak_right_click = TextFormatting.GOLD + I18n.format("dwmh.strings.shift_right_click") + " " + TextFormatting.WHITE + I18n.format("dwmh.strings.whistle.tooltip.teleport_horses");
             } else {

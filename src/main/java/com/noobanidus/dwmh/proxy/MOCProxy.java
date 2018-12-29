@@ -135,10 +135,10 @@ public class MOCProxy implements ISteedProxy {
         } else if (animal.isBeingRidden() && animal.isRidingSameEntity(player)) {
             temp = new TextComponentTranslation("dwmh.strings.unsummonable.ridden");
             temp.getStyle().setColor(TextFormatting.DARK_RED);
-        } else if (animal.isBeingRidden() && !DWMHConfig.ocarina.otherRiders) {
+        } else if (animal.isBeingRidden() && !DWMHConfig.Ocarina.otherRiders) {
             temp = new TextComponentTranslation("dwmh.strings.unsummonable.ridden_other");
             temp.getStyle().setColor(TextFormatting.DARK_RED);
-        } else if (animal.isBeingRidden() && DWMHConfig.ocarina.otherRiders) {
+        } else if (animal.isBeingRidden() && DWMHConfig.Ocarina.otherRiders) {
             temp = new TextComponentTranslation("dwmh.strings.summonable.ridden_other");
             temp.getStyle().setColor(TextFormatting.DARK_AQUA);
         } else {
@@ -166,7 +166,7 @@ public class MOCProxy implements ISteedProxy {
 
             String key = comp.getKey();
 
-            if (key.contains("entity.") && key.contains(".name")) {
+            if (DWMHConfig.proxies.MoCreatures.entities.contains(key)) {
                 String res = I18n.format(key);
 
                 if (!res.contains(" ")) {

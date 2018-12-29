@@ -21,11 +21,11 @@ public class ItemDWMHRepairable extends Item {
             @Override
             public float apply(@Nonnull ItemStack stack, @Nullable World worldIn, @Nullable EntityLivingBase entityIn) {
                 if (stack.getItem() instanceof ItemEnchantedCarrot) {
-                    if (DWMHConfig.carrot.durability.unbreakable && stack.getItemDamage() == DWMHConfig.carrot.durability.maxUses)
+                    if (DWMHConfig.EnchantedCarrot.durability.unbreakable && stack.getItemDamage() == DWMHConfig.EnchantedCarrot.durability.maxUses)
                         return 1;
                     return 0;
                 } else if (stack.getItem() instanceof ItemOcarina) {
-                    if (DWMHConfig.ocarina.functionality.maxUses != 0 && stack.getItemDamage() == DWMHConfig.ocarina.functionality.maxUses)
+                    if (DWMHConfig.Ocarina.functionality.maxUses != 0 && stack.getItemDamage() == DWMHConfig.Ocarina.functionality.maxUses)
                         return 1;
                     return 0;
                 }

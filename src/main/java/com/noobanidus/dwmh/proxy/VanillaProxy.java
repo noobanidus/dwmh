@@ -136,10 +136,10 @@ public class VanillaProxy implements ISteedProxy {
         } else if (horse.isBeingRidden() && horse.isRidingSameEntity(player)) {
             temp = new TextComponentTranslation("dwmh.strings.unsummonable.ridden");
             temp.getStyle().setColor(TextFormatting.DARK_RED);
-        } else if (horse.isBeingRidden() && !DWMHConfig.ocarina.otherRiders) {
+        } else if (horse.isBeingRidden() && !DWMHConfig.Ocarina.otherRiders) {
             temp = new TextComponentTranslation("dwmh.strings.unsummonable.ridden_other");
             temp.getStyle().setColor(TextFormatting.DARK_RED);
-        } else if (horse.isBeingRidden() && DWMHConfig.ocarina.otherRiders) {
+        } else if (horse.isBeingRidden() && DWMHConfig.Ocarina.otherRiders) {
             temp = new TextComponentTranslation("dwmh.strings.summonable.ridden_other");
             temp.getStyle().setColor(TextFormatting.DARK_AQUA);
         } else {

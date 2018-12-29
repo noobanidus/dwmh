@@ -11,7 +11,6 @@ import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
@@ -25,6 +24,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ItemWhistle extends ItemDWMHRepairable {
@@ -42,6 +42,8 @@ public class ItemWhistle extends ItemDWMHRepairable {
     public static String repairItem = DWMH.CONFIG.get("Whistle", "RepairItem", "minecraft:golden_carrot:0", "When durability is specified, these items can be used to repair the ocarina. Format: mod:item:metadata. Items with NBT are not supported, use 0 for no metadata.").getString();
     public static boolean sounds = DWMH.CONFIG.get("Whistle", "Sounds", true, "Set to false to disable whistle sounds from being played when the Ocarina is used. This whistle sound is played on the PLAYERS channel.").getBoolean(true);
 
+    public List<TextComponentTranslation> directions = new ArrayList<>();
+
     public void init () {
         setMaxStackSize(1);
         setCreativeTab(DWMH.TAB);
@@ -52,6 +54,10 @@ public class ItemWhistle extends ItemDWMHRepairable {
             setInternalRepair(repairItem);
         }
         registerPredicate("whistle_damage");
+
+        for (int i = 0; i < 8; i++) {
+            directions.add(new TextComponentTranslation(String.format("dwmh.strings.dir.%d", i)));
+        }
     }
 
     private boolean isValidHorse (Entity entity, EntityPlayer player) {
@@ -124,28 +130,17 @@ public class ItemWhistle extends ItemDWMHRepairable {
 
                     result.appendText(TextFormatting.WHITE + String.format("%d, %d, %d", hpos.getX(), hpos.getY(), hpos.getZ()));
                     if (distance) {
-                        int rel_x = pos.getX() - hpos.getX();
-                        int rel_z = pos.getZ() - hpos.getZ();
-
-                        String key;
-
-                        // TODO: atan2(rel_x, rel_z) for angle. how this work
-
-                        if (Math.abs(rel_x) > Math.abs(rel_z)) {
-                            key = ((rel_x > 0) ? "east" : "west");
-                        } else {
-                            key = ((rel_z > 0) ? "north": "south");
-                        }
-
                         result.appendText(" (");
+
+                        double angle = Math.atan2(hpos.getZ() - pos.getZ(), hpos.getX() - pos.getX());
+                        int index = (int) Math.round(angle / Math.PI * 4 + 10) % 8;
 
                         result.appendText(String.format("%d", (int) dist));
                         result.appendText(" ");
                         temp = new TextComponentTranslation("dwmh.strings.blocks");
                         result.appendSibling(temp);
                         result.appendText(" ");
-                        temp = new TextComponentTranslation(String.format("dwmh.strings.%s", key));
-                        result.appendSibling(temp);
+                        result.appendSibling(directions.get(index));
                         result.appendText(")");
                     }
                     player.sendMessage(result);

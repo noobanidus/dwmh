@@ -175,11 +175,11 @@ public class DWMHConfig {
             @Config.Comment("Specify list of entity translation keys which should be modified to insert spaces (where relevant)")
             public String[] entities = new String[]{"entity.mocreatures:blackbear.name", "entity.mocreatures:grizzlybear.name", "entity.mocreatures:komododragon.name", "entity.mocreatures:petscorpion.name", "entity.mocreatures:wildhorse.name", "entity.mocreatures:wildpolarbear.name"};
         }
-
-        @Config.Comment("Specify a blacklist of entities that should always be ignored, even if generally loaded by their proxy.")
-        @Config.Name("Entity Blacklist")
-        public String[] blacklist = new String[]{};
     }
+
+    @Config.Comment("Specify a blacklist of entities that should always be ignored, even if generally loaded by their proxy.")
+    @Config.Name("Entity Blacklist")
+    public static String[] blacklist = new String[]{};
 
     @SubscribeEvent
     public static void onConfigChanged (ConfigChangedEvent.OnConfigChangedEvent event) {

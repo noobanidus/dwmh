@@ -114,7 +114,7 @@ public class DWMH {
             DWMH.resolveClasses(DWMH.zawaClasses, DWMHConfig.proxies.ZAWA.classes);
         }
 
-        DWMH.resolveClasses(DWMH.entityBlacklist, DWMHConfig.proxies.blacklist);
+        DWMH.resolveClasses(DWMH.entityBlacklist, DWMHConfig.blacklist);
     }
 
     private static void resolveClasses(Collection<Class<?>> list, String[] classes) {

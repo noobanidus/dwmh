@@ -7,13 +7,19 @@ import com.hackshop.ultimate_unicorn.mobs.unique.EntityAsmidiske;
 import com.hackshop.ultimate_unicorn.mobs.unique.EntityTyphonTheDestroyer;
 import com.hackshop.ultimate_unicorn.mobs.unique.EntityVelvetMysticalHealer;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
@@ -92,12 +98,23 @@ public class UnicornProxy extends VanillaProxy {
 
     @SubscribeEvent
     public static void onVagabondDeath (LivingDeathEvent event) {
-        if (event.getEntityLiving() instanceof EntityKnightVagabond && event.getSource().getTrueSource() instanceof EntityPlayer) {
-            AbstractHorse horse = (AbstractHorse) event.getEntityLiving().getRidingEntity();
-            EntityPlayer player = (EntityPlayer) event.getSource().getTrueSource();
-            if (player != null && horse != null) {
-                horse.setTamedBy(player);
-                horse.world.setEntityState(horse, (byte) 7);
+        if (!event.getEntityLiving().world.isRemote) {
+            if (event.getEntityLiving() instanceof EntityKnightVagabond) {
+                AbstractHorse horse = (AbstractHorse) event.getEntityLiving().getRidingEntity();
+                Entity killer = event.getSource().getTrueSource();
+                if (killer instanceof EntityPlayer && horse != null) {
+                    horse.setTamedBy((EntityPlayer) killer);
+                    horse.world.setEntityState(horse, (byte) 7);
+                } else if (horse != null) {
+                    // We don't care about the killer any more as it's not a player
+                    horse.setHorseTamed(false);
+                    horse.setOwnerUniqueId(null);
+                    horse.replaceItemInInventory(400, ItemStack.EMPTY);
+                    horse.setHorseSaddled(false);
+                    BlockPos pos = horse.getPosition();
+                    EntityItem drop = new EntityItem(horse.world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, new ItemStack(Items.SADDLE));
+                    horse.world.spawnEntity(drop);
+                }
             }
         }
     }

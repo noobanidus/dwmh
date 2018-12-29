@@ -143,7 +143,7 @@ public class DWMH {
 
         @SideOnly(Side.CLIENT)
         public ItemStack getTabIconItem() {
-            return new ItemStack(Registrar.whistle);
+            return new ItemStack(Registrar.ocarina);
         }
     }
 }

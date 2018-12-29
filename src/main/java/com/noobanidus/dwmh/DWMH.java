@@ -2,6 +2,7 @@ package com.noobanidus.dwmh;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.noobanidus.dwmh.commands.ClientEntityCommand;
 import com.noobanidus.dwmh.config.DWMHConfig;
 import com.noobanidus.dwmh.config.Registrar;
 import com.noobanidus.dwmh.proxy.DummySteedProxy;
@@ -11,6 +12,7 @@ import com.noobanidus.dwmh.proxy.VanillaProxy;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
@@ -100,6 +102,10 @@ public class DWMH {
         proxyList = Lists.newArrayList(animaniaProxy, mocProxy, zawaProxy, unicornProxy, vanillaProxy);
         proxyList.removeIf(i -> !i.isLoaded());
 
+        resolveClasses();
+    }
+
+    public static void resolveClasses () {
         if (Loader.isModLoaded("animania")) {
             DWMH.resolveClasses(DWMH.animaniaClasses, DWMHConfig.proxies.Animania.classes);
         }
@@ -112,6 +118,8 @@ public class DWMH {
     }
 
     private static void resolveClasses(Collection<Class<?>> list, String[] classes) {
+        list.clear();
+
         for (String c: classes) {
             try {
                 Class clz = Class.forName(c);
@@ -123,7 +131,13 @@ public class DWMH {
     }
 
     @Mod.EventHandler
-    public void loadComplete(FMLLoadCompleteEvent event) {
+    public void serverLoadComplete(FMLLoadCompleteEvent event) {
+    }
+
+    @Mod.EventHandler
+    @SideOnly(Side.CLIENT)
+    public void clientLoadComplete(FMLLoadCompleteEvent event) {
+        ClientCommandHandler.instance.registerCommand(new ClientEntityCommand());
     }
 
     private final class CreativeTabDWMH extends CreativeTabs {

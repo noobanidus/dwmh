@@ -54,3 +54,6 @@ dwmh.strings.zawa.tamed=Successfully tamed
 dwmh.strings.broken_whistle=The broken ocarina sounds harshly, and no steeds come to you... You should repair it!
 dwmh.strings.repair_carrot=Repair this object with %s!
 dwmh.strings.animania_naming=an Animania steed to name it or unname it.
+dwmh.strings.command.entity_found=Copied to the clipboard the entity: %s
+dwmh.strings.command.no_entity=No target.
+dwmh.strings.command.usage=Must be used in a client-only environment.

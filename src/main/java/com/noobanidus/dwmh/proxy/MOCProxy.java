@@ -23,6 +23,8 @@ import java.util.StringJoiner;
 // Instantiated by buildSoftDependProxy if Mo' Creatures is installed
 @SuppressWarnings("unused")
 public class MOCProxy implements ISteedProxy {
+    public static List<String> entities = null;
+
     public boolean hasCustomName (Entity entity) {
         if (!isMyMod(entity)) return false;
 
@@ -162,11 +164,15 @@ public class MOCProxy implements ISteedProxy {
     @SubscribeEvent
     public static void onClientChatReceived (ClientChatReceivedEvent event) {
         if (event.getMessage() instanceof TextComponentTranslation) {
+            if (MOCProxy.entities == null) {
+                entities = Lists.newArrayList(DWMHConfig.proxies.MoCreatures.entities);
+            }
+
             TextComponentTranslation comp = (TextComponentTranslation) event.getMessage();
 
             String key = comp.getKey();
 
-            if (DWMHConfig.proxies.MoCreatures.entities.contains(key)) {
+            if (entities.contains(key)) {
                 String res = I18n.format(key);
 
                 if (!res.contains(" ")) {

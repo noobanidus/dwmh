@@ -35,9 +35,9 @@ public class Registrar {
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public static void registerModels(ModelRegistryEvent event) {
-        ModelLoader.setCustomModelResourceLocation(ocarina, 0, new ModelResourceLocation("dwmh:Ocarina", "inventory"));
+        ModelLoader.setCustomModelResourceLocation(ocarina, 0, new ModelResourceLocation("dwmh:ocarina", "inventory"));
         if (DWMHConfig.EnchantedCarrot.enabled) {
-            ModelLoader.setCustomModelResourceLocation(carrot, 0, new ModelResourceLocation("dwmh:EnchantedCarrot", "inventory"));
+            ModelLoader.setCustomModelResourceLocation(carrot, 0, new ModelResourceLocation("dwmh:carrot", "inventory"));
         }
     }
 }

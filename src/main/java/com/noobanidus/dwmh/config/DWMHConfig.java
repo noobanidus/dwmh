@@ -173,7 +173,7 @@ public class DWMHConfig {
         public MoCreatures MoCreatures = new MoCreatures();
         public class MoCreatures {
             @Config.Comment("Specify list of entity translation keys which should be modified to insert spaces (where relevant)")
-            public List<String> entities = Lists.newArrayList("entity.mocreatures:blackbear.name", "entity.mocreatures:grizzlybear.name", "entity.mocreatures:komododragon.name", "entity.mocreatures:petscorpion.name", "entity.mocreatures:wildhorse.name", "entity.mocreatures:wildpolarbear.name");
+            public String[] entities = new String[]{"entity.mocreatures:blackbear.name", "entity.mocreatures:grizzlybear.name", "entity.mocreatures:komododragon.name", "entity.mocreatures:petscorpion.name", "entity.mocreatures:wildhorse.name", "entity.mocreatures:wildpolarbear.name"};
         }
 
         @Config.Comment("Specify a blacklist of entities that should always be ignored, even if generally loaded by their proxy.")
@@ -185,9 +185,7 @@ public class DWMHConfig {
     public static void onConfigChanged (ConfigChangedEvent.OnConfigChangedEvent event) {
         if (event.getModID().equals(DWMH.MODID)) {
             ConfigManager.sync(DWMH.MODID, Config.Type.INSTANCE);
-            // if (!event.isWorldRunning()) {
-            // potential config sync need to go here
-            // }
+            DWMH.resolveClasses();
         }
     }
 }

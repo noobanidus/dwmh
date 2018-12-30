@@ -89,6 +89,9 @@ public class ItemOcarina extends ItemDWMHRepairable {
     public ActionResult<ItemStack> onItemRightClick (World world, EntityPlayer player, @Nonnull EnumHand hand) {
         ItemStack stack = player.getHeldItem(hand);
         ActionResult<ItemStack> actionResult = new ActionResult<>(EnumActionResult.SUCCESS, stack);
+        SoundType sound = SoundType.NONE;
+        InventoryPlayer inv = player.inventory;
+
         if (!world.isRemote) {
             BlockPos pos = player.getPosition();
             boolean didStuff = false;
@@ -155,39 +158,58 @@ public class ItemOcarina extends ItemDWMHRepairable {
                 }
                 player.swingArm(hand);
             } else {
-                if (DWMHConfig.Ocarina.responses.sounds) {
-                    player.world.playSound(null, player.getPosition(), Sound.getRandomWhistle(), SoundCategory.PLAYERS, 16.0f, 1.0f);
-                }
-
                 int totalConsumed = 0;
-                int amountPer = DWMHConfig.Ocarina.functionality.summonCost;
+
                 ItemStack itemCost = getCostItem();
 
+                int amountPer = DWMHConfig.Ocarina.functionality.summonCost;
+                int amountIn = inv.mainInventory.stream().filter(i -> i.getItem() == itemCost.getItem() && i.getMetadata() == itemCost.getMetadata()).mapToInt(ItemStack::getCount).sum();
+
+                // Early breakpoints: if there is an item cost but we don't have enough
+                if (amountPer != 0) {
+                    if (amountIn < amountPer) {
+                        temp = new TextComponentTranslation("dwmh.strings.summon_item_missing", itemCost.getDisplayName());
+                        temp.getStyle().setColor(TextFormatting.DARK_RED);
+                        SoundType.MINOR.playSound(player);
+                        player.sendMessage(temp);
+                        return actionResult;
+                    }
+                }
+
+                // Early breakpoint: if the Ocarina is broken
                 if (!useableItem(stack)) {
                     temp = new TextComponentTranslation("dwmh.strings.broken_whistle");
                     temp.getStyle().setColor(TextFormatting.BLUE);
                     player.sendMessage(temp);
+                    SoundType.BROKEN.playSound(player);
                     return actionResult;
                 }
+
                 List<Entity> nearbyHorses = world.getEntities(Entity.class, (entity) -> isValidHorse(entity, player));
                 for (Entity entity : nearbyHorses) {
                     EntityAnimal horse = (EntityAnimal) entity;
                     double max = DWMHConfig.Ocarina.maxDistance;
                     if (horse.getDistanceSq(player) < (max * max) || max == 0) {
                         if (amountPer != 0) {
-                            InventoryPlayer inv = player.inventory;
-                            int cleared = inv.clearMatchingItems(itemCost.getItem(), itemCost.getMetadata(), amountPer, null);
-                            if (cleared == 0) {
+                            // Early breakpoint: if the number consumed thus far taken from the initial total is less than the amount, break
+                            if (amountIn - totalConsumed < amountPer) {
                                 if (totalConsumed == 0) {
                                     temp = new TextComponentTranslation("dwmh.strings.summon_item_missing", itemCost.getDisplayName());
                                 } else {
-                                    temp = new TextComponentTranslation("dwmh.strings.summon_item_missing_middle", itemCost.getDisplayName(), totalConsumed+cleared);
+                                    temp = new TextComponentTranslation("dwmh.strings.summon_item_missing_middle", itemCost.getDisplayName(), totalConsumed);
                                 }
                                 temp.getStyle().setColor(TextFormatting.DARK_RED);
                                 player.sendMessage(temp);
+                                SoundType.MINOR.playSound(player);
                                 return actionResult;
+                            } else {
+                                int cleared = inv.clearMatchingItems(itemCost.getItem(), itemCost.getMetadata(), amountPer, null);
+                                if (cleared == 0) {
+                                    // If we ever reach this point, we have a problem?
+                                    int blurgh = 0;
+                                }
+                                totalConsumed += cleared;
                             }
-                            totalConsumed += cleared;
                         }
                         horse.moveToBlockPosAndAngles(pos, horse.rotationYaw, horse.rotationPitch);
                         didStuff = true;
@@ -213,6 +235,9 @@ public class ItemOcarina extends ItemDWMHRepairable {
                             horse.setHomePosAndDistance(pos, 5);
                         }
                     }
+                }
+                if (didStuff) {
+                    SoundType.NORMAL.playSound(player);
                 }
                 if (didStuff && totalConsumed != 0) {
                     temp = new TextComponentTranslation("dwmh.strings.summon_item_success", itemCost.getDisplayName(), totalConsumed);

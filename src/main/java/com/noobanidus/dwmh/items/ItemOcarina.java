@@ -14,6 +14,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.*;
@@ -170,7 +172,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
                     if (amountIn < amountPer) {
                         temp = new TextComponentTranslation("dwmh.strings.summon_item_missing", itemCost.getDisplayName());
                         temp.getStyle().setColor(TextFormatting.DARK_RED);
-                        SoundType.MINOR.playSound(player);
+                        SoundType.MINOR.playSound(player, stack);
                         player.sendMessage(temp);
                         return actionResult;
                     }
@@ -181,7 +183,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
                     temp = new TextComponentTranslation("dwmh.strings.broken_whistle");
                     temp.getStyle().setColor(TextFormatting.BLUE);
                     player.sendMessage(temp);
-                    SoundType.BROKEN.playSound(player);
+                    SoundType.BROKEN.playSound(player, stack);
                     return actionResult;
                 }
 
@@ -200,7 +202,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
                                 }
                                 temp.getStyle().setColor(TextFormatting.DARK_RED);
                                 player.sendMessage(temp);
-                                SoundType.MINOR.playSound(player);
+                                SoundType.MINOR.playSound(player, stack);
                                 return actionResult;
                             } else {
                                 int cleared = inv.clearMatchingItems(itemCost.getItem(), itemCost.getMetadata(), amountPer, null);
@@ -237,7 +239,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
                     }
                 }
                 if (didStuff) {
-                    SoundType.NORMAL.playSound(player);
+                    SoundType.NORMAL.playSound(player, stack);
                 }
                 if (didStuff && totalConsumed != 0) {
                     temp = new TextComponentTranslation("dwmh.strings.summon_item_success", itemCost.getDisplayName(), totalConsumed);
@@ -371,12 +373,27 @@ public class ItemOcarina extends ItemDWMHRepairable {
             }
         }
 
-        public void playSound (EntityPlayer player) {
-            playSound(player, this);
-        }
+        public void playSound (EntityPlayer player, ItemStack stack) {
+            // This is predicated on a !player.world.isRemote check
 
-        public void playSound (EntityPlayer player, SoundType sound) {
-            SoundEvent e = sound.getSoundEvent();
+            long cur = MinecraftServer.getCurrentTimeMillis();
+
+            NBTTagCompound tag = stack.getTagCompound();
+            if (tag == null) {
+                tag = new NBTTagCompound();
+                stack.setTagCompound(tag);
+            }
+
+            if (tag.hasKey("dwmh:last_played")) {
+                long lastPlayed = tag.getLong("dwmh:last_played");
+                if (cur - lastPlayed < DWMHConfig.Ocarina.responses.soundDelay * 1000) {
+                    return;
+                }
+            }
+
+            tag.setLong("dwmh:last_played", cur);
+
+            SoundEvent e = this.getSoundEvent();
             BlockPos pos = player.getPosition();
             player.world.playSound(null, player.getPosition(), e, SoundCategory.PLAYERS, 16, 1);
 

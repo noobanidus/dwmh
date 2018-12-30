@@ -17,8 +17,14 @@ public class Sound {
     public static SoundEvent WHISTLE3 = createSoundEvent("whistle.3");
     public static SoundEvent WHISTLE4 = createSoundEvent("whistle.4");
     public static SoundEvent WHISTLE5 = createSoundEvent("whistle.5");
+    public static SoundEvent WHISTLE6 = createSoundEvent("whistle.6");
+    public static SoundEvent WHISTLE7 = createSoundEvent("whistle.7");
     public static SoundEvent WHISTLE_SPECIAL = createSoundEvent("whistle.special");
-    public static List<SoundEvent> WHISTLES = Arrays.asList(WHISTLE1, WHISTLE2, WHISTLE3, WHISTLE4, WHISTLE5);
+    public static List<SoundEvent> WHISTLES = Arrays.asList(WHISTLE1, WHISTLE2, WHISTLE3, WHISTLE4, WHISTLE5, WHISTLE6, WHISTLE7);
+
+    public static SoundEvent MINOR_WHISTLE1 = createSoundEvent("whistle_minor.1");
+    public static SoundEvent MINOR_WHISTLE2 = createSoundEvent("whistle_minor.2");
+    public static List<SoundEvent> MINOR_WHISTLES = Arrays.asList(MINOR_WHISTLE1, MINOR_WHISTLE2);
 
     private static SoundEvent createSoundEvent (String sound) {
         ResourceLocation name = new ResourceLocation("dwmh", sound);
@@ -35,12 +41,15 @@ public class Sound {
         return WHISTLES.get(random.nextInt(WHISTLES.size()));
     }
 
+    public static SoundEvent getRandomMinorWhistle () {
+        return MINOR_WHISTLES.get(random.nextInt(MINOR_WHISTLES.size()));
+    }
+
     @SubscribeEvent
     public static void registerSounds (RegistryEvent.Register<SoundEvent> event) {
         event.getRegistry().register(WHISTLE_SPECIAL);
-        for (SoundEvent w : WHISTLES) {
-            event.getRegistry().register(w);
-        }
+        WHISTLES.forEach(event.getRegistry()::register);
+        MINOR_WHISTLES.forEach(event.getRegistry()::register);
     }
 
 }

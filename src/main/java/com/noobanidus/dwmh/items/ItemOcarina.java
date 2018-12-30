@@ -317,4 +317,44 @@ public class ItemOcarina extends ItemDWMHRepairable {
         }
     }
 
+    public enum SoundType {
+        NORMAL(0),
+        MINOR(1),
+        SPECIAL(2),
+        BROKEN(3),
+        NONE(-1);
+
+        public int type;
+
+        SoundType (int type) {
+            this.type = type;
+        }
+
+        public SoundEvent getSoundEvent () {
+            switch (type) {
+                case 0:
+                    return Sound.getRandomWhistle();
+                case 1:
+                    return Sound.getRandomMinorWhistle();
+                case 2:
+                    return Sound.WHISTLE_SPECIAL;
+                case 3:
+                    return Sound.WHISTLE_BROKEN;
+                case -1:
+                default:
+                    return null;
+            }
+        }
+
+        public void playSound (EntityPlayer player) {
+            playSound(player, this);
+        }
+
+        public void playSound (EntityPlayer player, SoundType sound) {
+            SoundEvent e = sound.getSoundEvent();
+            BlockPos pos = player.getPosition();
+            player.world.playSound(null, player.getPosition(), e, SoundCategory.PLAYERS, 16, 1);
+
+        }
+    }
 }

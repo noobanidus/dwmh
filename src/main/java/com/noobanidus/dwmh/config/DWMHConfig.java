@@ -139,21 +139,26 @@ public class DWMHConfig {
     public static Proxies proxies = new Proxies();
     public static class Proxies {
 
+        @Config.RequiresMcRestart
         @Config.Comment("Overrides to specifically disable certain proxies")
         public Enable enable = new Enable();
         public class Enable {
+            @Config.RequiresMcRestart
             @Config.Comment("Set to false to disable the Animania proxy (even if it would normally load)")
             @Config.Name("Animania")
             public boolean animania = true;
 
+            @Config.RequiresMcRestart
             @Config.Comment("Set to false to disable the Mo Creatures proxy (even if it would normally load)")
             @Config.Name("Mo Creatures")
             public boolean mocreatures = true;
 
+            @Config.RequiresMcRestart
             @Config.Comment("Set to false to disable the ZAWA Rebuilt proxy (even if it would normally load)")
             @Config.Name("ZAWA Rebuilt")
             public boolean zawa = true;
 
+            @Config.RequiresMcRestart
             @Config.Comment("Set to false to disable the Ultimate Unicorn Mod proxy (even if it would normally load)")
             @Config.Name("Ultimate Unicorn Mod")
             public boolean ultimate_unicorn_mod = true;

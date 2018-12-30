@@ -5,10 +5,10 @@ import com.google.common.collect.Sets;
 import com.noobanidus.dwmh.commands.ClientEntityCommand;
 import com.noobanidus.dwmh.config.DWMHConfig;
 import com.noobanidus.dwmh.config.Registrar;
-import com.noobanidus.dwmh.proxy.DummySteedProxy;
-import com.noobanidus.dwmh.proxy.ISteedProxy;
-import com.noobanidus.dwmh.proxy.SteedProxy;
-import com.noobanidus.dwmh.proxy.VanillaProxy;
+import com.noobanidus.dwmh.proxy.steeds.DummySteedProxy;
+import com.noobanidus.dwmh.proxy.steeds.ISteedProxy;
+import com.noobanidus.dwmh.proxy.steeds.SteedProxy;
+import com.noobanidus.dwmh.proxy.steeds.VanillaProxy;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.item.ItemStack;
@@ -74,16 +74,16 @@ public class DWMH {
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent e) {
         if (DWMHConfig.proxies.enable.animania) {
-            animaniaProxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("animania", "com.noobanidus.dwmh.proxy.AnimaniaProxy")).orElse(new DummySteedProxy());
+            animaniaProxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("animania", "com.noobanidus.dwmh.proxy.steeds.AnimaniaProxy")).orElse(new DummySteedProxy());
         }
         if (DWMHConfig.proxies.enable.mocreatures) {
-            mocProxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("mocreatures", "com.noobanidus.dwmh.proxy.MOCProxy")).orElse(new DummySteedProxy());
+            mocProxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("mocreatures", "com.noobanidus.dwmh.proxy.steeds.MOCProxy")).orElse(new DummySteedProxy());
             if (Loader.isModLoaded("mocreatures")) {
                 MinecraftForge.EVENT_BUS.register(mocProxy.getClass());
             }
         }
         if (DWMHConfig.proxies.enable.zawa) {
-            zawaProxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("zawa", "com.noobanidus.dwmh.proxy.ZawaProxy")).orElse(new DummySteedProxy());
+            zawaProxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("zawa", "com.noobanidus.dwmh.proxy.steeds.ZawaProxy")).orElse(new DummySteedProxy());
             if (Loader.isModLoaded("zawa")) {
                 ModContainer zawa = Loader.instance().getIndexedModList().get("zawa");
                 if (!zawa.getVersion().equals("1.12.2-1.4.0")) {
@@ -93,7 +93,7 @@ public class DWMH {
             }
         }
         if (DWMHConfig.proxies.enable.ultimate_unicorn_mod) {
-            unicornProxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("ultimate_unicorn_mod", "com.noobanidus.dwmh.proxy.UnicornProxy")).orElse(new DummySteedProxy());
+            unicornProxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("ultimate_unicorn_mod", "com.noobanidus.dwmh.proxy.steeds.UnicornProxy")).orElse(new DummySteedProxy());
             if (Loader.isModLoaded("ultimate_unicorn_mod")) {
                 MinecraftForge.EVENT_BUS.register(unicornProxy.getClass());
             }

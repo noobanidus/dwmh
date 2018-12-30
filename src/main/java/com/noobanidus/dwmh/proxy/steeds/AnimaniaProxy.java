@@ -1,4 +1,4 @@
-package com.noobanidus.dwmh.proxy;
+package com.noobanidus.dwmh.proxy.steeds;
 
 import com.animania.common.entities.horses.EntityAnimaniaHorse;
 import com.noobanidus.dwmh.DWMH;

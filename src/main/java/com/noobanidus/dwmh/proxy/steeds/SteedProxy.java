@@ -1,4 +1,4 @@
-package com.noobanidus.dwmh.proxy;
+package com.noobanidus.dwmh.proxy.steeds;
 
 import com.noobanidus.dwmh.DWMH;
 import net.minecraft.entity.Entity;

@@ -1,4 +1,4 @@
-package com.noobanidus.dwmh.proxy;
+package com.noobanidus.dwmh.proxy.steeds;
 
 import com.hackshop.ultimate_unicorn.mobs.EntityKnightVagabond;
 import com.hackshop.ultimate_unicorn.mobs.EntityMagicalHorse;
@@ -18,8 +18,6 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.noobanidus.dwmh.proxy;
+package com.noobanidus.dwmh.proxy.steeds;
 
 import com.google.common.collect.Lists;
 import com.noobanidus.dwmh.config.DWMHConfig;

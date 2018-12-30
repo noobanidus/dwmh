@@ -50,7 +50,6 @@ public class DWMHConfig {
 
             @Config.Comment("Specify the maximum durability of the Ocarina. One horse summoned costs one durability. Set to 0 to disable durability.")
             @Config.Name("Maximum Ocarina Durability")
-            @Config.RequiresMcRestart
             public int maxUses = 0;
 
             @Config.Comment("Specify the item that can be used to repair the Ocarina in an anvil. Items with NBT are not supported. Format mod:item:metadata (use \"minecraft\" for vanilla items), use 0 for no meteadata.")
@@ -105,7 +104,6 @@ public class DWMHConfig {
         @Config.Name("Durability settings")
         public Durability durability = new Durability();
         public class Durability {
-            @Config.RequiresMcRestart
             @Config.RangeInt(min = 1)
             @Config.Comment("Maximum number of uses before the enchanted EnchantedCarrot is destroyed or, with the unbreakable setting, becomes unusable")
             @Config.Name("Maximum Carrot Durability")

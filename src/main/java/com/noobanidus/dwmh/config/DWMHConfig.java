@@ -60,7 +60,7 @@ public class DWMHConfig {
 
             @Config.Comment("Specify the quantity of the item to consume from the player's inventory before summoning a horse. Set to 0 to consume nothing.")
             @Config.Name("Summon Cost")
-            public int summonCost = 1;
+            public int summonCost = 0;
         }
 
         @Config.Comment("Options related to audio and text output of the Ocarina")

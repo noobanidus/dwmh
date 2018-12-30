@@ -55,7 +55,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
     }
 
     private boolean isValidHorse (Entity entity, EntityPlayer player, boolean listing) {
-        if (DWMH.proxy.isListable(entity, player)) {
+        if (DWMH.steedProxy.isListable(entity, player)) {
             if (listing) {
                 return true;
             }
@@ -63,7 +63,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
             return false;
         }
 
-        return DWMH.proxy.isTeleportable(entity, player);
+        return DWMH.steedProxy.isTeleportable(entity, player);
     }
 
     @Nonnull
@@ -101,10 +101,10 @@ public class ItemOcarina extends ItemDWMHRepairable {
                     ITextComponent result = new TextComponentTranslation(String.format("entity.%s.name", EntityList.getEntityString(horse)));
                     result.getStyle().setColor(TextFormatting.YELLOW);
 
-                    if (DWMH.proxy.hasCustomName(horse)) {
+                    if (DWMH.steedProxy.hasCustomName(horse)) {
                         temp = new TextComponentString(" (");
                         temp.appendSibling(new TextComponentTranslation("dwmh.strings.named"));
-                        temp.appendText(" " + DWMH.proxy.getCustomNameTag(horse) + ")");
+                        temp.appendText(" " + DWMH.steedProxy.getCustomNameTag(horse) + ")");
                         result.appendSibling(temp);
                     }
 
@@ -114,7 +114,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
                     result.appendSibling(temp);
                     result.appendText(" ");
 
-                    ITextComponent summonable = DWMH.proxy.getResponseKey(horse, player);
+                    ITextComponent summonable = DWMH.steedProxy.getResponseKey(horse, player);
 
                     if (summonable != null) {
                         result.appendSibling(summonable);
@@ -191,9 +191,9 @@ public class ItemOcarina extends ItemDWMHRepairable {
                         didStuff = true;
                         if (DWMHConfig.Ocarina.functionality.maxUses != 0) damageItem(stack, player);
                         if (!DWMHConfig.Ocarina.responses.quiet && !DWMHConfig.Ocarina.responses.simple) {
-                            if (DWMH.proxy.hasCustomName(horse)) {
+                            if (DWMH.steedProxy.hasCustomName(horse)) {
                                 temp = new TextComponentTranslation("dwmh.strings.complex_teleport_a");
-                                temp.appendText(", " + DWMH.proxy.getCustomNameTag(horse) + ", ");
+                                temp.appendText(", " + DWMH.steedProxy.getCustomNameTag(horse) + ", ");
                                 temp.appendSibling(new TextComponentTranslation("dwmh.strings.complex_teleport_b"));
                                 temp.getStyle().setColor(TextFormatting.GOLD);
                             } else {
@@ -259,12 +259,12 @@ public class ItemOcarina extends ItemDWMHRepairable {
 
         ITextComponent temp;
         String name = String.format("%s's Steed", player.getName());
-        if (DWMH.proxy.hasCustomName(horse)) {
-            if (DWMH.proxy.getCustomNameTag(horse).contains("'s Steed") && !DWMH.proxy.getCustomNameTag(horse).equals(name)) {
+        if (DWMH.steedProxy.hasCustomName(horse)) {
+            if (DWMH.steedProxy.getCustomNameTag(horse).contains("'s Steed") && !DWMH.steedProxy.getCustomNameTag(horse).equals(name)) {
                 temp = new TextComponentTranslation("dwmh.strings.not_your_horse");
                 temp.getStyle().setColor(TextFormatting.RED);
             } else {
-                DWMH.proxy.setCustomNameTag(horse, "");
+                DWMH.steedProxy.setCustomNameTag(horse, "");
                 temp = new TextComponentTranslation("dwmh.strings.unnamed");
                 temp.getStyle().setColor(TextFormatting.YELLOW);
             }

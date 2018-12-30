@@ -16,7 +16,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class EventHandler {
     @SubscribeEvent
     public static void onDismount (EntityMountEvent event) {
-        DWMH.proxy.onDismount(event);
+        DWMH.steedProxy.onDismount(event);
     }
 
     @SubscribeEvent

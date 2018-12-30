@@ -3,20 +3,22 @@ package com.noobanidus.dwmh;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.noobanidus.dwmh.commands.ClientEntityCommand;
+import com.noobanidus.dwmh.config.CreativeTabDWMH;
 import com.noobanidus.dwmh.config.DWMHConfig;
 import com.noobanidus.dwmh.config.Registrar;
+import com.noobanidus.dwmh.proxy.ISidedProxy;
 import com.noobanidus.dwmh.proxy.steeds.DummySteedProxy;
 import com.noobanidus.dwmh.proxy.steeds.ISteedProxy;
 import com.noobanidus.dwmh.proxy.steeds.SteedProxy;
 import com.noobanidus.dwmh.proxy.steeds.VanillaProxy;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.passive.AbstractHorse;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ModContainer;
+import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -44,7 +46,7 @@ public class DWMH {
     public static ISteedProxy unicornProxy = new DummySteedProxy();
 
     // This is more of an overall helper class that checks everything
-    public static ISteedProxy proxy;
+    public static ISteedProxy steedProxy;
 
     public static List<ISteedProxy> proxyList;
 
@@ -56,53 +58,30 @@ public class DWMH {
     public static Set<Class<? extends AbstractHorse>> ignoreList = Sets.newHashSet();
     public static Set<Class<?>> entityBlacklist = Sets.newHashSet();
 
+    @SidedProxy (clientSide="com.noobanidus.dwmh.proxy.ClientProxy", serverSide="com.noobanidus.dwmh.proxy.CommonProxy")
+    public static ISidedProxy proxy;
+
     @Mod.Instance(DWMH.MODID)
     public static DWMH instance;
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        TAB = new CreativeTabDWMH(CreativeTabs.getNextID(), MODID);
-        Registrar.preInit();
-        proxy = new SteedProxy();
+        proxy.preInit(event);
     }
 
     @Mod.EventHandler
-    public void init(FMLInitializationEvent e) {
+    public void init(FMLInitializationEvent event) {
+        proxy.init(event);
     }
 
-    @SuppressWarnings("unchecked")
     @Mod.EventHandler
-    public void postInit(FMLPostInitializationEvent e) {
-        if (DWMHConfig.proxies.enable.animania) {
-            animaniaProxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("animania", "com.noobanidus.dwmh.proxy.steeds.AnimaniaProxy")).orElse(new DummySteedProxy());
-        }
-        if (DWMHConfig.proxies.enable.mocreatures) {
-            mocProxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("mocreatures", "com.noobanidus.dwmh.proxy.steeds.MOCProxy")).orElse(new DummySteedProxy());
-            if (Loader.isModLoaded("mocreatures")) {
-                MinecraftForge.EVENT_BUS.register(mocProxy.getClass());
-            }
-        }
-        if (DWMHConfig.proxies.enable.zawa) {
-            zawaProxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("zawa", "com.noobanidus.dwmh.proxy.steeds.ZawaProxy")).orElse(new DummySteedProxy());
-            if (Loader.isModLoaded("zawa")) {
-                ModContainer zawa = Loader.instance().getIndexedModList().get("zawa");
-                if (!zawa.getVersion().equals("1.12.2-1.4.0")) {
-                    zawaProxy = new DummySteedProxy();
-                    DWMH.LOG.error("ZAWA is only supported for version 1.4.0. ZAWA compatibility has been disabled");
-                }
-            }
-        }
-        if (DWMHConfig.proxies.enable.ultimate_unicorn_mod) {
-            unicornProxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("ultimate_unicorn_mod", "com.noobanidus.dwmh.proxy.steeds.UnicornProxy")).orElse(new DummySteedProxy());
-            if (Loader.isModLoaded("ultimate_unicorn_mod")) {
-                MinecraftForge.EVENT_BUS.register(unicornProxy.getClass());
-            }
-        }
+    public void postInit(FMLPostInitializationEvent event) {
+        proxy.postInit(event);
+    }
 
-        proxyList = Lists.newArrayList(animaniaProxy, mocProxy, zawaProxy, unicornProxy, vanillaProxy);
-        proxyList.removeIf(i -> !i.isLoaded());
-
-        resolveClasses();
+    @Mod.EventHandler
+    public void loadComplete(FMLLoadCompleteEvent event) {
+        proxy.loadComplete(event);
     }
 
     public static void resolveClasses () {
@@ -127,27 +106,6 @@ public class DWMH {
             } catch (ClassNotFoundException e) {
                 DWMH.LOG.error(String.format("Could not find entity |%s|. The mod isn't loaded.", c));
             }
-        }
-    }
-
-    @Mod.EventHandler
-    public void serverLoadComplete(FMLLoadCompleteEvent event) {
-    }
-
-    @Mod.EventHandler
-    @SideOnly(Side.CLIENT)
-    public void clientLoadComplete(FMLLoadCompleteEvent event) {
-        ClientCommandHandler.instance.registerCommand(new ClientEntityCommand());
-    }
-
-    private final class CreativeTabDWMH extends CreativeTabs {
-        public CreativeTabDWMH(int id, String id2) {
-            super(id, id2);
-        }
-
-        @SideOnly(Side.CLIENT)
-        public ItemStack getTabIconItem() {
-            return new ItemStack(Registrar.ocarina);
         }
     }
 }

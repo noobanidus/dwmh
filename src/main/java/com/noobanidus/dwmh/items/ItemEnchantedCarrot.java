@@ -55,7 +55,7 @@ public class ItemEnchantedCarrot extends ItemDWMHRepairable {
         Entity entity = event.getTarget();
         ItemStack item  = event.getItemStack();
 
-        if (item.isEmpty() || player.isSneaking() || !(item.getItem() instanceof ItemEnchantedCarrot) || !DWMH.proxy.isMyMod(entity)) {
+        if (item.isEmpty() || player.isSneaking() || !(item.getItem() instanceof ItemEnchantedCarrot) || !DWMH.steedProxy.isMyMod(entity)) {
             return;
         }
 
@@ -66,7 +66,7 @@ public class ItemEnchantedCarrot extends ItemDWMHRepairable {
 
         boolean didStuff = false;
 
-        if (DWMH.proxy.isAgeable(entity, player) && DWMHConfig.EnchantedCarrot.effects.aging) {
+        if (DWMH.steedProxy.isAgeable(entity, player) && DWMHConfig.EnchantedCarrot.effects.aging) {
             if (entity.getEntityData().getBoolean("quark:poison_potato_applied")) {
                 temp = new TextComponentTranslation("dwmh.strings.quark_poisoned");
                 temp.getStyle().setColor(TextFormatting.GREEN);
@@ -74,16 +74,16 @@ public class ItemEnchantedCarrot extends ItemDWMHRepairable {
                 return;
             }
 
-            DWMH.proxy.age(entity, player);
+            DWMH.steedProxy.age(entity, player);
             didStuff = true;
-        } else if (DWMH.proxy.isTameable(entity, player) && DWMHConfig.EnchantedCarrot.effects.taming) {
-            DWMH.proxy.tame(entity, player);
+        } else if (DWMH.steedProxy.isTameable(entity, player) && DWMHConfig.EnchantedCarrot.effects.taming) {
+            DWMH.steedProxy.tame(entity, player);
             didStuff = true;
-        } else if (DWMH.proxy.isHealable(entity, player) && DWMHConfig.EnchantedCarrot.effects.healing) {
-            DWMH.proxy.heal(entity, player);
+        } else if (DWMH.steedProxy.isHealable(entity, player) && DWMHConfig.EnchantedCarrot.effects.healing) {
+            DWMH.steedProxy.heal(entity, player);
             didStuff = true;
-        } else if (DWMH.proxy.isBreedable(entity, player) && DWMHConfig.EnchantedCarrot.effects.breeding) {
-            DWMH.proxy.breed(entity, player);
+        } else if (DWMH.steedProxy.isBreedable(entity, player) && DWMHConfig.EnchantedCarrot.effects.breeding) {
+            DWMH.steedProxy.breed(entity, player);
             didStuff = true;
         }
 

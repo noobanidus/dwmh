@@ -1,10 +1,12 @@
 package com.noobanidus.dwmh.config;
 
+import com.google.common.collect.Lists;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.registries.IForgeRegistry;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,9 +24,11 @@ public class Sound {
     public static SoundEvent WHISTLE_SPECIAL = createSoundEvent("whistle.special");
     public static List<SoundEvent> WHISTLES = Arrays.asList(WHISTLE1, WHISTLE2, WHISTLE3, WHISTLE4, WHISTLE5, WHISTLE6, WHISTLE7);
 
-    public static SoundEvent MINOR_WHISTLE1 = createSoundEvent("whistle_minor.1");
-    public static SoundEvent MINOR_WHISTLE2 = createSoundEvent("whistle_minor.2");
+    public static SoundEvent MINOR_WHISTLE1 = createSoundEvent("whistle.minor.1");
+    public static SoundEvent MINOR_WHISTLE2 = createSoundEvent("whistle.minor.2");
     public static List<SoundEvent> MINOR_WHISTLES = Arrays.asList(MINOR_WHISTLE1, MINOR_WHISTLE2);
+
+    public static SoundEvent WHISTLE_BROKEN = createSoundEvent("whistle.broken");
 
     private static SoundEvent createSoundEvent (String sound) {
         ResourceLocation name = new ResourceLocation("dwmh", sound);
@@ -47,9 +51,11 @@ public class Sound {
 
     @SubscribeEvent
     public static void registerSounds (RegistryEvent.Register<SoundEvent> event) {
-        event.getRegistry().register(WHISTLE_SPECIAL);
-        WHISTLES.forEach(event.getRegistry()::register);
-        MINOR_WHISTLES.forEach(event.getRegistry()::register);
+        IForgeRegistry<SoundEvent> registry = event.getRegistry();
+        registry.register(WHISTLE_SPECIAL);
+        registry.register(WHISTLE_BROKEN);
+        WHISTLES.forEach(registry::register);
+        MINOR_WHISTLES.forEach(registry::register);
     }
 
 }

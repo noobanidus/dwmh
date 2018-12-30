@@ -7,6 +7,7 @@
     "whistle.6": { "category": "ambient", "sounds": [ "dwmh:whistle6" ] },
     "whistle.7": { "category": "ambient", "sounds": [ "dwmh:whistle7" ] },
     "whistle.special": { "category": "ambient", "sounds": [ "dwmh:whistle_special" ] },
-    "minor_whistle.1": { "category": "ambient", "sounds": [ "dwmh:whistle_minor1" ] },
-    "minor_whistle.2": { "category": "ambient", "sounds": [ "dwmh:whistle_minor2" ] }
+    "whistle.minor.1": { "category": "ambient", "sounds": [ "dwmh:whistle_minor1" ] },
+    "whistle.minor.2": { "category": "ambient", "sounds": [ "dwmh:whistle_minor2" ] },
+    "whistle.broken": { "category": "ambient", "sounds": [ "dwmh:whistle_broken" ] }
 }

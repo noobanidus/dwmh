@@ -11,6 +11,7 @@ import net.minecraft.entity.EntityList;
 import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
@@ -29,10 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ItemOcarina extends ItemDWMHRepairable {
-
-
-
-    public List<TextComponentTranslation> directions = new ArrayList<>();
+    private List<TextComponentTranslation> directions = new ArrayList<>();
 
     public void init () {
         setMaxStackSize(1);
@@ -80,10 +78,15 @@ public class ItemOcarina extends ItemDWMHRepairable {
         return ItemDWMHRepairable.useableItem(item);
     }
 
+    public ItemStack getCostItem () {
+        return parseItem(DWMHConfig.Ocarina.functionality.summonItem);
+    }
+
     @Nonnull
     @Override
     public ActionResult<ItemStack> onItemRightClick (World world, EntityPlayer player, @Nonnull EnumHand hand) {
         ItemStack stack = player.getHeldItem(hand);
+        ActionResult<ItemStack> actionResult = new ActionResult<>(EnumActionResult.SUCCESS, stack);
         if (!world.isRemote) {
             BlockPos pos = player.getPosition();
             boolean didStuff = false;
@@ -154,17 +157,36 @@ public class ItemOcarina extends ItemDWMHRepairable {
                     player.world.playSound(null, player.getPosition(), Sound.getRandomWhistle(), SoundCategory.PLAYERS, 16.0f, 1.0f);
                 }
 
+                int totalConsumed = 0;
+                int amountPer = DWMHConfig.Ocarina.functionality.summonCost;
+                ItemStack itemCost = getCostItem();
+
                 if (!useableItem(stack)) {
                     temp = new TextComponentTranslation("dwmh.strings.broken_whistle");
                     temp.getStyle().setColor(TextFormatting.BLUE);
                     player.sendMessage(temp);
-                    return new ActionResult<>(EnumActionResult.SUCCESS, stack);
+                    return actionResult;
                 }
                 List<Entity> nearbyHorses = world.getEntities(Entity.class, (entity) -> isValidHorse(entity, player));
                 for (Entity entity : nearbyHorses) {
                     EntityAnimal horse = (EntityAnimal) entity;
                     double max = DWMHConfig.Ocarina.maxDistance;
                     if (horse.getDistanceSq(player) < (max * max) || max == 0) {
+                        if (amountPer != 0) {
+                            InventoryPlayer inv = player.inventory;
+                            int cleared = inv.clearMatchingItems(itemCost.getItem(), itemCost.getMetadata(), amountPer, null);
+                            if (cleared == 0) {
+                                if (totalConsumed == 0) {
+                                    temp = new TextComponentTranslation("dwmh.strings.summon_item_missing", itemCost.getDisplayName());
+                                } else {
+                                    temp = new TextComponentTranslation("dwmh.strings.summon_item_missing_middle", itemCost.getDisplayName(), totalConsumed+cleared);
+                                }
+                                temp.getStyle().setColor(TextFormatting.DARK_RED);
+                                player.sendMessage(temp);
+                                return actionResult;
+                            }
+                            totalConsumed += cleared;
+                        }
                         horse.moveToBlockPosAndAngles(pos, horse.rotationYaw, horse.rotationPitch);
                         didStuff = true;
                         if (DWMHConfig.Ocarina.functionality.maxUses != 0) damageItem(stack, player);
@@ -190,6 +212,11 @@ public class ItemOcarina extends ItemDWMHRepairable {
                         }
                     }
                 }
+                if (didStuff && totalConsumed != 0) {
+                    temp = new TextComponentTranslation("dwmh.strings.summon_item_success", itemCost.getDisplayName(), totalConsumed);
+                    temp.getStyle().setColor(TextFormatting.RED);
+                    player.sendMessage(temp);
+                }
                 if (!didStuff) {
                     if (player.isRiding()) {
                         temp = new TextComponentTranslation("dwmh.strings.no_eligible_to_teleport_riding");
@@ -206,7 +233,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
                 }
             }
         }
-        return new ActionResult<>(EnumActionResult.SUCCESS, stack);
+        return actionResult;
     }
 
     public static void onInteractOcarina (PlayerInteractEvent.EntityInteract event) {
@@ -276,7 +303,13 @@ public class ItemOcarina extends ItemDWMHRepairable {
                 stacks.add(TextFormatting.GOLD + I18n.format("dwmh.strings.shift_right_click") + " " + TextFormatting.WHITE + I18n.format("dwmh.strings.animania_naming"));
             }
 
-            stacks.add(TextFormatting.AQUA + I18n.format("dwmh.strings.repair_carrot", getRepairItem().getDisplayName()));
+            if (par1ItemStack.getItemDamage() != 0 || DWMHConfig.Ocarina.functionality.maxUses != 0) {
+                stacks.add(TextFormatting.AQUA + I18n.format("dwmh.strings.repair_carrot", getRepairItem().getDisplayName()));
+            }
+
+            if (DWMHConfig.Ocarina.functionality.summonCost != 0) {
+                stacks.add(TextFormatting.RED + I18n.format("dwmh.strings.summon_tooltip", getCostItem().getDisplayName(), DWMHConfig.Ocarina.functionality.summonCost));
+            }
         } else {
             stacks.add(TextFormatting.DARK_GRAY + I18n.format("dwmh.strings.hold_shift"));
         }

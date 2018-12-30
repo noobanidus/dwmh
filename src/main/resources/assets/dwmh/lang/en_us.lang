@@ -57,3 +57,7 @@ dwmh.strings.animania_naming=an Animania steed to name it or unname it.
 dwmh.strings.command.entity_found=Copied to the clipboard the entity: %s
 dwmh.strings.command.no_entity=No target.
 dwmh.strings.command.usage=Must be used in a client-only environment.
+dwmh.strings.summon_item_missing=You've run out of (%s) to summon steeds!
+dwmh.strings.summon_item_missing_middle=You've run out of (%s) to summon steeds (%d consumed).
+dwmh.strings.summon_item_success=(%sx%d) were consumed to summon steeds.
+dwmh.strings.summon_tooltip=Consumes (%sx%d) per steed summoned.

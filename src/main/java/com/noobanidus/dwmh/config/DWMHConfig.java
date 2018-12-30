@@ -53,6 +53,14 @@ public class DWMHConfig {
             @Config.Comment("Specify the item that can be used to repair the Ocarina in an anvil. Items with NBT are not supported. Format mod:item:metadata (use \"minecraft\" for vanilla items), use 0 for no meteadata.")
             @Config.Name("Ocarina Repair Item")
             public String repairItem = "minecraft:golden_carrot:0";
+
+            @Config.Comment("Specify the item to consume from the player's inventory before summoning a horse. Format: mod:item:metadata (use \"minecraft\" for vanilla items), use 0 for no metadata. Items with NBT are not supported.")
+            @Config.Name("Summon Item")
+            public String summonItem = "minecraft:carrot:0";
+
+            @Config.Comment("Specify the quantity of the item to consume from the player's inventory before summoning a horse. Set to 0 to consume nothing.")
+            @Config.Name("Summon Cost")
+            public int summonCost = 1;
         }
 
         @Config.Comment("Options related to audio and text output of the Ocarina")

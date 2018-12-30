@@ -44,17 +44,19 @@ public class ItemDWMHRepairable extends Item {
     }
 
     public ItemStack getRepairItem () {
-        String intr = getInternalRepair();
+        return parseItem(getInternalRepair());
+    }
 
+    public ItemStack parseItem (String intr) {
         String[] parts = intr.split(":");
         if (parts.length != 3) {
-            DWMH.LOG.error(String.format("Repair item specified in configuration invalid: |%s|", intr));
+            DWMH.LOG.error(String.format("Item specified in configuration invalid: |%s|", intr));
             return ItemStack.EMPTY;
         }
 
         Item repairInt = Item.REGISTRY.getObject(new ResourceLocation(parts[0], parts[1]));
         if (repairInt == null) {
-            DWMH.LOG.error(String.format("Repair item specified in configuration does not exist: |%s|", intr));
+            DWMH.LOG.error(String.format("Item specified in configuration does not exist: |%s|", intr));
             return ItemStack.EMPTY;
         }
 
@@ -62,7 +64,7 @@ public class ItemDWMHRepairable extends Item {
         try {
             metadata = Integer.parseInt(parts[2]);
         } catch (NumberFormatException nfe) {
-            DWMH.LOG.error(String.format("Repair item metadata is not a valid integer: |%s|", intr));
+            DWMH.LOG.error(String.format("Item metadata is not a valid integer: |%s|", intr));
             return ItemStack.EMPTY;
         }
 

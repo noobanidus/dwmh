@@ -194,6 +194,8 @@ public class DWMHConfig {
         if (event.getModID().equals(DWMH.MODID)) {
             ConfigManager.sync(DWMH.MODID, Config.Type.INSTANCE);
             DWMH.resolveClasses();
+            Registrar.ocarina.updateConfig();
+            Registrar.carrot.updateConfig();
         }
     }
 }

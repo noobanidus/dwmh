@@ -14,10 +14,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.*;
 import net.minecraft.world.World;
@@ -39,15 +36,20 @@ public class ItemOcarina extends ItemDWMHRepairable {
         // want to break any backwards compatibility to people upgrading.
         setRegistryName("dwmh:whistle");
         setUnlocalizedName("dwmh.whistle");
-        if (DWMHConfig.Ocarina.functionality.maxUses != 0) {
-            setMaxDamage(DWMHConfig.Ocarina.functionality.maxUses);
-            setInternalRepair(DWMHConfig.Ocarina.functionality.repairItem);
-        }
         registerPredicate("whistle_damage");
+        updateConfig();
 
         for (int i = 0; i < 8; i++) {
             directions.add(new TextComponentTranslation(String.format("dwmh.strings.dir.%d", i)));
         }
+    }
+
+    public void updateConfig () {
+         if (DWMHConfig.Ocarina.functionality.maxUses != 0) {
+            setMaxDamage(DWMHConfig.Ocarina.functionality.maxUses);
+        }
+
+        setInternalRepair(DWMHConfig.Ocarina.functionality.repairItem);
     }
 
     private boolean isValidHorse (Entity entity, EntityPlayer player) {

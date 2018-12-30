@@ -29,12 +29,16 @@ public class ItemEnchantedCarrot extends ItemDWMHRepairable {
     public void init () {
         setMaxStackSize(1);
         setCreativeTab(DWMH.TAB);
-        setRegistryName("dwmh:EnchantedCarrot");
+        setRegistryName("dwmh:carrot");
         setUnlocalizedName("dwmh.carrot");
-        setMaxDamage(DWMHConfig.EnchantedCarrot.durability.maxUses);
-        setInternalRepair(DWMHConfig.EnchantedCarrot.durability.repairItem);
+        updateConfig();
         registerPredicate("carrot_damage");
 
+    }
+
+    public void updateConfig() {
+        setMaxDamage(DWMHConfig.EnchantedCarrot.durability.maxUses);
+        setInternalRepair(DWMHConfig.EnchantedCarrot.durability.repairItem);
     }
 
     @Override

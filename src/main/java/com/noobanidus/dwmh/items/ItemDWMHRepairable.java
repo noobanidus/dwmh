@@ -102,6 +102,8 @@ public class ItemDWMHRepairable extends Item {
         if (item.getItem() instanceof ItemDWMHRepairable) {
             if (unbreakable && useableItem(item)) {
                 item.damageItem(1, player);
+            } else if (useableItem(item)) {
+                item.damageItem(1, player);
             }
         } else {
             DWMH.LOG.error(String.format("Attempted to damage a non-DWMH item! |%s|", item.getDisplayName()));

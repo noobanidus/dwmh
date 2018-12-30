@@ -114,6 +114,17 @@ public class ItemDWMHRepairable extends Item {
     public boolean showDurabilityBar(ItemStack stack) {
         if (stack.getItemDamage() == stack.getMaxDamage()) return false;
 
-        return true;
+        return super.showDurabilityBar(stack);
+    }
+
+    @SuppressWarnings("deprecation")
+    public int getMaxDamage (ItemStack stack) {
+        int max = getMaxDamage();
+
+        if (stack.getItemDamage() > max) {
+            stack.setItemDamage(max);
+        }
+
+        return max;
     }
 }

@@ -96,24 +96,24 @@ public class DWMHConfig {
     public static Carrot EnchantedCarrot = new Carrot();
     public static class Carrot {
         @Config.RequiresMcRestart
-        @Config.Comment("Set to false to disable all the effects of the enchanted EnchantedCarrot. Disabling each effect individually has the same effect.")
+        @Config.Comment("Set to false to disable all the effects of the enchanted Enchanted Carrot. Disabling each effect individually has the same effect.")
         @Config.Name("Enable Carrot")
         public boolean enabled = true;
 
-        @Config.Comment("Settings related to the durability of the EnchantedCarrot.")
+        @Config.Comment("Settings related to the durability of the Enchanted Carrot.")
         @Config.Name("Durability settings")
         public Durability durability = new Durability();
         public class Durability {
             @Config.RangeInt(min = 1)
-            @Config.Comment("Maximum number of uses before the enchanted EnchantedCarrot is destroyed or, with the unbreakable setting, becomes unusable")
+            @Config.Comment("Maximum number of uses before the enchanted Enchanted Carrot is destroyed or, with the unbreakable setting, becomes unusable")
             @Config.Name("Maximum Carrot Durability")
             public int maxUses = 30;
 
-            @Config.Comment("Set to true to prevent the EnchantedCarrot from breaking when reaching 0 durability")
+            @Config.Comment("Set to true to prevent the Enchanted Carrot from breaking when reaching 0 durability")
             @Config.Name("Unuseable At Minimum Durability")
             public boolean unbreakable = false;
 
-            @Config.Comment("Specify the item that can be used to repair the EnchantedCarrot in an anvil. Items with NBT are not supported. Format: mod:item:metadata. Use \"minecraft\" for vanilla items, and 0 if no metadata is specified.")
+            @Config.Comment("Specify the item that can be used to repair the Enchanted Carrot in an anvil. Items with NBT are not supported. Format: mod:item:metadata. Use \"minecraft\" for vanilla items, and 0 if no metadata is specified.")
             @Config.Name("Carrot Repair Item")
             public String repairItem = "minecraft:gold_block:0";
         }

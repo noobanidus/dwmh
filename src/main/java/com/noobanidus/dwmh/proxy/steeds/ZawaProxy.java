@@ -4,6 +4,7 @@ import com.noobanidus.dwmh.DWMH;
 import com.noobanidus.dwmh.config.DWMHConfig;
 import com.noobanidus.dwmh.items.ItemEnchantedCarrot;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -17,6 +18,7 @@ import org.zawamod.entity.base.ZAWABaseLand;
 import org.zawamod.entity.core.AnimalData;
 import org.zawamod.init.advancement.Triggers;
 
+@SuppressWarnings("unused")
 public class ZawaProxy implements ISteedProxy {
     ZAWABaseLand.AIFight aifight = null;
     EntityAINearestAttackableTarget ainearatt = null;
@@ -97,18 +99,10 @@ public class ZawaProxy implements ISteedProxy {
         animal.setEnrichment(animal.getMaxEnrichment());
         animal.world.setEntityState(animal, (byte)7);
 
-        /*ITextComponent temp = new TextComponentTranslation("dwmh.strings.zawa.tamed");
-        temp.appendText(" ");
-        if (animal.hasCustomName()) {
-            temp.appendText(" " + animal.getCustomNameTag());
-        } else {
-            temp.appendSibling(new TextComponentTranslation(String.format("entity.%s.name", EntityList.getEntityString(animal))));
-        }
-
-        temp.appendText("!");
+        ITextComponent temp = new TextComponentTranslation("dwmh.strings.zawa.tamed",  (animal.hasCustomName()) ? " " + animal.getCustomNameTag() : new TextComponentTranslation(String.format("entity.%s.name", EntityList.getEntityString(animal))));
         temp.getStyle().setColor(TextFormatting.GOLD);
 
-        player.sendMessage(temp);*/
+        player.sendMessage(temp);
     }
 
     public boolean isAgeable (Entity entity, EntityPlayer player) {

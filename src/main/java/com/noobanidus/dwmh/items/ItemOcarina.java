@@ -104,52 +104,20 @@ public class ItemOcarina extends ItemDWMHRepairable {
                 for (Entity horse : nearbyHorses) {
                     didStuff = true;
 
-                    ITextComponent result = new TextComponentTranslation(String.format("entity.%s.name", EntityList.getEntityString(horse)));
-                    result.getStyle().setColor(TextFormatting.YELLOW);
-
-                    if (DWMH.steedProxy.hasCustomName(horse)) {
-                        temp = new TextComponentString(" (");
-                        temp.appendSibling(new TextComponentTranslation("dwmh.strings.named"));
-                        temp.appendText(" " + DWMH.steedProxy.getCustomNameTag(horse) + ")");
-                        result.appendSibling(temp);
-                    }
-
-                    result.appendText(" ");
-                    temp = new TextComponentTranslation("dwmh.strings.is");
-                    temp.getStyle().setColor(TextFormatting.WHITE);
-                    result.appendSibling(temp);
-                    result.appendText(" ");
-
-                    ITextComponent summonable = DWMH.steedProxy.getResponseKey(horse, player);
-
-                    if (summonable != null) {
-                        result.appendSibling(summonable);
-                        result.appendText(" ");
-                    }
-                    temp = new TextComponentTranslation("dwmh.strings.at");
-                    temp.getStyle().setColor(TextFormatting.WHITE);
-                    result.appendSibling(temp);
-                    result.appendText(" ");
-
                     BlockPos hpos = horse.getPosition();
+
+                    String entityKey = String.format("entity.%s.name", EntityList.getEntityString(horse));
 
                     float dist = player.getDistance(horse);
 
-                    result.appendText(TextFormatting.WHITE + String.format("%d, %d, %d", hpos.getX(), hpos.getY(), hpos.getZ()));
-                    if (DWMHConfig.Ocarina.responses.distance) {
-                        result.appendText(" (");
+                    ITextComponent result = new TextComponentTranslation("dwmh.strings.is_at", new TextComponentTranslation(entityKey), (DWMH.steedProxy.hasCustomName(horse)) ? new TextComponentTranslation("dwmh.strings.named", DWMH.steedProxy.getCustomNameTag(horse)) : "", DWMH.steedProxy.getResponseKey(horse, player), hpos.getX(), hpos.getY(), hpos.getZ());
 
+                    if (DWMHConfig.Ocarina.responses.distance) {
                         double angle = Math.atan2(hpos.getZ() - pos.getZ(), hpos.getX() - pos.getX());
                         int index = (int) Math.round(angle / Math.PI * 4 + 10) % 8;
-
-                        result.appendText(String.format("%d", (int) dist));
-                        result.appendText(" ");
-                        temp = new TextComponentTranslation("dwmh.strings.blocks");
-                        result.appendSibling(temp);
-                        result.appendText(" ");
-                        result.appendSibling(directions.get(index));
-                        result.appendText(")");
+                        result.appendSibling(new TextComponentTranslation("dwmh.strings.blocks", (int) dist, directions.get(index)));
                     }
+
                     player.sendMessage(result);
                 }
                 if (!didStuff) {
@@ -216,12 +184,10 @@ public class ItemOcarina extends ItemDWMHRepairable {
                         if (DWMHConfig.Ocarina.functionality.maxUses != 0) damageItem(stack, player);
                         if (!DWMHConfig.Ocarina.responses.quiet && !DWMHConfig.Ocarina.responses.simple) {
                             if (DWMH.steedProxy.hasCustomName(horse)) {
-                                temp = new TextComponentTranslation("dwmh.strings.complex_teleport_a");
-                                temp.appendText(", " + DWMH.steedProxy.getCustomNameTag(horse) + ", ");
-                                temp.appendSibling(new TextComponentTranslation("dwmh.strings.complex_teleport_b"));
+                                temp = new TextComponentTranslation("dwmh.strings.teleport_with_name", DWMH.steedProxy.getCustomNameTag(horse));
                                 temp.getStyle().setColor(TextFormatting.GOLD);
                             } else {
-                                temp = new TextComponentTranslation("dwmh.strings.simple_teleport");
+                                temp = new TextComponentTranslation("dwmh.strings.teleport");
                                 temp.getStyle().setColor(TextFormatting.GOLD);
                             }
                             player.sendMessage(temp);

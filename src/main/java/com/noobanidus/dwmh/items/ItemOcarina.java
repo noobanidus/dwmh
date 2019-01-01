@@ -91,7 +91,6 @@ public class ItemOcarina extends ItemDWMHRepairable {
     public ActionResult<ItemStack> onItemRightClick (World world, EntityPlayer player, @Nonnull EnumHand hand) {
         ItemStack stack = player.getHeldItem(hand);
         ActionResult<ItemStack> actionResult = new ActionResult<>(EnumActionResult.SUCCESS, stack);
-        SoundType sound = SoundType.NONE;
         InventoryPlayer inv = player.inventory;
 
         if (!world.isRemote) {
@@ -206,9 +205,8 @@ public class ItemOcarina extends ItemDWMHRepairable {
                                 return actionResult;
                             } else {
                                 int cleared = inv.clearMatchingItems(itemCost.getItem(), itemCost.getMetadata(), amountPer, null);
-                                if (cleared == 0) {
-                                    // If we ever reach this point, we have a problem?
-                                    int blurgh = 0;
+                                if (cleared < amountPer) {
+                                    DWMH.LOG.error(String.format("Error: inventory should contain %d of %s, with %d to be removed, but only %d were removed.", (amountIn - totalConsumed), itemCost.getDisplayName(), amountIn, cleared));
                                 }
                                 totalConsumed += cleared;
                             }

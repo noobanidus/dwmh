@@ -24,7 +24,7 @@ public class AnimaniaProxy implements ISteedProxy {
 
         if (horse.isTame() && horse.getOwnerUniqueId() != null && horse.getOwnerUniqueId().equals(player.getUniqueID())) return true;
 
-        if (!entity.hasCustomName()) {
+        if (!entity.hasCustomName() || horse.isTame()) {
             return false;
         }
 

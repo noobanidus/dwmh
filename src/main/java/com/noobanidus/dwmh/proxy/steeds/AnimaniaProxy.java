@@ -43,11 +43,7 @@ public class AnimaniaProxy implements ISteedProxy {
 
         if (horse.isTame()) return true;
 
-        if (DWMHConfig.proxies.Animania.onlyNamed) {
-            return entity.hasCustomName();
-        }
-
-        return true;
+        return entity.hasCustomName();
     }
 
     // Can't tame Animania animals -- OR CAN YOU?

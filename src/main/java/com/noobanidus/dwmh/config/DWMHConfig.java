@@ -176,10 +176,6 @@ public class DWMHConfig {
         public class Animania {
             @Config.Comment("Specify list of Animania classes that are considered steeds. Use /dwmh entity while targetting to get the full name")
             public String[] classes = new String[]{"com.animania.common.entities.horses.EntityMareBase", "com.animania.common.entities.horses.EntityStallionBase"};
-
-            @Config.Comment("Set to false to enable the listing of every Animania entity, not just those you are able to summon. This may produce an excess number of entries.")
-            @Config.Name("Only Named")
-            public boolean onlyNamed = true;
         }
 
         @Config.Comment("Options related specifically to ZAWA")

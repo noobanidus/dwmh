@@ -255,6 +255,8 @@ public class ItemOcarina extends ItemDWMHRepairable {
                         temp.getStyle().setColor(TextFormatting.RED);
                     }
                     player.sendMessage(temp);
+
+                    SoundType.MINOR.playSound(player, stack);
                 } else if (DWMHConfig.Ocarina.responses.simple) {
                     temp = new TextComponentTranslation("dwmh.strings.simplest_teleport");
                     temp.getStyle().setColor(TextFormatting.GOLD);

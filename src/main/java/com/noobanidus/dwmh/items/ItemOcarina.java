@@ -376,6 +376,11 @@ public class ItemOcarina extends ItemDWMHRepairable {
         public void playSound (EntityPlayer player, ItemStack stack) {
             // This is predicated on a !player.world.isRemote check
 
+            if (!DWMHConfig.Ocarina.responses.sounds) return;
+
+            SoundEvent e = this.getSoundEvent();
+            if (e == null) return;
+
             long cur = MinecraftServer.getCurrentTimeMillis();
 
             NBTTagCompound tag = stack.getTagCompound();
@@ -393,7 +398,6 @@ public class ItemOcarina extends ItemDWMHRepairable {
 
             tag.setLong("dwmh:last_played", cur);
 
-            SoundEvent e = this.getSoundEvent();
             BlockPos pos = player.getPosition();
             player.world.playSound(null, player.getPosition(), e, SoundCategory.PLAYERS, 16, 1);
 

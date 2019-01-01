@@ -78,11 +78,11 @@ public class DWMHConfig {
             public boolean simple = false;
 
             @Config.Comment("Set to false to disable showing the distance and direction a horse is away from you")
-            @Config.Name("Disable Distance/Direction")
+            @Config.Name("Enable Distance/Direction")
             public boolean distance = true;
 
             @Config.Comment("Set to false to disable sounds being played when the Ocarina is use. These sounds are played on the PLAYERS channel.")
-            @Config.Name("Disable Ocarina Tunes")
+            @Config.Name("Enable Ocarina Tunes")
             public boolean sounds = true;
 
             @Config.Comment("The delay in seconds between uses of the Ocarina causing a sound event. The Ocarina will still trigger, but silently, during this delay.")

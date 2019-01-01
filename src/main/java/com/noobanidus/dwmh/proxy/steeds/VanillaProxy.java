@@ -4,6 +4,8 @@ import com.noobanidus.dwmh.DWMH;
 import com.noobanidus.dwmh.config.DWMHConfig;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.AbstractHorse;
+import net.minecraft.entity.passive.EntitySkeletonHorse;
+import net.minecraft.entity.passive.EntityZombieHorse;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -97,6 +99,8 @@ public class VanillaProxy implements ISteedProxy {
         // Yes, I know this can be simplified
         // but then it becomes unreadable
         if (horse.isChild() || horse.getGrowingAge() != 0 || horse.isInLove()) return false;
+
+        if (horse instanceof EntitySkeletonHorse || horse instanceof EntityZombieHorse) return false;
 
         return true;
     }

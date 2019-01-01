@@ -4,6 +4,7 @@ import com.noobanidus.dwmh.DWMH;
 import com.noobanidus.dwmh.config.DWMHConfig;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.ITextComponent;
@@ -57,16 +58,19 @@ public interface ISteedProxy {
 
     default boolean isHealable (Entity entity, EntityPlayer player) {
         if (isMyMod(entity)) {
-            return DWMH.vanillaProxy.isHealable(entity, player);
+            EntityLiving horse = (EntityLiving) entity;
+            if (horse.getHealth() < horse.getMaxHealth()) return true;
+
+            return false;
         }
 
         return false;
     }
 
-    default void heal(Entity entity, EntityPlayer player) {
-        if (isMyMod(entity)) {
-            DWMH.vanillaProxy.heal(entity, player);
-        }
+    default void heal (Entity entity, EntityPlayer player) {
+        EntityLiving horse = (EntityLiving) entity;
+        horse.heal(horse.getMaxHealth() - horse.getHealth());
+        horse.world.setEntityState(horse, (byte)7);
     }
 
     // Not currently implemented

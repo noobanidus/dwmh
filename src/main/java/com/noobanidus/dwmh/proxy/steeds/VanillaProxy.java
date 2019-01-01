@@ -73,23 +73,6 @@ public class VanillaProxy implements ISteedProxy {
         horse.world.setEntityState(horse, (byte)7);
     }
 
-    public boolean isHealable (Entity entity, EntityPlayer player) {
-        if (!(entity instanceof AbstractHorse)) {
-            return false;
-        }
-
-        AbstractHorse horse = (AbstractHorse) entity;
-
-        return horse.getHealth() < horse.getMaxHealth();
-    }
-
-    public void heal (Entity entity, EntityPlayer player) {
-        AbstractHorse horse = (AbstractHorse) entity;
-
-        horse.heal(horse.getMaxHealth() - horse.getHealth());
-        horse.world.setEntityState(horse, (byte)7);
-    }
-
     // Not currently implemented
     public boolean isBreedable (Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return false;

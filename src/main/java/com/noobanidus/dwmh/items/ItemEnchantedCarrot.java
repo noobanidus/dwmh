@@ -92,7 +92,7 @@ public class ItemEnchantedCarrot extends ItemDWMHRepairable {
         }
 
         if (!player.capabilities.isCreativeMode && didStuff) {
-            damageItem(item, player, DWMHConfig.EnchantedCarrot.durability.unbreakable);
+            damageItem(item, player);
         }
 
         if (didStuff) {
@@ -104,7 +104,7 @@ public class ItemEnchantedCarrot extends ItemDWMHRepairable {
     @SideOnly(Side.CLIENT)
     @Override
     public boolean hasEffect(ItemStack stack) {
-        if (DWMHConfig.EnchantedCarrot.durability.unbreakable && !useableItem(stack)) {
+        if (!useableItem(stack)) {
             return false;
         }
 
@@ -115,7 +115,7 @@ public class ItemEnchantedCarrot extends ItemDWMHRepairable {
     @Override
     public void addInformation(ItemStack par1ItemStack, World world, List<String> stacks, ITooltipFlag flags) {
         if(GuiScreen.isShiftKeyDown()) {
-            if (DWMHConfig.EnchantedCarrot.durability.unbreakable && !useableItem(par1ItemStack)) {
+            if (!useableItem(par1ItemStack)) {
                 stacks.add(TextFormatting.DARK_RED + I18n.format("dwmh.strings.carrot.tooltip.broken"));
             }
             if (DWMHConfig.EnchantedCarrot.effects.taming) {

@@ -105,13 +105,9 @@ public class DWMHConfig {
         public Durability durability = new Durability();
         public class Durability {
             @Config.RangeInt(min = 1)
-            @Config.Comment("Maximum number of uses before the enchanted Enchanted Carrot is destroyed or, with the unbreakable setting, becomes unusable")
+            @Config.Comment("Maximum number of uses before the enchanted Enchanted Carrot becomes unusable")
             @Config.Name("Maximum Carrot Durability")
             public int maxUses = 30;
-
-            @Config.Comment("Set to true to prevent the Enchanted Carrot from breaking when reaching 0 durability")
-            @Config.Name("Unuseable At Minimum Durability")
-            public boolean unbreakable = false;
 
             @Config.Comment("Specify the item that can be used to repair the Enchanted Carrot in an anvil. Items with NBT are not supported. Format: mod:item:metadata. Use \"minecraft\" for vanilla items, and 0 if no metadata is specified.")
             @Config.Name("Carrot Repair Item")

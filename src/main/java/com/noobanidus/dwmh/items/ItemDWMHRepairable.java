@@ -21,7 +21,7 @@ public class ItemDWMHRepairable extends Item {
             @Override
             public float apply(@Nonnull ItemStack stack, @Nullable World worldIn, @Nullable EntityLivingBase entityIn) {
                 if (stack.getItem() instanceof ItemEnchantedCarrot) {
-                    if (DWMHConfig.EnchantedCarrot.durability.unbreakable && stack.getItemDamage() == DWMHConfig.EnchantedCarrot.durability.maxUses)
+                    if (stack.getItemDamage() == DWMHConfig.EnchantedCarrot.durability.maxUses)
                         return 1;
                     return 0;
                 } else if (stack.getItem() instanceof ItemOcarina) {
@@ -92,17 +92,11 @@ public class ItemDWMHRepairable extends Item {
     }
 
     public static void damageItem (ItemStack item, EntityPlayer player) {
-        damageItem(item, player, true);
-    }
-
-    public static void damageItem (ItemStack item, EntityPlayer player, boolean unbreakable) {
         // Most calls to this should be wrapped in this but it doesn't hurt
         if (player.capabilities.isCreativeMode) return;
 
         if (item.getItem() instanceof ItemDWMHRepairable) {
-            if (unbreakable && useableItem(item)) {
-                item.damageItem(1, player);
-            } else if (useableItem(item)) {
+            if (useableItem(item)) {
                 item.damageItem(1, player);
             }
         } else {

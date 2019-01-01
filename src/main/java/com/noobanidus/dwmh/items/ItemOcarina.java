@@ -288,10 +288,13 @@ public class ItemOcarina extends ItemDWMHRepairable {
 
         event.setCanceled(true);
 
+        boolean tamed = horse.isTame();
+        boolean tamedBy = tamed && horse.getOwnerUniqueId() != null && horse.getOwnerUniqueId().equals(player.getUniqueID());
+
         ITextComponent temp;
         String name = String.format("%s's Steed", player.getName());
         if (DWMH.steedProxy.hasCustomName(horse)) {
-            if (DWMH.steedProxy.getCustomNameTag(horse).contains("'s Steed") && !DWMH.steedProxy.getCustomNameTag(horse).equals(name)) {
+            if ((tamed && !tamedBy) || (DWMH.steedProxy.getCustomNameTag(horse).contains("'s Steed") && !DWMH.steedProxy.getCustomNameTag(horse).equals(name))) {
                 temp = new TextComponentTranslation("dwmh.strings.not_your_horse");
                 temp.getStyle().setColor(TextFormatting.RED);
             } else {
@@ -300,10 +303,18 @@ public class ItemOcarina extends ItemDWMHRepairable {
                 temp.getStyle().setColor(TextFormatting.YELLOW);
             }
             player.sendMessage(temp);
-        } else {
+        } else if (!tamed){
             horse.setCustomNameTag(name);
             temp = new TextComponentTranslation("dwmh.strings.animania_named");
             temp.getStyle().setColor(TextFormatting.GOLD);
+            player.sendMessage(temp);
+        } else if (tamedBy) {
+            temp = new TextComponentTranslation("dwmh.strings.animania_tamed");
+            temp.getStyle().setColor(TextFormatting.GOLD);
+            player.sendMessage(temp);
+        } else {
+            temp = new TextComponentTranslation("dwmh.strings.animania_claimed");
+            temp.getStyle().setColor(TextFormatting.RED);
             player.sendMessage(temp);
         }
     }

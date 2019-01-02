@@ -3,6 +3,7 @@ package com.noobanidus.dwmh.items;
 import com.noobanidus.dwmh.DWMH;
 import com.noobanidus.dwmh.config.DWMHConfig;
 import com.noobanidus.dwmh.config.Sound;
+import com.noobanidus.dwmh.util.KeyTransforms;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -106,7 +107,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
 
                     BlockPos hpos = horse.getPosition();
 
-                    String entityKey = String.format("entity.%s.name", EntityList.getEntityString(horse));
+                    String entityKey = KeyTransforms.resolveEntityKey(String.format("entity.%s.name", EntityList.getEntityString(horse)));
 
                     float dist = player.getDistance(horse);
 

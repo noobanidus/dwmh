@@ -164,15 +164,27 @@ public class MOCProxy implements ISteedProxy {
     @SubscribeEvent
     public static void onClientChatReceived (ClientChatReceivedEvent event) {
         if (event.getMessage() instanceof TextComponentTranslation) {
-            if (MOCProxy.entities == null) {
-                entities = Lists.newArrayList(DWMHConfig.proxies.MoCreatures.entities);
-            }
-
             TextComponentTranslation comp = (TextComponentTranslation) event.getMessage();
 
             String key = comp.getKey();
 
-            if (entities.contains(key)) {
+            if (key.equals("dwmh.strings.is_at")) {
+                Object[] args = comp.getFormatArgs();
+                if (!(args[0] instanceof TextComponentTranslation) || args.length != 6) {
+                    return;
+                }
+
+                TextComponentTranslation name = (TextComponentTranslation) args[0];
+
+                if (MOCProxy.entities == null) {
+                    entities = Lists.newArrayList(DWMHConfig.proxies.MoCreatures.entities);
+                }
+
+
+                if (!entities.contains(name.getKey())) return;
+
+                key = name.getKey();
+
                 String res = I18n.format(key);
 
                 if (!res.contains(" ")) {
@@ -181,7 +193,9 @@ public class MOCProxy implements ISteedProxy {
                     StringJoiner s = new StringJoiner(" ");
                     parts.forEach(s::add);
 
-                    TextComponentString temp = new TextComponentString(s.toString());
+                    ITextComponent newName = new TextComponentString(s.toString());
+
+                    ITextComponent temp = new TextComponentTranslation("dwmh.strings.is_at", newName, args[1], args[2], args[3], args[4], args[5]);
                     temp.setStyle(comp.getStyle());
 
                     comp.getSiblings().forEach(temp::appendSibling);

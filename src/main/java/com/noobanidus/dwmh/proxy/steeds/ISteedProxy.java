@@ -4,10 +4,12 @@ import com.noobanidus.dwmh.DWMH;
 import com.noobanidus.dwmh.config.DWMHConfig;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.event.entity.EntityMountEvent;
 
 public interface ISteedProxy {
@@ -90,6 +92,15 @@ public interface ISteedProxy {
 
     default String proxyName () {
         return "default";
+    }
+
+    default ITextComponent getEntityTypeName (Entity entity, EntityPlayer player) {
+        String entityKey = resolveEntityKey(String.format("entity.%s.name", EntityList.getEntityString(entity)));
+        return new TextComponentTranslation(entityKey);
+    }
+
+    default String resolveEntityKey (String key) {
+        return key;
     }
 
     default boolean onDismount (EntityMountEvent event) {

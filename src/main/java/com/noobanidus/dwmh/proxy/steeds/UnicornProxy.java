@@ -1,5 +1,6 @@
 package com.noobanidus.dwmh.proxy.steeds;
 
+import com.hackshop.ultimate_unicorn.gui.ViewableBreedNames;
 import com.hackshop.ultimate_unicorn.mobs.EntityKnightVagabond;
 import com.hackshop.ultimate_unicorn.mobs.EntityMagicalHorse;
 import com.hackshop.ultimate_unicorn.mobs.unique.EntityAleaBringerOfDawn;
@@ -14,6 +15,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -115,6 +117,19 @@ public class UnicornProxy extends VanillaProxy {
                 }
             }
         }
+    }
+
+    public ITextComponent getEntityTypeName (Entity entity, EntityPlayer player) {
+        // checks for isMyMod have already been made
+        EntityMagicalHorse horse = (EntityMagicalHorse) entity;
+
+        if (horse.getClass() == EntityMagicalHorse.class) {
+            if (ViewableBreedNames.getSpecialBreedName(horse.getHideType()) != null) {
+                return new TextComponentString(ViewableBreedNames.getSpecialBreedName(horse.getHideType()));
+            }
+        }
+
+        return super.getEntityTypeName(entity, player);
     }
 
     @Override

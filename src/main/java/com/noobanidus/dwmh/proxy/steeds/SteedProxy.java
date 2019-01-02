@@ -187,6 +187,16 @@ public class SteedProxy implements ISteedProxy {
         return false;
     }
 
+    public ITextComponent getEntityTypeName (Entity entity, EntityPlayer player) {
+        for (ISteedProxy proxy : DWMH.proxyList) {
+            if (proxy.isMyMod(entity)) {
+                return proxy.getEntityTypeName(entity, player);
+            }
+        }
+
+        return null;
+    }
+
 
     public String proxyName () {
         return "main";

@@ -3,12 +3,10 @@ package com.noobanidus.dwmh.items;
 import com.noobanidus.dwmh.DWMH;
 import com.noobanidus.dwmh.config.DWMHConfig;
 import com.noobanidus.dwmh.config.Sound;
-import com.noobanidus.dwmh.util.KeyTransforms;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
 import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
@@ -107,11 +105,15 @@ public class ItemOcarina extends ItemDWMHRepairable {
 
                     BlockPos hpos = horse.getPosition();
 
-                    String entityKey = KeyTransforms.resolveEntityKey(String.format("entity.%s.name", EntityList.getEntityString(horse)));
+                    ITextComponent entityName = DWMH.steedProxy.getEntityTypeName(horse, player);
+                    if (entityName == null) {
+                        DWMH.LOG.error(String.format("Invalid response from proxy for entity %s", horse.getDisplayName().toString()));
+                        entityName = new TextComponentString("INVALID: " + horse.getClass().getName());
+                    }
 
                     float dist = player.getDistance(horse);
 
-                    ITextComponent result = new TextComponentTranslation("dwmh.strings.is_at", new TextComponentTranslation(entityKey), (DWMH.steedProxy.hasCustomName(horse)) ? new TextComponentTranslation("dwmh.strings.named", DWMH.steedProxy.getCustomNameTag(horse)) : "", DWMH.steedProxy.getResponseKey(horse, player), hpos.getX(), hpos.getY(), hpos.getZ());
+                    ITextComponent result = new TextComponentTranslation("dwmh.strings.is_at", entityName, (DWMH.steedProxy.hasCustomName(horse)) ? new TextComponentTranslation("dwmh.strings.named", DWMH.steedProxy.getCustomNameTag(horse)) : "", DWMH.steedProxy.getResponseKey(horse, player), hpos.getX(), hpos.getY(), hpos.getZ());
 
                     if (DWMHConfig.Ocarina.responses.distance) {
                         double angle = Math.atan2(hpos.getZ() - pos.getZ(), hpos.getX() - pos.getX());

@@ -192,6 +192,13 @@ public class MOCProxy implements ISteedProxy {
         }
     }
 
+    public String resolveEntityKey(String entityKey) {
+        if (entityKey.equalsIgnoreCase("entity.mocreatures:manticorepet.name"))
+            return "entity.mocreatures:manticore.name";
+
+        return entityKey;
+    }
+
     public String proxyName () {
         return "MOC";
     }

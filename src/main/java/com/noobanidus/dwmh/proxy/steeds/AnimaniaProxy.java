@@ -108,6 +108,9 @@ public class AnimaniaProxy implements ISteedProxy {
         } else if (animal.hasCustomName() && !animal.getCustomNameTag().equals(name) && !animal.isTame()) {
             temp = new TextComponentTranslation("dwmh.strings.unsummonable.notyours");
             temp.getStyle().setColor(TextFormatting.DARK_RED);
+        } else if (animal.isBeingRidden() && animal.isRidingOrBeingRiddenBy(player)) {
+            temp = new TextComponentTranslation("dwmh.strings.unsummonable.ridden");
+            temp.getStyle().setColor(TextFormatting.DARK_RED);
         } else if (animal.isBeingRidden() && !DWMHConfig.Ocarina.otherRiders) {
             temp = new TextComponentTranslation("dwmh.strings.unsummonable.ridden_other");
             temp.getStyle().setColor(TextFormatting.DARK_RED);

@@ -38,7 +38,7 @@ public class Sound {
     private static Random random = new Random();
 
     public static SoundEvent getRandomWhistle () {
-        if (random.nextInt(100) == 0) {
+        if (random.nextInt(25) == 0) {
             return WHISTLE_SPECIAL;
         }
 

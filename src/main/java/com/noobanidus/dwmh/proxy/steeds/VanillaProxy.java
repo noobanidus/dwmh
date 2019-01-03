@@ -22,9 +22,7 @@ public class VanillaProxy implements ISteedProxy {
     }
 
     public boolean isListable (Entity entity, EntityPlayer player) {
-        if (entity == null || entity.isDead || !(entity instanceof AbstractHorse)) {
-            return false;
-        }
+        if (!isMyMod(entity)) return false;
 
         AbstractHorse horse = (AbstractHorse) entity;
 
@@ -98,11 +96,7 @@ public class VanillaProxy implements ISteedProxy {
     }
 
     public boolean isMyMod (Entity entity) {
-        for (Class<? extends AbstractHorse> clz : DWMH.ignoreList) {
-            if (clz.isAssignableFrom(entity.getClass())) {
-                return false;
-            }
-        }
+        if (DWMH.ignoreList.contains(entity.getClass().getName())) return false;
 
         return entity instanceof AbstractHorse;
     }

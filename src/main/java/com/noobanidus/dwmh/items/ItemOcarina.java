@@ -59,6 +59,8 @@ public class ItemOcarina extends ItemDWMHRepairable {
     }
 
     private boolean isValidHorse (Entity entity, EntityPlayer player, boolean listing) {
+        if (entity.isDead) return false;
+
         if (DWMH.steedProxy.isListable(entity, player)) {
             if (listing) {
                 return true;
@@ -112,7 +114,8 @@ public class ItemOcarina extends ItemDWMHRepairable {
 
                     ITextComponent entityName = DWMH.steedProxy.getEntityTypeName(horse, player);
                     if (entityName == null) {
-                        DWMH.LOG.error(String.format("Invalid response from proxy for entity %s", horse.getDisplayName().toString()));
+                        // This is triggered when an entity that SHOULD be skipped is not skipped
+                        DWMH.LOG.error(String.format("Invalid response from proxy for entity %s", horse.getClass().getName()));
                         entityName = new TextComponentString("INVALID: " + horse.getClass().getName());
                     }
 

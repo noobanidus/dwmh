@@ -215,7 +215,7 @@ public class DWMHConfig {
         public Animania Animania = new Animania();
         public class Animania {
             @Config.Comment("Specify list of Animania classes that are considered steeds. Use /dwmh entity while targetting to get the full name")
-            public String[] classes = new String[]{"com.animania.common.entities.horses.EntityMareBase", "com.animania.common.entities.horses.EntityStallionBase"};
+            public String[] classes = new String[]{"com.animania.common.entities.horses.EntityStallionDraftHorse", "com.animania.common.entities.horses.EntityMareDraftHorse"};
         }
 
         @Config.Comment("Options related specifically to ZAWA")

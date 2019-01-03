@@ -51,10 +51,10 @@ public class DWMH {
     @SuppressWarnings("unused")
     private List<String> supportedMods = Arrays.asList("animania", "mocreatures", "zawa", "ultimate_unicorn_mod");
 
-    public static List<Class<?>> zawaClasses = new ArrayList<>();
-    public static List<Class<?>> animaniaClasses = new ArrayList<>();
-    public static Set<Class<? extends AbstractHorse>> ignoreList = Sets.newHashSet();
-    public static Set<Class<?>> entityBlacklist = Sets.newHashSet();
+    public static Set<String> zawaClasses;
+    public static Set<String> animaniaClasses;
+    public static Set<String> ignoreList = Sets.newHashSet();
+    public static Set<String> entityBlacklist;
 
     @SidedProxy (clientSide="com.noobanidus.dwmh.proxy.ClientProxy", serverSide="com.noobanidus.dwmh.proxy.CommonProxy")
     public static ISidedProxy proxy;
@@ -83,27 +83,9 @@ public class DWMH {
     }
 
     public static void resolveClasses () {
-        if (Loader.isModLoaded("animania")) {
-            DWMH.resolveClasses(DWMH.animaniaClasses, DWMHConfig.proxies.Animania.classes);
-        }
-
-        if (Loader.isModLoaded("zawa")) {
-            DWMH.resolveClasses(DWMH.zawaClasses, DWMHConfig.proxies.ZAWA.classes);
-        }
-
-        DWMH.resolveClasses(DWMH.entityBlacklist, DWMHConfig.blacklist);
-    }
-
-    private static void resolveClasses(Collection<Class<?>> list, String[] classes) {
-        list.clear();
-
-        for (String c: classes) {
-            try {
-                Class clz = Class.forName(c);
-                list.add(clz);
-            } catch (ClassNotFoundException e) {
-                DWMH.LOG.error(String.format("Could not find entity |%s|. The mod isn't loaded.", c));
-            }
-        }
+        // All of these are string-based now hooray
+        DWMH.animaniaClasses = Sets.newHashSet(DWMHConfig.proxies.Animania.classes);
+        DWMH.zawaClasses = Sets.newHashSet(DWMHConfig.proxies.ZAWA.classes);
+        DWMH.entityBlacklist = Sets.newHashSet(DWMHConfig.blacklist);
     }
 }

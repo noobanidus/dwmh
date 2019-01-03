@@ -58,9 +58,7 @@ public class ZawaProxy implements ISteedProxy {
         if (!isMyMod(entity)) return false;
 
         ZAWABaseLand animal = (ZAWABaseLand) entity;
-        if (animal.isTamed()) return false;
-
-        return true;
+        return !animal.isTamed();
     }
 
     public void tame (Entity entity, EntityPlayer player) {
@@ -154,12 +152,13 @@ public class ZawaProxy implements ISteedProxy {
     }
 
     public boolean isMyMod (Entity entity) {
-        for (Class<?> clz : DWMH.zawaClasses) {
-            if (clz.isAssignableFrom(entity.getClass())) {
-                return true;
-            }
-        }
+        if (!(entity instanceof ZAWABaseLand)) return false;
 
+        String clazz = entity.getClass().getName();
+
+        if (DWMH.zawaClasses.contains(clazz)) return true;
+
+        DWMH.ignoreList.add(clazz);
         return false;
     }
 

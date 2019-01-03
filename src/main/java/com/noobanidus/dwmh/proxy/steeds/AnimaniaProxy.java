@@ -86,13 +86,11 @@ public class AnimaniaProxy implements ISteedProxy {
     public boolean isMyMod (Entity entity) {
         if (!(entity instanceof EntityAnimaniaHorse)) return false;
 
-        for (Class<?> clz : DWMH.animaniaClasses) {
-            if (clz.isAssignableFrom(entity.getClass())) {
-                return true;
-            }
-        }
+        String clazz = entity.getClass().getName();
 
-        DWMH.ignoreList.add(((AbstractHorse) entity).getClass());
+        if (DWMH.animaniaClasses.contains(clazz)) return true;
+
+        DWMH.ignoreList.add(clazz);
         return false;
     }
 

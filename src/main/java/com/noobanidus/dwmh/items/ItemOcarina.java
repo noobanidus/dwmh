@@ -143,6 +143,11 @@ public class ItemOcarina extends ItemDWMHRepairable {
                 ItemStack itemCost = getCostItem();
 
                 int amountPer = DWMHConfig.Ocarina.functionality.getSummonCost();
+
+                if (player.capabilities.isCreativeMode) {
+                    amountPer = 0;
+                }
+
                 int amountIn = inv.mainInventory.stream().filter(i -> i.getItem() == itemCost.getItem() && i.getMetadata() == itemCost.getMetadata()).mapToInt(ItemStack::getCount).sum();
 
                 // Early breakpoints: if there is an item cost but we don't have enough

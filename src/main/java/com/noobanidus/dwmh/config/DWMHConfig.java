@@ -20,7 +20,7 @@ public class DWMHConfig {
     public static Ocarina Ocarina = new Ocarina();
     public static class Ocarina {
         @Config.Comment("Specify the maximum distance steeds can be summoned from (set to 0 for infinite). Excludes entities in unloaded chunks or different dimensions")
-        @Config.RangeDouble(min=0d, max=100000d)
+        @Config.RangeDouble(min=0d)
         @Config.Name("Maximum Summon Distance")
         public double maxDistance = 200d;
 
@@ -46,10 +46,12 @@ public class DWMHConfig {
         public class Functionality {
             @Config.Comment("Specify a cooldown for each usage of the Ocarina, or specify 0 to disable")
             @Config.Name("Ocarina Cooldown Duration")
+            @Config.RangeInt(min=0)
             public int cooldown = 0;
 
             @Config.Comment("Specify the maximum durability of the Ocarina. One horse summoned costs one durability. Set to 0 to disable durability.")
             @Config.Name("Maximum Ocarina Durability")
+            @Config.RangeInt(min=0)
             public int maxUses = 0;
 
             @Config.Comment("Specify the item that can be used to repair the Ocarina in an anvil. Items with NBT are not supported. Format mod:item:metadata (use \"minecraft\" for vanilla items), use 0 for no meteadata.")
@@ -62,6 +64,7 @@ public class DWMHConfig {
 
             @Config.Comment("Specify the quantity of the item to consume from the player's inventory before summoning a horse. Set to 0 to consume nothing.")
             @Config.Name("Summon Cost")
+            @Config.RangeInt(min=0)
             public int summonCost = 0;
         }
 

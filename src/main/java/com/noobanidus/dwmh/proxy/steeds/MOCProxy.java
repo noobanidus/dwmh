@@ -180,7 +180,6 @@ public class MOCProxy implements ISteedProxy {
                     entities = Lists.newArrayList(DWMHConfig.proxies.MoCreatures.entities);
                 }
 
-
                 if (!entities.contains(name.getKey())) return;
 
                 key = name.getKey();

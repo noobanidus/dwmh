@@ -66,6 +66,10 @@ public class DWMHConfig {
             @Config.Name("Summon Cost")
             @Config.RangeInt(min=0)
             public int summonCost = 0;
+
+            public int getSummonCost () {
+                return Math.max(summonCost, 0);
+            }
         }
 
         @Config.Comment("Options related to audio and text output of the Ocarina")

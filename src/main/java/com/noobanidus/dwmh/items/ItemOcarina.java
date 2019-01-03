@@ -134,7 +134,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
 
                 ItemStack itemCost = getCostItem();
 
-                int amountPer = DWMHConfig.Ocarina.functionality.summonCost;
+                int amountPer = DWMHConfig.Ocarina.functionality.getSummonCost();
                 int amountIn = inv.mainInventory.stream().filter(i -> i.getItem() == itemCost.getItem() && i.getMetadata() == itemCost.getMetadata()).mapToInt(ItemStack::getCount).sum();
 
                 // Early breakpoints: if there is an item cost but we don't have enough
@@ -319,8 +319,8 @@ public class ItemOcarina extends ItemDWMHRepairable {
                 stacks.add(TextFormatting.AQUA + I18n.format("dwmh.strings.repair_carrot", getRepairItem().getDisplayName()));
             }
 
-            if (DWMHConfig.Ocarina.functionality.summonCost != 0) {
-                stacks.add(TextFormatting.RED + I18n.format("dwmh.strings.summon_tooltip", getCostItem().getDisplayName(), DWMHConfig.Ocarina.functionality.summonCost));
+            if (DWMHConfig.Ocarina.functionality.getSummonCost() != 0) {
+                stacks.add(TextFormatting.RED + I18n.format("dwmh.strings.summon_tooltip", getCostItem().getDisplayName(), DWMHConfig.Ocarina.functionality.getSummonCost()));
             }
         } else {
             stacks.add(TextFormatting.DARK_GRAY + I18n.format("dwmh.strings.hold_shift"));

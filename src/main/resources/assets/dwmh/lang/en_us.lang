@@ -41,6 +41,7 @@ dwmh.strings.carrot.tooltip.ageing=to automatically age a baby horse to adulthoo
 dwmh.strings.carrot.tooltip.healing=to completely heal a damaged horse.
 dwmh.strings.carrot.tooltip.breeding=to put an eligible horse into breeding mode.
 dwmh.strings.carrot.tooltip.broken=This magical item is broken and must be repaired.
+dwmh.strings.carrot.nothing=This carrot is configured to do nothing, but it somehow still enabled! Oops. It will disappear when you next restart Minecraft.
 dwmh.strings.hold_shift=[Sneak for more info.]
 dwmh.strings.already_named=This steed is already named!
 dwmh.strings.animania_named=This steed will now be eligible for summoning with the Ocarina.

@@ -115,21 +115,26 @@ public class ItemEnchantedCarrot extends ItemDWMHRepairable {
     @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack par1ItemStack, World world, List<String> stacks, ITooltipFlag flags) {
+        boolean enabled = DWMHConfig.EnchantedCarrot.enabled;
+
         if(GuiScreen.isShiftKeyDown()) {
             if (!useableItem(par1ItemStack)) {
                 stacks.add(TextFormatting.DARK_RED + I18n.format("dwmh.strings.carrot.tooltip.broken"));
             }
-            if (DWMHConfig.EnchantedCarrot.effects.taming) {
+            if (DWMHConfig.EnchantedCarrot.effects.taming && enabled) {
                 stacks.add(TextFormatting.GOLD + I18n.format("dwmh.strings.right_click") + " " + TextFormatting.WHITE + I18n.format("dwmh.strings.carrot.tooltip.taming"));
             }
-            if (DWMHConfig.EnchantedCarrot.effects.healing) {
+            if (DWMHConfig.EnchantedCarrot.effects.healing && enabled) {
                 stacks.add(TextFormatting.GOLD + I18n.format("dwmh.strings.right_click") + " " + TextFormatting.WHITE + I18n.format("dwmh.strings.carrot.tooltip.healing"));
             }
-            if (DWMHConfig.EnchantedCarrot.effects.aging) {
+            if (DWMHConfig.EnchantedCarrot.effects.aging && enabled) {
                 stacks.add(TextFormatting.GOLD + I18n.format("dwmh.strings.right_click") + " " + TextFormatting.WHITE + I18n.format("dwmh.strings.carrot.tooltip.ageing"));
             }
-            if (DWMHConfig.EnchantedCarrot.effects.breeding) {
+            if (DWMHConfig.EnchantedCarrot.effects.breeding && enabled) {
                 stacks.add(TextFormatting.GOLD + I18n.format("dwmh.strings.right_click") + " " + TextFormatting.WHITE + I18n.format("dwmh.strings.carrot.tooltip.breeding"));
+            }
+            if ((!DWMHConfig.EnchantedCarrot.effects.taming && !DWMHConfig.EnchantedCarrot.effects.healing && !DWMHConfig.EnchantedCarrot.effects.aging && !DWMHConfig.EnchantedCarrot.effects.breeding) || !enabled) {
+                stacks.add(TextFormatting.DARK_PURPLE + I18n.format("dwmh.strings.carrot.nothing"));
             }
             stacks.add(TextFormatting.AQUA + I18n.format("dwmh.strings.repair_carrot", getRepairItem().getDisplayName()));
         } else {

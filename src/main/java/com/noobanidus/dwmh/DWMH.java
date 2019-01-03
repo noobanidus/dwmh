@@ -49,6 +49,7 @@ public class DWMH {
     @SidedProxy (clientSide="com.noobanidus.dwmh.proxy.ClientProxy", serverSide="com.noobanidus.dwmh.proxy.CommonProxy")
     public static ISidedProxy proxy;
 
+    @SuppressWarnings("unused")
     @Mod.Instance(DWMH.MODID)
     public static DWMH instance;
 

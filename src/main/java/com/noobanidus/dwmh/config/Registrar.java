@@ -27,17 +27,13 @@ public class Registrar {
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
         event.getRegistry().register(ocarina);
-        if (DWMHConfig.EnchantedCarrot.enabled) {
-            event.getRegistry().register(carrot);
-        }
+        event.getRegistry().register(carrot);
     }
 
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public static void registerModels(ModelRegistryEvent event) {
         ModelLoader.setCustomModelResourceLocation(ocarina, 0, new ModelResourceLocation("dwmh:ocarina", "inventory"));
-        if (DWMHConfig.EnchantedCarrot.enabled) {
-            ModelLoader.setCustomModelResourceLocation(carrot, 0, new ModelResourceLocation("dwmh:carrot", "inventory"));
-        }
+        ModelLoader.setCustomModelResourceLocation(carrot, 0, new ModelResourceLocation("dwmh:carrot", "inventory"));
     }
 }

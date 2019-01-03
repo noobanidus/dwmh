@@ -21,5 +21,9 @@
       "item": "minecraft:experience_bottle",
       "data": 0
     }
-  }
+  },
+  "conditions": [{
+    "type": "dwmh:recipes",
+    "recipe": "carrot"
+  }]
 }

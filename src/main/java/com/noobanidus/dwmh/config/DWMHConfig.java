@@ -129,8 +129,8 @@ public class DWMHConfig {
     public static Carrot EnchantedCarrot = new Carrot();
     public static class Carrot {
         @Config.RequiresMcRestart
-        @Config.Comment("Set to false to disable all the effects of the enchanted Enchanted Carrot. Disabling each effect individually has the same effect.")
-        @Config.Name("Enable Carrot")
+        @Config.Comment("Set to false to disable the Enchanted Carrot recipe from being registered.")
+        @Config.Name("Enable Carrot Recipe")
         public boolean enabled = true;
 
         @Config.Comment("Settings related to the durability of the Enchanted Carrot.")
@@ -238,6 +238,11 @@ public class DWMHConfig {
     @Config.Comment("Specify a blacklist of entities that should always be ignored, even if generally loaded by their proxy.")
     @Config.Name("Entity Blacklist")
     public static String[] blacklist = new String[]{};
+
+    @Config.RequiresMcRestart
+    @Config.Comment("Set to false to disable the craftable saddle recipes")
+    @Config.Name("Enable Saddle Recipe")
+    public static boolean saddleRecipe = true;
 
     @SubscribeEvent
     public static void onConfigChanged (ConfigChangedEvent.OnConfigChangedEvent event) {

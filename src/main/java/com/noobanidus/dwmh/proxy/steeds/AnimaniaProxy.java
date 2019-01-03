@@ -56,7 +56,19 @@ public class AnimaniaProxy implements ISteedProxy {
     }
 
     public void tame (Entity entity, EntityPlayer player) {
-        ((AbstractHorse) entity).setTamedBy(player);
+        AbstractHorse horse = (AbstractHorse) entity;
+
+        String name = generateName(player);
+
+        if (horse.hasCustomName() && horse.getCustomNameTag().equals(name)) {
+            horse.setCustomNameTag("");
+        }
+
+        horse.setTamedBy(player);
+
+        ITextComponent temp = new TextComponentTranslation("dwmh.strings.animania_taming");
+        temp.getStyle().setColor(TextFormatting.YELLOW);
+        player.sendMessage(temp);
     }
 
     // Foal interactions -> uncertain

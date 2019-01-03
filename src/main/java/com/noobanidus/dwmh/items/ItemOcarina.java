@@ -264,10 +264,13 @@ public class ItemOcarina extends ItemDWMHRepairable {
             if ((tamed && !tamedBy) || (DWMH.steedProxy.getCustomNameTag(horse).contains("'s Steed") && !DWMH.steedProxy.getCustomNameTag(horse).equals(name))) {
                 temp = new TextComponentTranslation("dwmh.strings.not_your_horse");
                 temp.getStyle().setColor(TextFormatting.RED);
-            } else {
+            } else if (!tamed) {
                 DWMH.steedProxy.setCustomNameTag(horse, "");
                 temp = new TextComponentTranslation("dwmh.strings.unnamed");
                 temp.getStyle().setColor(TextFormatting.YELLOW);
+            } else {
+                temp = new TextComponentTranslation("dwmh.strings.unnamed_fail");
+                temp.getStyle().setColor(TextFormatting.RED);
             }
             player.sendMessage(temp);
         } else if (!tamed){

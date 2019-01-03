@@ -88,6 +88,10 @@ public class DWMHConfig {
             @Config.Comment("The delay in seconds between uses of the Ocarina causing a sound event. The Ocarina will still trigger, but silently, during this delay.")
             @Config.Name("Ocarina Sound Delay")
             public int soundDelay = 5;
+
+            @Config.Comment("Set to true to prevent llamas from being listed with the Ocarina.")
+            @Config.Name("Disable Listing Llama")
+            public boolean noLlamas = false;
         }
     }
 

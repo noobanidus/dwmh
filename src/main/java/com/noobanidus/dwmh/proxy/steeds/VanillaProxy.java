@@ -3,10 +3,7 @@ package com.noobanidus.dwmh.proxy.steeds;
 import com.noobanidus.dwmh.DWMH;
 import com.noobanidus.dwmh.config.DWMHConfig;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.passive.AbstractHorse;
-import net.minecraft.entity.passive.EntityMule;
-import net.minecraft.entity.passive.EntitySkeletonHorse;
-import net.minecraft.entity.passive.EntityZombieHorse;
+import net.minecraft.entity.passive.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -30,6 +27,8 @@ public class VanillaProxy implements ISteedProxy {
         }
 
         AbstractHorse horse = (AbstractHorse) entity;
+
+        if (DWMHConfig.Ocarina.responses.noLlamas && entity instanceof EntityLlama) return false;
 
         if (horse.isChild() || !horse.isTame() || horse.dimension != player.dimension) {
             return false;

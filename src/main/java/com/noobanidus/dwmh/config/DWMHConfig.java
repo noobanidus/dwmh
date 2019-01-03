@@ -139,7 +139,7 @@ public class DWMHConfig {
             public boolean breeding = true;
         }
 
-        @Config.Comment("Set to true to enable the enchantment glint. Useful if you are using a texture pack that overrides the Carrot animation.")
+        @Config.Comment("Set to true to enable the enchantment glint. Useful if you are using a texture pack that overrides the Carrot animation. Client-side only.")
         @Config.Name("Enable Enchantment Glint")
         public boolean glint = false;
     }

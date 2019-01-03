@@ -98,6 +98,18 @@ public class VanillaProxy implements ISteedProxy {
     public boolean isMyMod (Entity entity) {
         if (DWMH.ignoreList.contains(entity.getClass().getName())) return false;
 
+        String clazz = entity.getClass().getName();
+
+        if (!DWMH.animaniaProxy.isLoaded() && clazz.contains("animania")) {
+            DWMH.ignoreList.add(clazz);
+            return false;
+        }
+
+        if (!DWMH.unicornProxy.isLoaded() && clazz.contains("ultimate_unicorn")) {
+            DWMH.ignoreList.add(clazz);
+            return false;
+        }
+
         return entity instanceof AbstractHorse;
     }
 

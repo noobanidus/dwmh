@@ -1,23 +1,13 @@
 package com.noobanidus.dwmh;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.noobanidus.dwmh.commands.ClientEntityCommand;
 import com.noobanidus.dwmh.config.CreativeTabDWMH;
 import com.noobanidus.dwmh.config.DWMHConfig;
-import com.noobanidus.dwmh.config.Registrar;
 import com.noobanidus.dwmh.proxy.ISidedProxy;
 import com.noobanidus.dwmh.proxy.steeds.DummySteedProxy;
 import com.noobanidus.dwmh.proxy.steeds.ISteedProxy;
-import com.noobanidus.dwmh.proxy.steeds.SteedProxy;
 import com.noobanidus.dwmh.proxy.steeds.VanillaProxy;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.passive.AbstractHorse;
-import net.minecraftforge.client.ClientCommandHandler;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
 import org.apache.logging.log4j.LogManager;
@@ -87,5 +77,6 @@ public class DWMH {
         DWMH.animaniaClasses = Sets.newHashSet(DWMHConfig.proxies.Animania.classes);
         DWMH.zawaClasses = Sets.newHashSet(DWMHConfig.proxies.ZAWA.classes);
         DWMH.entityBlacklist = Sets.newHashSet(DWMHConfig.blacklist);
+        DWMH.ignoreList.clear();
     }
 }

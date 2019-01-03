@@ -3,6 +3,7 @@ package com.noobanidus.dwmh.config;
 import com.google.common.collect.Lists;
 import com.noobanidus.dwmh.DWMH;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Config;
@@ -72,6 +73,9 @@ public class DWMHConfig {
             @Config.Comment("Specify the item that can be used to repair the Ocarina in an anvil. Items with NBT are not supported. Format mod:item:metadata (use \"minecraft\" for vanilla items), use 0 for no meteadata.")
             @Config.Name("Ocarina Repair Item")
             public String repairItem = "minecraft:golden_carrot:0";
+
+            @Config.Ignore
+            public ItemStack repairItemDefault = new ItemStack(Items.GOLDEN_CARROT);
 
             @Config.Comment("Specify the item to consume from the player's inventory before summoning a horse. Format: mod:item:metadata (use \"minecraft\" for vanilla items), use 0 for no metadata. Items with NBT are not supported.")
             @Config.Name("Summon Item")
@@ -145,6 +149,9 @@ public class DWMHConfig {
             @Config.Comment("Specify the item that can be used to repair the Enchanted Carrot in an anvil. Items with NBT are not supported. Format: mod:item:metadata. Use \"minecraft\" for vanilla items, and 0 if no metadata is specified.")
             @Config.Name("Carrot Repair Item")
             public String repairItem = "minecraft:gold_block:0";
+
+            @Config.Ignore
+            public ItemStack repairItemDefault = new ItemStack(Blocks.GOLD_BLOCK);
         }
 
         @Config.Comment("Allows fine-tuning of the individual effects of the Enchanted Carrot")
@@ -239,6 +246,9 @@ public class DWMHConfig {
             DWMH.resolveClasses();
             Registrar.ocarina.updateConfig();
             Registrar.carrot.updateConfig();
+            Registrar.ocarina.checkRepairItem();
+            Registrar.ocarina.checkCostItem();
+            Registrar.carrot.checkRepairItem();
 
             if (Ocarina.functionality.getMaxUses() != Ocarina.functionality.maxUses) DWMH.LOG.error(String.format("Invalid configuration value for Ocarina:maxUses: |%d|. Using default 0 instead.", Ocarina.functionality.maxUses));
             if (Ocarina.functionality.getCooldown() != Ocarina.functionality.cooldown) DWMH.LOG.error(String.format("Invalid configuration value for Ocarina:cooldown: |%d|. Using default 0 instead.", Ocarina.functionality.cooldown));

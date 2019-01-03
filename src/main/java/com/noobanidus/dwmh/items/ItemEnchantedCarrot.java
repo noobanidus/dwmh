@@ -33,6 +33,7 @@ public class ItemEnchantedCarrot extends ItemDWMHRepairable {
         setUnlocalizedName("dwmh.carrot");
         updateConfig();
         registerPredicate("carrot_damage");
+        setInternalDefault(DWMHConfig.EnchantedCarrot.durability.repairItemDefault);
 
     }
 

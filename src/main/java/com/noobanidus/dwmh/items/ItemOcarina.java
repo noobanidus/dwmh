@@ -39,6 +39,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
         setUnlocalizedName("dwmh.whistle");
         registerPredicate("whistle_damage");
         updateConfig();
+        setInternalDefault(DWMHConfig.Ocarina.functionality.repairItemDefault);
 
         for (int i = 0; i < 8; i++) {
             directions.add(new TextComponentTranslation(String.format("dwmh.strings.dir.%d", i)));
@@ -46,7 +47,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
     }
 
     public void updateConfig () {
-         if (DWMHConfig.Ocarina.functionality.getMaxUses() != 0) {
+        if (DWMHConfig.Ocarina.functionality.getMaxUses() != 0) {
             setMaxDamage(DWMHConfig.Ocarina.functionality.getMaxUses());
         }
 
@@ -82,7 +83,11 @@ public class ItemOcarina extends ItemDWMHRepairable {
     }
 
     public ItemStack getCostItem () {
-        return parseItem(DWMHConfig.Ocarina.functionality.summonItem);
+        return parseItem(DWMHConfig.Ocarina.functionality.summonItem, DWMHConfig.Ocarina.functionality.summonItemStack);
+    }
+
+    public void checkCostItem () {
+        parseItem(DWMHConfig.Ocarina.functionality.summonItem, DWMHConfig.Ocarina.functionality.summonItemStack, true);
     }
 
     @Nonnull

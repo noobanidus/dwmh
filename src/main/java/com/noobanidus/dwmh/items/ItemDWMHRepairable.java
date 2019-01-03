@@ -13,8 +13,10 @@ import net.minecraft.world.World;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+@SuppressWarnings("WeakerAccess")
 public class ItemDWMHRepairable extends Item {
     private String internalRepair;
+    private ItemStack defaultRepair = ItemStack.EMPTY;
 
     public void registerPredicate (String predicate_name) {
          addPropertyOverride(new ResourceLocation("dwmh", predicate_name), new IItemPropertyGetter() {
@@ -35,6 +37,12 @@ public class ItemDWMHRepairable extends Item {
         });
     }
 
+    public void setInternalDefault (ItemStack item) {
+        defaultRepair = item;
+    }
+
+    public void updateConfig () { }
+
     public void setInternalRepair (String item) {
         internalRepair = item;
     }
@@ -44,32 +52,55 @@ public class ItemDWMHRepairable extends Item {
     }
 
     public ItemStack getRepairItem () {
-        return parseItem(getInternalRepair());
+        ItemStack repairItem = parseItem(getInternalRepair());
+        if (repairItem.isEmpty()) return defaultRepair;
+        return repairItem;
+    }
+
+    public void checkRepairItem () {
+        parseItem(getInternalRepair(), null, true);
     }
 
     public ItemStack parseItem (String intr) {
+        return parseItem(intr, null);
+    }
+
+    public ItemStack parseItem (String intr, ItemStack def) {
+        return parseItem(intr, def, false);
+    }
+
+    public ItemStack parseItem (String intr, ItemStack def, Boolean errors) {
         String[] parts = intr.split(":");
-        if (parts.length != 3) {
-            DWMH.LOG.error(String.format("Item specified in configuration invalid: |%s|", intr));
-            return ItemStack.EMPTY;
+
+        if (def == null) def = ItemStack.EMPTY;
+
+        String defName;
+
+        if (def != null && !def.isEmpty()) {
+            defName = def.getDisplayName();
+        } else {
+            defName = defaultRepair.getDisplayName();
+        }
+
+        if (parts.length == 2) {
+            parts = new String[]{parts[0], parts[1], "0"};
         }
 
         Item repairInt = Item.REGISTRY.getObject(new ResourceLocation(parts[0], parts[1]));
         if (repairInt == null) {
-            DWMH.LOG.error(String.format("Item specified in configuration does not exist: |%s|", intr));
-            return ItemStack.EMPTY;
+            if (errors) DWMH.LOG.error(String.format("Item specified in configuration does not exist: |%s|. Using default |%s| instead.", intr, defName));
+            return def;
         }
 
         int metadata;
         try {
             metadata = Integer.parseInt(parts[2]);
         } catch (NumberFormatException nfe) {
-            DWMH.LOG.error(String.format("Item metadata is not a valid integer: |%s|", intr));
-            return ItemStack.EMPTY;
+            if (errors) DWMH.LOG.error(String.format("Item metadata is not a valid integer: |%s|. Using default instead of 0 instead.", intr));
+            return def;
         }
 
-        ItemStack repair = new ItemStack(repairInt, 1, metadata);
-        return repair;
+        return new ItemStack(repairInt, 1, metadata);
     }
 
     @Override

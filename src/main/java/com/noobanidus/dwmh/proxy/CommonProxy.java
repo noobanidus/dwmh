@@ -60,6 +60,11 @@ public class CommonProxy implements ISidedProxy {
         DWMH.proxyList = Lists.newArrayList(DWMH.animaniaProxy, DWMH.mocProxy, DWMH.zawaProxy, DWMH.unicornProxy, DWMH.vanillaProxy);
         DWMH.proxyList.removeIf(i -> !i.isLoaded());
         DWMH.resolveClasses();
+
+        // Call these here to generate log error messages if necessary.
+        Registrar.ocarina.checkRepairItem();
+        Registrar.ocarina.checkCostItem();
+        Registrar.carrot.checkRepairItem();
     }
 
     public void loadComplete(FMLLoadCompleteEvent event) {

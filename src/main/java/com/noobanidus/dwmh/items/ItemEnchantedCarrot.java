@@ -37,7 +37,7 @@ public class ItemEnchantedCarrot extends ItemDWMHRepairable {
     }
 
     public void updateConfig() {
-        setMaxDamage(DWMHConfig.EnchantedCarrot.durability.maxUses);
+        setMaxDamage(DWMHConfig.EnchantedCarrot.durability.getMaxUses());
         setInternalRepair(DWMHConfig.EnchantedCarrot.durability.repairItem);
     }
 

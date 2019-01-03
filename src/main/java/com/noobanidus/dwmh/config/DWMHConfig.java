@@ -2,6 +2,9 @@ package com.noobanidus.dwmh.config;
 
 import com.google.common.collect.Lists;
 import com.noobanidus.dwmh.DWMH;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
@@ -23,6 +26,10 @@ public class DWMHConfig {
         @Config.RangeDouble(min=0d)
         @Config.Name("Maximum Summon Distance")
         public double maxDistance = 200d;
+
+        public double getMaxDistance () {
+            return Math.max(maxDistance, 0.0d);
+        }
 
         @Config.Comment("Set to true to enable summoning of horses even if they are being ridden by someone else.")
         @Config.Name("Summon With Other Riders")
@@ -49,10 +56,18 @@ public class DWMHConfig {
             @Config.RangeInt(min=0)
             public int cooldown = 0;
 
+            public int getCooldown () {
+                return Math.max(cooldown, 0);
+            }
+
             @Config.Comment("Specify the maximum durability of the Ocarina. One horse summoned costs one durability. Set to 0 to disable durability.")
             @Config.Name("Maximum Ocarina Durability")
             @Config.RangeInt(min=0)
             public int maxUses = 0;
+
+            public int getMaxUses () {
+                return Math.max(maxUses, 0);
+            }
 
             @Config.Comment("Specify the item that can be used to repair the Ocarina in an anvil. Items with NBT are not supported. Format mod:item:metadata (use \"minecraft\" for vanilla items), use 0 for no meteadata.")
             @Config.Name("Ocarina Repair Item")
@@ -61,6 +76,9 @@ public class DWMHConfig {
             @Config.Comment("Specify the item to consume from the player's inventory before summoning a horse. Format: mod:item:metadata (use \"minecraft\" for vanilla items), use 0 for no metadata. Items with NBT are not supported.")
             @Config.Name("Summon Item")
             public String summonItem = "minecraft:carrot:0";
+
+            @Config.Ignore
+            public ItemStack summonItemStack = new ItemStack(Items.CARROT);
 
             @Config.Comment("Specify the quantity of the item to consume from the player's inventory before summoning a horse. Set to 0 to consume nothing.")
             @Config.Name("Summon Cost")
@@ -119,6 +137,10 @@ public class DWMHConfig {
             @Config.Comment("Maximum number of uses before the enchanted Enchanted Carrot becomes unusable")
             @Config.Name("Maximum Carrot Durability")
             public int maxUses = 30;
+
+            public int getMaxUses () {
+                return Math.max(maxUses, 1);
+            }
 
             @Config.Comment("Specify the item that can be used to repair the Enchanted Carrot in an anvil. Items with NBT are not supported. Format: mod:item:metadata. Use \"minecraft\" for vanilla items, and 0 if no metadata is specified.")
             @Config.Name("Carrot Repair Item")
@@ -217,6 +239,11 @@ public class DWMHConfig {
             DWMH.resolveClasses();
             Registrar.ocarina.updateConfig();
             Registrar.carrot.updateConfig();
+
+            if (Ocarina.functionality.getMaxUses() != Ocarina.functionality.maxUses) DWMH.LOG.error(String.format("Invalid configuration value for Ocarina:maxUses: |%d|. Using default 0 instead.", Ocarina.functionality.maxUses));
+            if (Ocarina.functionality.getCooldown() != Ocarina.functionality.cooldown) DWMH.LOG.error(String.format("Invalid configuration value for Ocarina:cooldown: |%d|. Using default 0 instead.", Ocarina.functionality.cooldown));
+            if (Ocarina.functionality.getSummonCost() != Ocarina.functionality.summonCost) DWMH.LOG.error(String.format("Invalid configuration value for Ocarina:summonCost: |%d|. Using default 0 instead.", Ocarina.functionality.summonCost));
+            if (EnchantedCarrot.durability.getMaxUses() != EnchantedCarrot.durability.maxUses) DWMH.LOG.error(String.format("Invalid configuration value for EnchantedCarrot:maxUses: |%d|. Using default 1 instead.", EnchantedCarrot.durability.maxUses));
         }
     }
 }

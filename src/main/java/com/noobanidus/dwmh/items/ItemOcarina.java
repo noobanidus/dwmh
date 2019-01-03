@@ -46,8 +46,8 @@ public class ItemOcarina extends ItemDWMHRepairable {
     }
 
     public void updateConfig () {
-         if (DWMHConfig.Ocarina.functionality.maxUses != 0) {
-            setMaxDamage(DWMHConfig.Ocarina.functionality.maxUses);
+         if (DWMHConfig.Ocarina.functionality.getMaxUses() != 0) {
+            setMaxDamage(DWMHConfig.Ocarina.functionality.getMaxUses());
         }
 
         setInternalRepair(DWMHConfig.Ocarina.functionality.repairItem);
@@ -76,7 +76,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
     }
 
     public static boolean useableItem (ItemStack item) {
-        if (DWMHConfig.Ocarina.functionality.maxUses == 0) return true;
+        if (DWMHConfig.Ocarina.functionality.getMaxUses() == 0) return true;
 
         return ItemDWMHRepairable.useableItem(item);
     }
@@ -160,7 +160,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
                 List<Entity> nearbyHorses = world.getEntities(Entity.class, (entity) -> isValidHorse(entity, player));
                 for (Entity entity : nearbyHorses) {
                     EntityAnimal horse = (EntityAnimal) entity;
-                    double max = DWMHConfig.Ocarina.maxDistance;
+                    double max = DWMHConfig.Ocarina.getMaxDistance();
                     if (horse.getDistanceSq(player) < (max * max) || max == 0) {
                         if (amountPer != 0) {
                             // Early breakpoint: if the number consumed thus far taken from the initial total is less than the amount, break
@@ -184,7 +184,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
                         }
                         horse.moveToBlockPosAndAngles(pos, horse.rotationYaw, horse.rotationPitch);
                         didStuff = true;
-                        if (DWMHConfig.Ocarina.functionality.maxUses != 0) damageItem(stack, player);
+                        if (DWMHConfig.Ocarina.functionality.getMaxUses() != 0) damageItem(stack, player);
                         if (!DWMHConfig.Ocarina.responses.quiet && !DWMHConfig.Ocarina.responses.simple) {
                             if (DWMH.steedProxy.hasCustomName(horse)) {
                                 temp = new TextComponentTranslation("dwmh.strings.teleport_with_name", DWMH.steedProxy.getCustomNameTag(horse));
@@ -195,8 +195,8 @@ public class ItemOcarina extends ItemDWMHRepairable {
                             }
                             player.sendMessage(temp);
                         }
-                        if (DWMHConfig.Ocarina.functionality.cooldown > 0) {
-                            player.getCooldownTracker().setCooldown(this, DWMHConfig.Ocarina.functionality.cooldown);
+                        if (DWMHConfig.Ocarina.functionality.getCooldown() > 0) {
+                            player.getCooldownTracker().setCooldown(this, DWMHConfig.Ocarina.functionality.getCooldown());
                         }
                         player.swingArm(hand);
                         horse.getNavigator().clearPath();
@@ -293,7 +293,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
     @Override
     public void addInformation(ItemStack par1ItemStack, World world, List<String> stacks, ITooltipFlag flags) {
         if(GuiScreen.isShiftKeyDown()) {
-            if (!useableItem(par1ItemStack) && DWMHConfig.Ocarina.functionality.maxUses != 0) {
+            if (!useableItem(par1ItemStack) && DWMHConfig.Ocarina.functionality.getMaxUses() != 0) {
                 stacks.add(TextFormatting.DARK_RED + I18n.format("dwmh.strings.carrot.tooltip.broken"));
             }
 
@@ -315,7 +315,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
                 stacks.add(TextFormatting.GOLD + I18n.format("dwmh.strings.shift_right_click") + " " + TextFormatting.WHITE + I18n.format("dwmh.strings.animania_naming"));
             }
 
-            if (par1ItemStack.getItemDamage() != 0 || DWMHConfig.Ocarina.functionality.maxUses != 0) {
+            if (par1ItemStack.getItemDamage() != 0 || DWMHConfig.Ocarina.functionality.getMaxUses() != 0) {
                 stacks.add(TextFormatting.AQUA + I18n.format("dwmh.strings.repair_carrot", getRepairItem().getDisplayName()));
             }
 

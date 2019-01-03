@@ -378,8 +378,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
 
             tag.setLong("dwmh:last_played", cur);
 
-            BlockPos pos = player.getPosition();
-            player.world.playSound(null, player.getPosition(), e, SoundCategory.PLAYERS, 16, 1);
+            player.world.playSound(null, player.getPosition(), e, SoundCategory.PLAYERS, 1.5f, 1);
 
         }
     }

@@ -115,7 +115,10 @@ public class ItemDWMHRepairable extends Item {
 
     @SuppressWarnings("deprecation")
     public static boolean useableItem (ItemStack item) {
-        if (item.getItemDamage() == item.getItem().getMaxDamage()) {
+        if (item.getItemDamage() > item.getMaxDamage()) {
+            item.setItemDamage(item.getMaxDamage());
+            return false;
+        } else if (item.getItemDamage() == item.getMaxDamage()) {
             return false;
         } else {
             return true;

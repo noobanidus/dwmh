@@ -63,3 +63,7 @@ dwmh.strings.summon_item_missing=You've run out of (%s) to summon steeds!
 dwmh.strings.summon_item_missing_middle=You've run out of (%s) to summon more steeds (%d consumed).
 dwmh.strings.summon_item_success=(%sx%d) were consumed to summon steeds.
 dwmh.strings.summon_tooltip=Consumes (%sx%d) per steed summoned.
+dwmh.strings.generic.tamed=%s is now tamed!
+dwmh.strings.generic.healed=%s has been healed to full!
+dwmh.strings.generic.aged=%s has now been aged into adulthood.
+dwhm.strings.generic.breed=%s is now in breeding mode.

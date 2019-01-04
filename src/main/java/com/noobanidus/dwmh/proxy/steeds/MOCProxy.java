@@ -86,6 +86,10 @@ public class MOCProxy implements ISteedProxy {
         MoCEntityTameableAnimal animal = (MoCEntityTameableAnimal) entity;
         animal.setTamed(true);
         MoCTools.tameWithName(player, animal);
+
+        if (DWMHConfig.EnchantedCarrot.messages.taming) {
+            doGenericMessage(entity, player, Generic.TAMING);
+        }
     }
 
     public boolean isAgeable(Entity entity, EntityPlayer player) {
@@ -105,6 +109,10 @@ public class MOCProxy implements ISteedProxy {
         animal.setEdad(animal.getMaxEdad());
         animal.setType(0);
         animal.selectType();
+
+        if (DWMHConfig.EnchantedCarrot.messages.aging) {
+            doGenericMessage(entity, player, Generic.AGING);
+        }
     }
 
     // Not currently implemented

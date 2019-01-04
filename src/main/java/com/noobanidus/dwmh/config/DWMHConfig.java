@@ -175,6 +175,27 @@ public class DWMHConfig {
             public boolean breeding = true;
         }
 
+        @Config.Comment("Determine whether messages are displayed when certain functions of the carrot are used")
+        @Config.Name("Messages")
+        public CarrotMessages messages = new CarrotMessages();
+        public static class CarrotMessages {
+            @Config.Comment("Set to false to prevent messages while taming")
+            @Config.Name("Enable Eligible Entity Taming Message")
+            public boolean taming = true;
+
+            @Config.Comment("Set to false to prevent messages while healing")
+            @Config.Name("Enable Eligible Entity Healing Message")
+            public boolean healing = true;
+
+            @Config.Comment("Set to false to prevent messages while aging")
+            @Config.Name("Enable Eligible Entity Aging Message")
+            public boolean aging = true;
+
+            @Config.Comment("Set to false to prevent messages while breeding")
+            @Config.Name("Enable Eligible Entity Breeding Message")
+            public boolean breeding = true;
+        }
+
         @Config.Comment("Set to true to enable the enchantment glint. Useful if you are using a texture pack that overrides the Carrot animation. Client-side only.")
         @Config.Name("Enable Enchantment Glint")
         public boolean glint = false;

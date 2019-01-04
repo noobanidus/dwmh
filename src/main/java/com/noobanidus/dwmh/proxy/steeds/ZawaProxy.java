@@ -97,10 +97,9 @@ public class ZawaProxy implements ISteedProxy {
         animal.setEnrichment(animal.getMaxEnrichment());
         animal.world.setEntityState(animal, (byte)7);
 
-        ITextComponent temp = new TextComponentTranslation("dwmh.strings.zawa.tamed",  (animal.hasCustomName()) ? " " + animal.getCustomNameTag() : new TextComponentTranslation(String.format("entity.%s.name", EntityList.getEntityString(animal))));
-        temp.getStyle().setColor(TextFormatting.GOLD);
-
-        player.sendMessage(temp);
+        if (DWMHConfig.EnchantedCarrot.messages.taming) {
+            doGenericMessage(entity, player, Generic.TAMING, TextFormatting.GOLD);
+        }
     }
 
     public boolean isAgeable (Entity entity, EntityPlayer player) {

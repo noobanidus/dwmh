@@ -66,9 +66,9 @@ public class AnimaniaProxy implements ISteedProxy {
 
         horse.setTamedBy(player);
 
-        ITextComponent temp = new TextComponentTranslation("dwmh.strings.animania_taming");
-        temp.getStyle().setColor(TextFormatting.YELLOW);
-        player.sendMessage(temp);
+        if (DWMHConfig.EnchantedCarrot.messages.taming) {
+            doGenericMessage(entity, player, "dwmh.strings.animania_taming");
+        }
     }
 
     // Foal interactions -> uncertain

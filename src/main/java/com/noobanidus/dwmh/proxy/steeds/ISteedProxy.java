@@ -10,7 +10,10 @@ import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.event.entity.EntityMountEvent;
+
+import javax.annotation.Nullable;
 
 public interface ISteedProxy {
     boolean isTeleportable (Entity entity, EntityPlayer player);
@@ -73,6 +76,10 @@ public interface ISteedProxy {
         EntityLiving horse = (EntityLiving) entity;
         horse.heal(horse.getMaxHealth() - horse.getHealth());
         horse.world.setEntityState(horse, (byte)7);
+
+        if (DWMHConfig.EnchantedCarrot.messages.healing) {
+            doGenericMessage(entity, player, Generic.HEALING);
+        }
     }
 
     // Not currently implemented
@@ -112,5 +119,69 @@ public interface ISteedProxy {
         }
 
         return false;
+    }
+
+    default void doGenericMessage (Entity entity, EntityPlayer player, String keyOverride) {
+        doGenericMessage(entity, player, Generic.EMPTY, keyOverride, null);
+    }
+
+    default void doGenericMessage (Entity entity, EntityPlayer player, String keyOverride, TextFormatting format) {
+        doGenericMessage(entity, player, Generic.EMPTY, keyOverride, format);
+    }
+
+    default void doGenericMessage (Entity entity, EntityPlayer player, Generic generic, TextFormatting format) {
+        doGenericMessage(entity, player, generic, null, format);
+    }
+
+    default void doGenericMessage (Entity entity, EntityPlayer player, Generic generic) {
+        doGenericMessage(entity, player, generic, null, null);
+    }
+
+    // This... probably shouldn't be here
+    default void doGenericMessage (Entity entity, EntityPlayer player, Generic generic, @Nullable String keyOverride, @Nullable TextFormatting format) {
+        String langKey;
+
+        if (generic != null && !generic.isEmpty()) {
+            langKey = generic.getLanguageKey();
+        } else if (keyOverride != null && !keyOverride.isEmpty()) {
+            langKey = keyOverride;
+        } else {
+            DWMH.LOG.error("DWMH: No valid language key passed for entity %s.", entity.getDisplayName().toString());
+            return;
+        }
+
+        TextFormatting formatKey;
+
+        if (format == null) {
+            formatKey = TextFormatting.YELLOW;
+        } else {
+            formatKey = format;
+        }
+
+        ITextComponent temp = new TextComponentTranslation(langKey, entity.getDisplayName());
+        temp.getStyle().setColor(formatKey);
+        player.sendMessage(temp);
+    }
+
+    enum Generic {
+        TAMING("dwmh.strings.generic.tamed"),
+        HEALING("dwmh.strings.generic.healed"),
+        AGING("dwmh.strings.generic.aged"),
+        BREEDING("dwhm.strings.generic.breed"),
+        EMPTY("");
+
+        String languageKey;
+
+        Generic (String langKey) {
+            this.languageKey = langKey;
+        }
+
+        public String getLanguageKey () {
+            return this.languageKey;
+        }
+
+        public boolean isEmpty () {
+            return this.equals(Generic.EMPTY);
+        }
     }
 }

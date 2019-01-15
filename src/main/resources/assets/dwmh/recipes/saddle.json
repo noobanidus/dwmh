@@ -22,8 +22,10 @@
       "data": 0
     }
   },
-   "conditions": [{
-    "type": "dwmh:recipes",
-    "recipe": "saddle"
-  }]
+  "conditions": [
+    {
+      "type": "dwmh:recipes",
+      "recipe": "saddle"
+    }
+  ]
 }

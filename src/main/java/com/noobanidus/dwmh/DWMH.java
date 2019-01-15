@@ -9,11 +9,16 @@ import com.noobanidus.dwmh.proxy.steeds.ISteedProxy;
 import com.noobanidus.dwmh.proxy.steeds.VanillaProxy;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.*;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 @Mod.EventBusSubscriber
 @Mod(modid = DWMH.MODID, name = DWMH.MODNAME, version = DWMH.VERSION)
@@ -37,21 +42,25 @@ public class DWMH {
     public static ISteedProxy steedProxy;
 
     public static List<ISteedProxy> proxyList;
-
-    @SuppressWarnings("unused")
-    private List<String> supportedMods = Arrays.asList("animania", "mocreatures", "zawa", "ultimate_unicorn_mod");
-
     public static Set<String> zawaClasses;
     public static Set<String> animaniaClasses;
     public static Set<String> ignoreList = Sets.newHashSet();
     public static Set<String> entityBlacklist;
-
-    @SidedProxy (clientSide="com.noobanidus.dwmh.proxy.ClientProxy", serverSide="com.noobanidus.dwmh.proxy.CommonProxy")
+    @SidedProxy(clientSide = "com.noobanidus.dwmh.proxy.ClientProxy", serverSide = "com.noobanidus.dwmh.proxy.CommonProxy")
     public static ISidedProxy proxy;
-
     @SuppressWarnings("unused")
     @Mod.Instance(DWMH.MODID)
     public static DWMH instance;
+    @SuppressWarnings("unused")
+    private List<String> supportedMods = Arrays.asList("animania", "mocreatures", "zawa", "ultimate_unicorn_mod");
+
+    public static void resolveClasses() {
+        // All of these are string-based now hooray
+        DWMH.animaniaClasses = Sets.newHashSet(DWMHConfig.proxies.Animania.classes);
+        DWMH.zawaClasses = Sets.newHashSet(DWMHConfig.proxies.ZAWA.classes);
+        DWMH.entityBlacklist = Sets.newHashSet(DWMHConfig.blacklist);
+        DWMH.ignoreList.clear();
+    }
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -71,13 +80,5 @@ public class DWMH {
     @Mod.EventHandler
     public void loadComplete(FMLLoadCompleteEvent event) {
         proxy.loadComplete(event);
-    }
-
-    public static void resolveClasses () {
-        // All of these are string-based now hooray
-        DWMH.animaniaClasses = Sets.newHashSet(DWMHConfig.proxies.Animania.classes);
-        DWMH.zawaClasses = Sets.newHashSet(DWMHConfig.proxies.ZAWA.classes);
-        DWMH.entityBlacklist = Sets.newHashSet(DWMHConfig.blacklist);
-        DWMH.ignoreList.clear();
     }
 }

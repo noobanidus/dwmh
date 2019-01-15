@@ -25,12 +25,35 @@ import java.util.List;
 
 @SuppressWarnings("unused")
 public class UnicornProxy extends VanillaProxy {
+    @SubscribeEvent
+    public static void onVagabondDeath(LivingDeathEvent event) {
+        if (!event.getEntityLiving().world.isRemote) {
+            if (event.getEntityLiving() instanceof EntityKnightVagabond) {
+                AbstractHorse horse = (AbstractHorse) event.getEntityLiving().getRidingEntity();
+                Entity killer = event.getSource().getTrueSource();
+                if (killer instanceof EntityPlayer && horse != null) {
+                    horse.setTamedBy((EntityPlayer) killer);
+                    horse.world.setEntityState(horse, (byte) 7);
+                } else if (horse != null) {
+                    // We don't care about the killer any more as it's not a player
+                    horse.setHorseTamed(false);
+                    horse.setOwnerUniqueId(null);
+                    horse.replaceItemInInventory(400, ItemStack.EMPTY);
+                    horse.setHorseSaddled(false);
+                    BlockPos pos = horse.getPosition();
+                    EntityItem drop = new EntityItem(horse.world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, new ItemStack(Items.SADDLE));
+                    horse.world.spawnEntity(drop);
+                }
+            }
+        }
+    }
+
     @Override
-    public boolean isMyMod (Entity entity) {
+    public boolean isMyMod(Entity entity) {
         return entity instanceof EntityMagicalHorse;
     }
 
-    public boolean hasCustomName (Entity entity) {
+    public boolean hasCustomName(Entity entity) {
         if (!entity.hasCustomName()) return false;
 
         if (entity instanceof EntityAleaBringerOfDawn && entity.getCustomNameTag().equals("Alea")) return false;
@@ -42,7 +65,7 @@ public class UnicornProxy extends VanillaProxy {
     }
 
     @Override
-    public boolean isTeleportable (Entity entity, EntityPlayer player) {
+    public boolean isTeleportable(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return false;
 
         boolean res = super.isListable(entity, player);
@@ -57,7 +80,7 @@ public class UnicornProxy extends VanillaProxy {
     }
 
     @Override
-    public boolean isListable (Entity entity, EntityPlayer player) {
+    public boolean isListable(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return false;
 
         boolean res = super.isListable(entity, player);
@@ -72,7 +95,7 @@ public class UnicornProxy extends VanillaProxy {
     }
 
     @Override
-    public ITextComponent getResponseKey (Entity entity, EntityPlayer player) {
+    public ITextComponent getResponseKey(Entity entity, EntityPlayer player) {
         ITextComponent temp = super.getResponseKey(entity, player);
 
         if (!isMyMod(entity)) return temp;
@@ -96,30 +119,7 @@ public class UnicornProxy extends VanillaProxy {
         return temp;
     }
 
-    @SubscribeEvent
-    public static void onVagabondDeath (LivingDeathEvent event) {
-        if (!event.getEntityLiving().world.isRemote) {
-            if (event.getEntityLiving() instanceof EntityKnightVagabond) {
-                AbstractHorse horse = (AbstractHorse) event.getEntityLiving().getRidingEntity();
-                Entity killer = event.getSource().getTrueSource();
-                if (killer instanceof EntityPlayer && horse != null) {
-                    horse.setTamedBy((EntityPlayer) killer);
-                    horse.world.setEntityState(horse, (byte) 7);
-                } else if (horse != null) {
-                    // We don't care about the killer any more as it's not a player
-                    horse.setHorseTamed(false);
-                    horse.setOwnerUniqueId(null);
-                    horse.replaceItemInInventory(400, ItemStack.EMPTY);
-                    horse.setHorseSaddled(false);
-                    BlockPos pos = horse.getPosition();
-                    EntityItem drop = new EntityItem(horse.world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, new ItemStack(Items.SADDLE));
-                    horse.world.spawnEntity(drop);
-                }
-            }
-        }
-    }
-
-    public ITextComponent getEntityTypeName (Entity entity, EntityPlayer player) {
+    public ITextComponent getEntityTypeName(Entity entity, EntityPlayer player) {
         // checks for isMyMod have already been made
         EntityMagicalHorse horse = (EntityMagicalHorse) entity;
 
@@ -133,7 +133,7 @@ public class UnicornProxy extends VanillaProxy {
     }
 
     @Override
-    public String proxyName () {
+    public String proxyName() {
         return "Unicorn";
     }
 }

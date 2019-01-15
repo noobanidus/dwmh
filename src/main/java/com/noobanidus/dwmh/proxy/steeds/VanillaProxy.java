@@ -11,7 +11,7 @@ import net.minecraft.util.text.TextFormatting;
 
 // Always instantiated by default
 public class VanillaProxy implements ISteedProxy {
-    public boolean isTeleportable (Entity entity, EntityPlayer player) {
+    public boolean isTeleportable(Entity entity, EntityPlayer player) {
         if (!isListable(entity, player)) {
             return false;
         }
@@ -21,7 +21,7 @@ public class VanillaProxy implements ISteedProxy {
         return horse.isHorseSaddled() && globalTeleportCheck(entity, player);
     }
 
-    public boolean isListable (Entity entity, EntityPlayer player) {
+    public boolean isListable(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return false;
 
         AbstractHorse horse = (AbstractHorse) entity;
@@ -36,7 +36,7 @@ public class VanillaProxy implements ISteedProxy {
     }
 
     // Carrot
-    public boolean isTameable (Entity entity, EntityPlayer player) {
+    public boolean isTameable(Entity entity, EntityPlayer player) {
         if (!(entity instanceof AbstractHorse)) {
             return false;
         }
@@ -50,7 +50,7 @@ public class VanillaProxy implements ISteedProxy {
         return !horse.isTame();
     }
 
-    public void tame (Entity entity, EntityPlayer player) {
+    public void tame(Entity entity, EntityPlayer player) {
         ((AbstractHorse) entity).setTamedBy(player);
 
         if (DWMHConfig.EnchantedCarrot.messages.taming) {
@@ -58,7 +58,7 @@ public class VanillaProxy implements ISteedProxy {
         }
     }
 
-    public boolean isAgeable (Entity entity, EntityPlayer player) {
+    public boolean isAgeable(Entity entity, EntityPlayer player) {
         if (!(entity instanceof AbstractHorse)) {
             return false;
         }
@@ -68,11 +68,11 @@ public class VanillaProxy implements ISteedProxy {
         return horse.isChild();
     }
 
-    public void age (Entity entity, EntityPlayer player) {
+    public void age(Entity entity, EntityPlayer player) {
         AbstractHorse horse = (AbstractHorse) entity;
 
         horse.setGrowingAge(0);
-        horse.world.setEntityState(horse, (byte)7);
+        horse.world.setEntityState(horse, (byte) 7);
 
         if (DWMHConfig.EnchantedCarrot.messages.aging) {
             doGenericMessage(entity, player, Generic.AGING);
@@ -80,7 +80,7 @@ public class VanillaProxy implements ISteedProxy {
     }
 
     // Not currently implemented
-    public boolean isBreedable (Entity entity, EntityPlayer player) {
+    public boolean isBreedable(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return false;
 
         AbstractHorse horse = (AbstractHorse) entity;
@@ -96,7 +96,7 @@ public class VanillaProxy implements ISteedProxy {
         return true;
     }
 
-    public void breed (Entity entity, EntityPlayer player) {
+    public void breed(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return;
 
         AbstractHorse horse = (AbstractHorse) entity;
@@ -107,7 +107,7 @@ public class VanillaProxy implements ISteedProxy {
         }
     }
 
-    public boolean isMyMod (Entity entity) {
+    public boolean isMyMod(Entity entity) {
         if (DWMH.ignoreList.contains(entity.getClass().getName())) return false;
 
         String clazz = entity.getClass().getName();
@@ -125,7 +125,7 @@ public class VanillaProxy implements ISteedProxy {
         return entity instanceof AbstractHorse;
     }
 
-    public ITextComponent getResponseKey (Entity entity, EntityPlayer player) {
+    public ITextComponent getResponseKey(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return null;
 
         AbstractHorse horse = (AbstractHorse) entity;

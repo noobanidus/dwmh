@@ -12,7 +12,7 @@ import java.util.function.BooleanSupplier;
 @SuppressWarnings("unused")
 public class ConditionalRecipeFactory implements IConditionFactory {
     @Override
-    public BooleanSupplier parse (JsonContext context, JsonObject json) {
+    public BooleanSupplier parse(JsonContext context, JsonObject json) {
         String key = JsonUtils.getString(json, "recipe");
 
         if (key.toLowerCase().equals("carrot")) {

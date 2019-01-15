@@ -7,7 +7,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.event.entity.EntityMountEvent;
 
 public class SteedProxy implements ISteedProxy {
-    public boolean hasCustomName (Entity entity) {
+    public boolean hasCustomName(Entity entity) {
         for (ISteedProxy proxy : DWMH.proxyList) {
             if (proxy.isMyMod(entity)) {
                 return proxy.hasCustomName(entity);
@@ -17,7 +17,7 @@ public class SteedProxy implements ISteedProxy {
         return false;
     }
 
-    public String getCustomNameTag (Entity entity) {
+    public String getCustomNameTag(Entity entity) {
         for (ISteedProxy proxy : DWMH.proxyList) {
             if (proxy.isMyMod(entity)) {
                 return proxy.getCustomNameTag(entity);
@@ -27,7 +27,7 @@ public class SteedProxy implements ISteedProxy {
         return "";
     }
 
-    public void setCustomNameTag (Entity entity, String name) {
+    public void setCustomNameTag(Entity entity, String name) {
         for (ISteedProxy proxy : DWMH.proxyList) {
             if (proxy.isMyMod(entity)) {
                 proxy.setCustomNameTag(entity, name);
@@ -36,7 +36,7 @@ public class SteedProxy implements ISteedProxy {
         }
     }
 
-    public boolean isTeleportable (Entity entity, EntityPlayer player) {
+    public boolean isTeleportable(Entity entity, EntityPlayer player) {
         if (blacklisted(entity)) return false;
 
         for (ISteedProxy proxy : DWMH.proxyList) {
@@ -48,7 +48,7 @@ public class SteedProxy implements ISteedProxy {
         return false;
     }
 
-    public boolean isListable (Entity entity, EntityPlayer player) {
+    public boolean isListable(Entity entity, EntityPlayer player) {
         if (blacklisted(entity)) return false;
 
         for (ISteedProxy proxy : DWMH.proxyList) {
@@ -61,7 +61,7 @@ public class SteedProxy implements ISteedProxy {
     }
 
     // Carrot
-    public boolean isTameable (Entity entity, EntityPlayer player) {
+    public boolean isTameable(Entity entity, EntityPlayer player) {
         if (blacklisted(entity)) return false;
 
         for (ISteedProxy proxy : DWMH.proxyList) {
@@ -73,7 +73,7 @@ public class SteedProxy implements ISteedProxy {
         return false;
     }
 
-    public void tame (Entity entity, EntityPlayer player) {
+    public void tame(Entity entity, EntityPlayer player) {
         for (ISteedProxy proxy : DWMH.proxyList) {
             if (proxy.isMyMod(entity)) {
                 proxy.tame(entity, player);
@@ -82,7 +82,7 @@ public class SteedProxy implements ISteedProxy {
         }
     }
 
-    public boolean isAgeable (Entity entity, EntityPlayer player) {
+    public boolean isAgeable(Entity entity, EntityPlayer player) {
         if (blacklisted(entity)) return false;
 
         for (ISteedProxy proxy : DWMH.proxyList) {
@@ -94,8 +94,8 @@ public class SteedProxy implements ISteedProxy {
         return false;
     }
 
-    public void age (Entity entity, EntityPlayer player) {
-         for (ISteedProxy proxy : DWMH.proxyList) {
+    public void age(Entity entity, EntityPlayer player) {
+        for (ISteedProxy proxy : DWMH.proxyList) {
             if (proxy.isMyMod(entity)) {
                 proxy.age(entity, player);
                 return;
@@ -103,7 +103,7 @@ public class SteedProxy implements ISteedProxy {
         }
     }
 
-    public boolean isHealable (Entity entity, EntityPlayer player) {
+    public boolean isHealable(Entity entity, EntityPlayer player) {
         if (blacklisted(entity)) return false;
 
         for (ISteedProxy proxy : DWMH.proxyList) {
@@ -115,8 +115,8 @@ public class SteedProxy implements ISteedProxy {
         return false;
     }
 
-    public void heal (Entity entity, EntityPlayer player) {
-         for (ISteedProxy proxy : DWMH.proxyList) {
+    public void heal(Entity entity, EntityPlayer player) {
+        for (ISteedProxy proxy : DWMH.proxyList) {
             if (proxy.isMyMod(entity)) {
                 proxy.heal(entity, player);
                 return;
@@ -125,7 +125,7 @@ public class SteedProxy implements ISteedProxy {
     }
 
     // Not currently implemented
-    public boolean isBreedable (Entity entity, EntityPlayer player) {
+    public boolean isBreedable(Entity entity, EntityPlayer player) {
         if (blacklisted(entity)) return false;
 
         for (ISteedProxy proxy : DWMH.proxyList) {
@@ -137,8 +137,8 @@ public class SteedProxy implements ISteedProxy {
         return false;
     }
 
-    public void breed (Entity entity, EntityPlayer player) {
-         for (ISteedProxy proxy : DWMH.proxyList) {
+    public void breed(Entity entity, EntityPlayer player) {
+        for (ISteedProxy proxy : DWMH.proxyList) {
             if (proxy.isMyMod(entity)) {
                 proxy.breed(entity, player);
                 return;
@@ -146,7 +146,7 @@ public class SteedProxy implements ISteedProxy {
         }
     }
 
-    public ITextComponent getResponseKey (Entity entity, EntityPlayer player) {
+    public ITextComponent getResponseKey(Entity entity, EntityPlayer player) {
         if (blacklisted(entity)) return null;
 
         for (ISteedProxy proxy : DWMH.proxyList) {
@@ -159,11 +159,11 @@ public class SteedProxy implements ISteedProxy {
     }
 
     // This may be sufficient to implement #5
-    public boolean blacklisted (Entity entity) {
+    public boolean blacklisted(Entity entity) {
         return DWMH.entityBlacklist.contains(entity.getClass());
     }
 
-    public boolean isMyMod (Entity entity) {
+    public boolean isMyMod(Entity entity) {
         if (blacklisted(entity)) return false;
 
         for (ISteedProxy proxy : DWMH.proxyList) {
@@ -175,7 +175,7 @@ public class SteedProxy implements ISteedProxy {
         return false;
     }
 
-    public boolean onDismount (EntityMountEvent event) {
+    public boolean onDismount(EntityMountEvent event) {
         if (blacklisted(event.getEntityBeingMounted())) return false;
 
         for (ISteedProxy proxy : DWMH.proxyList) {
@@ -187,7 +187,7 @@ public class SteedProxy implements ISteedProxy {
         return false;
     }
 
-    public ITextComponent getEntityTypeName (Entity entity, EntityPlayer player) {
+    public ITextComponent getEntityTypeName(Entity entity, EntityPlayer player) {
         for (ISteedProxy proxy : DWMH.proxyList) {
             if (proxy.isMyMod(entity)) {
                 return proxy.getEntityTypeName(entity, player);
@@ -198,7 +198,7 @@ public class SteedProxy implements ISteedProxy {
     }
 
 
-    public String proxyName () {
+    public String proxyName() {
         return "main";
     }
 }

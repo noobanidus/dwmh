@@ -1,6 +1,5 @@
 package com.noobanidus.dwmh.config;
 
-import com.google.common.collect.Lists;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.event.RegistryEvent;
@@ -29,15 +28,14 @@ public class Sound {
     public static List<SoundEvent> MINOR_WHISTLES = Arrays.asList(MINOR_WHISTLE1, MINOR_WHISTLE2);
 
     public static SoundEvent WHISTLE_BROKEN = createSoundEvent("whistle.broken");
+    private static Random random = new Random();
 
-    private static SoundEvent createSoundEvent (String sound) {
+    private static SoundEvent createSoundEvent(String sound) {
         ResourceLocation name = new ResourceLocation("dwmh", sound);
         return new SoundEvent(name).setRegistryName(name);
     }
 
-    private static Random random = new Random();
-
-    public static SoundEvent getRandomWhistle () {
+    public static SoundEvent getRandomWhistle() {
         if (random.nextInt(25) == 0) {
             return WHISTLE_SPECIAL;
         }
@@ -45,12 +43,12 @@ public class Sound {
         return WHISTLES.get(random.nextInt(WHISTLES.size()));
     }
 
-    public static SoundEvent getRandomMinorWhistle () {
+    public static SoundEvent getRandomMinorWhistle() {
         return MINOR_WHISTLES.get(random.nextInt(MINOR_WHISTLES.size()));
     }
 
     @SubscribeEvent
-    public static void registerSounds (RegistryEvent.Register<SoundEvent> event) {
+    public static void registerSounds(RegistryEvent.Register<SoundEvent> event) {
         IForgeRegistry<SoundEvent> registry = event.getRegistry();
         registry.register(WHISTLE_SPECIAL);
         registry.register(WHISTLE_BROKEN);

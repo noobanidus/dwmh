@@ -22,39 +22,12 @@ import javax.annotation.Nonnull;
 import java.util.List;
 
 public class ItemEnchantedCarrot extends ItemDWMHRepairable {
-    public void init () {
-        setMaxStackSize(1);
-        setCreativeTab(DWMH.TAB);
-        setRegistryName("dwmh:carrot");
-        setTranslationKey("dwmh.carrot");
-        updateConfig();
-        registerPredicate("carrot_damage");
-        setInternalDefault(DWMHConfig.EnchantedCarrot.durability.repairItemDefault);
-
-    }
-
-    public void updateConfig() {
-        setMaxDamage(DWMHConfig.EnchantedCarrot.durability.getMaxUses());
-        setInternalRepair(DWMHConfig.EnchantedCarrot.durability.repairItem);
-    }
-
-    @Override
-    public boolean isEnchantable(@Nonnull ItemStack stack) {
-        return false;
-    }
-
-    @Nonnull
-    @Override
-    public EnumRarity getRarity(ItemStack stack) {
-        return EnumRarity.EPIC;
-    }
-
-    public static void onInteractCarrot (PlayerInteractEvent.EntityInteract event) {
+    public static void onInteractCarrot(PlayerInteractEvent.EntityInteract event) {
         ITextComponent temp;
 
         EntityPlayer player = event.getEntityPlayer();
         Entity entity = event.getTarget();
-        ItemStack item  = event.getItemStack();
+        ItemStack item = event.getItemStack();
 
         if (item.isEmpty() || player.isSneaking() || !(item.getItem() instanceof ItemEnchantedCarrot) || !DWMH.steedProxy.isMyMod(entity)) {
             return;
@@ -97,6 +70,32 @@ public class ItemEnchantedCarrot extends ItemDWMHRepairable {
         }
     }
 
+    public void init() {
+        setMaxStackSize(1);
+        setCreativeTab(DWMH.TAB);
+        setRegistryName("dwmh:carrot");
+        setTranslationKey("dwmh.carrot");
+        updateConfig();
+        registerPredicate("carrot_damage");
+        setInternalDefault(DWMHConfig.EnchantedCarrot.durability.repairItemDefault);
+
+    }
+
+    public void updateConfig() {
+        setMaxDamage(DWMHConfig.EnchantedCarrot.durability.getMaxUses());
+        setInternalRepair(DWMHConfig.EnchantedCarrot.durability.repairItem);
+    }
+
+    @Override
+    public boolean isEnchantable(@Nonnull ItemStack stack) {
+        return false;
+    }
+
+    @Nonnull
+    @Override
+    public EnumRarity getRarity(ItemStack stack) {
+        return EnumRarity.EPIC;
+    }
 
     @SideOnly(Side.CLIENT)
     @Override
@@ -111,20 +110,20 @@ public class ItemEnchantedCarrot extends ItemDWMHRepairable {
     @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack par1ItemStack, World world, List<String> stacks, ITooltipFlag flags) {
-        if(GuiScreen.isShiftKeyDown()) {
+        if (GuiScreen.isShiftKeyDown()) {
             if (!useableItem(par1ItemStack)) {
                 stacks.add(TextFormatting.DARK_RED + I18n.format("dwmh.strings.carrot.tooltip.broken"));
             }
-            if (DWMHConfig.EnchantedCarrot.effects.taming ) {
+            if (DWMHConfig.EnchantedCarrot.effects.taming) {
                 stacks.add(TextFormatting.GOLD + I18n.format("dwmh.strings.right_click") + " " + TextFormatting.WHITE + I18n.format("dwmh.strings.carrot.tooltip.taming"));
             }
-            if (DWMHConfig.EnchantedCarrot.effects.healing ) {
+            if (DWMHConfig.EnchantedCarrot.effects.healing) {
                 stacks.add(TextFormatting.GOLD + I18n.format("dwmh.strings.right_click") + " " + TextFormatting.WHITE + I18n.format("dwmh.strings.carrot.tooltip.healing"));
             }
-            if (DWMHConfig.EnchantedCarrot.effects.aging ) {
+            if (DWMHConfig.EnchantedCarrot.effects.aging) {
                 stacks.add(TextFormatting.GOLD + I18n.format("dwmh.strings.right_click") + " " + TextFormatting.WHITE + I18n.format("dwmh.strings.carrot.tooltip.ageing"));
             }
-            if (DWMHConfig.EnchantedCarrot.effects.breeding ) {
+            if (DWMHConfig.EnchantedCarrot.effects.breeding) {
                 stacks.add(TextFormatting.GOLD + I18n.format("dwmh.strings.right_click") + " " + TextFormatting.WHITE + I18n.format("dwmh.strings.carrot.tooltip.breeding"));
             }
             if ((!DWMHConfig.EnchantedCarrot.effects.taming && !DWMHConfig.EnchantedCarrot.effects.healing && !DWMHConfig.EnchantedCarrot.effects.aging && !DWMHConfig.EnchantedCarrot.effects.breeding)) {

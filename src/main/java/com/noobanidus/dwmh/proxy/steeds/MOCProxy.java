@@ -25,7 +25,52 @@ import java.util.StringJoiner;
 public class MOCProxy implements ISteedProxy {
     public static List<String> entities = null;
 
-    public boolean hasCustomName (Entity entity) {
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent
+    public static void onClientChatReceived(ClientChatReceivedEvent event) {
+        if (event.getMessage() instanceof TextComponentTranslation) {
+            TextComponentTranslation comp = (TextComponentTranslation) event.getMessage();
+
+            String key = comp.getKey();
+
+            if (key.equals("dwmh.strings.is_at")) {
+                Object[] args = comp.getFormatArgs();
+                if (!(args[0] instanceof TextComponentTranslation) || args.length != 6) {
+                    return;
+                }
+
+                TextComponentTranslation name = (TextComponentTranslation) args[0];
+
+                if (MOCProxy.entities == null) {
+                    entities = Lists.newArrayList(DWMHConfig.proxies.MoCreatures.entities);
+                }
+
+                if (!entities.contains(name.getKey())) return;
+
+                key = name.getKey();
+
+                String res = I18n.format(key);
+
+                if (!res.contains(" ")) {
+                    List<String> parts = Lists.newArrayList(res.split("(?=\\p{Upper})"));
+
+                    StringJoiner s = new StringJoiner(" ");
+                    parts.forEach(s::add);
+
+                    ITextComponent newName = new TextComponentString(s.toString());
+
+                    ITextComponent temp = new TextComponentTranslation("dwmh.strings.is_at", newName, args[1], args[2], args[3], args[4], args[5]);
+                    temp.setStyle(comp.getStyle());
+
+                    comp.getSiblings().forEach(temp::appendSibling);
+
+                    event.setMessage(temp);
+                }
+            }
+        }
+    }
+
+    public boolean hasCustomName(Entity entity) {
         if (!isMyMod(entity)) return false;
 
         MoCEntityTameableAnimal animal = (MoCEntityTameableAnimal) entity;
@@ -33,13 +78,13 @@ public class MOCProxy implements ISteedProxy {
         return !animal.getPetName().equals("");
     }
 
-    public String getCustomNameTag (Entity entity) {
+    public String getCustomNameTag(Entity entity) {
         if (!isMyMod(entity)) return entity.getCustomNameTag();
 
         return ((MoCEntityTameableAnimal) entity).getPetName();
     }
 
-    public void setCustomNameTag (Entity entity, String name) {
+    public void setCustomNameTag(Entity entity, String name) {
         if (!isMyMod(entity)) {
             entity.setCustomNameTag(name);
         } else {
@@ -159,58 +204,13 @@ public class MOCProxy implements ISteedProxy {
         return temp;
     }
 
-    public boolean isMyMod (Entity entity) {
+    public boolean isMyMod(Entity entity) {
         if (entity instanceof MoCEntityTameableAnimal) {
             MoCEntityTameableAnimal animal = (MoCEntityTameableAnimal) entity;
             return animal.rideableEntity();
         }
 
         return false;
-    }
-
-    @SideOnly(Side.CLIENT)
-    @SubscribeEvent
-    public static void onClientChatReceived (ClientChatReceivedEvent event) {
-        if (event.getMessage() instanceof TextComponentTranslation) {
-            TextComponentTranslation comp = (TextComponentTranslation) event.getMessage();
-
-            String key = comp.getKey();
-
-            if (key.equals("dwmh.strings.is_at")) {
-                Object[] args = comp.getFormatArgs();
-                if (!(args[0] instanceof TextComponentTranslation) || args.length != 6) {
-                    return;
-                }
-
-                TextComponentTranslation name = (TextComponentTranslation) args[0];
-
-                if (MOCProxy.entities == null) {
-                    entities = Lists.newArrayList(DWMHConfig.proxies.MoCreatures.entities);
-                }
-
-                if (!entities.contains(name.getKey())) return;
-
-                key = name.getKey();
-
-                String res = I18n.format(key);
-
-                if (!res.contains(" ")) {
-                    List<String> parts = Lists.newArrayList(res.split("(?=\\p{Upper})"));
-
-                    StringJoiner s = new StringJoiner(" ");
-                    parts.forEach(s::add);
-
-                    ITextComponent newName = new TextComponentString(s.toString());
-
-                    ITextComponent temp = new TextComponentTranslation("dwmh.strings.is_at", newName, args[1], args[2], args[3], args[4], args[5]);
-                    temp.setStyle(comp.getStyle());
-
-                    comp.getSiblings().forEach(temp::appendSibling);
-
-                    event.setMessage(temp);
-                }
-            }
-        }
     }
 
     public String resolveEntityKey(String entityKey) {
@@ -220,7 +220,7 @@ public class MOCProxy implements ISteedProxy {
         return entityKey;
     }
 
-    public String proxyName () {
+    public String proxyName() {
         return "MOC";
     }
 }

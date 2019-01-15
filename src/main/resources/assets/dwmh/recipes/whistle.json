@@ -1,21 +1,21 @@
 {
-    "result": {
-        "item": "dwmh:whistle"
+  "result": {
+    "item": "dwmh:whistle"
+  },
+  "pattern": [
+    "i  ",
+    "isi",
+    "iii"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "i": {
+      "item": "minecraft:blue_glazed_terracotta",
+      "data": 0
     },
-    "pattern": [
-        "i  ",
-        "isi",
-        "iii"
-    ],
-    "type": "forge:ore_shaped",
-    "key": {
-        "i": {
-            "item": "minecraft:blue_glazed_terracotta",
-            "data": 0
-        },
-        "s": {
-            "item": "minecraft:saddle",
-            "data": 0
-        }
+    "s": {
+      "item": "minecraft:saddle",
+      "data": 0
     }
+  }
 }

@@ -16,21 +16,21 @@ import net.minecraftforge.event.entity.EntityMountEvent;
 import javax.annotation.Nullable;
 
 public interface ISteedProxy {
-    boolean isTeleportable (Entity entity, EntityPlayer player);
+    boolean isTeleportable(Entity entity, EntityPlayer player);
 
-    default boolean hasCustomName (Entity entity) {
+    default boolean hasCustomName(Entity entity) {
         return entity.hasCustomName();
     }
 
-    default String getCustomNameTag (Entity entity) {
+    default String getCustomNameTag(Entity entity) {
         return entity.getCustomNameTag();
     }
 
-    default void setCustomNameTag (Entity entity, String name) {
+    default void setCustomNameTag(Entity entity, String name) {
         entity.setCustomNameTag(name);
     }
 
-    default boolean globalTeleportCheck (Entity entity, EntityPlayer player) {
+    default boolean globalTeleportCheck(Entity entity, EntityPlayer player) {
         EntityAnimal animal = (EntityAnimal) entity;
 
         if (animal.getLeashed() || (animal.isBeingRidden() && animal.isRidingSameEntity(player))) {
@@ -50,18 +50,18 @@ public interface ISteedProxy {
         return true;
     }
 
-    boolean isListable (Entity entity, EntityPlayer player);
+    boolean isListable(Entity entity, EntityPlayer player);
 
     // Carrot
-    boolean isTameable (Entity entity, EntityPlayer player);
+    boolean isTameable(Entity entity, EntityPlayer player);
 
-    void tame (Entity entity, EntityPlayer player);
+    void tame(Entity entity, EntityPlayer player);
 
-    boolean isAgeable (Entity entity, EntityPlayer player);
+    boolean isAgeable(Entity entity, EntityPlayer player);
 
-    void age (Entity entity, EntityPlayer player);
+    void age(Entity entity, EntityPlayer player);
 
-    default boolean isHealable (Entity entity, EntityPlayer player) {
+    default boolean isHealable(Entity entity, EntityPlayer player) {
         if (isMyMod(entity)) {
             EntityLiving horse = (EntityLiving) entity;
             if (horse.getHealth() < horse.getMaxHealth()) return true;
@@ -72,10 +72,10 @@ public interface ISteedProxy {
         return false;
     }
 
-    default void heal (Entity entity, EntityPlayer player) {
+    default void heal(Entity entity, EntityPlayer player) {
         EntityLiving horse = (EntityLiving) entity;
         horse.heal(horse.getMaxHealth() - horse.getHealth());
-        horse.world.setEntityState(horse, (byte)7);
+        horse.world.setEntityState(horse, (byte) 7);
 
         if (DWMHConfig.EnchantedCarrot.messages.healing) {
             doGenericMessage(entity, player, Generic.HEALING);
@@ -83,34 +83,34 @@ public interface ISteedProxy {
     }
 
     // Not currently implemented
-    boolean isBreedable (Entity entity, EntityPlayer player);
+    boolean isBreedable(Entity entity, EntityPlayer player);
 
-    void breed (Entity entity, EntityPlayer player);
+    void breed(Entity entity, EntityPlayer player);
 
-    ITextComponent getResponseKey (Entity entity, EntityPlayer player);
+    ITextComponent getResponseKey(Entity entity, EntityPlayer player);
 
-    default boolean isLoaded () {
+    default boolean isLoaded() {
         return true;
     }
 
-    default boolean isMyMod (Entity entity) {
+    default boolean isMyMod(Entity entity) {
         return false;
     }
 
-    default String proxyName () {
+    default String proxyName() {
         return "default";
     }
 
-    default ITextComponent getEntityTypeName (Entity entity, EntityPlayer player) {
+    default ITextComponent getEntityTypeName(Entity entity, EntityPlayer player) {
         String entityKey = resolveEntityKey(String.format("entity.%s.name", EntityList.getEntityString(entity)));
         return new TextComponentTranslation(entityKey);
     }
 
-    default String resolveEntityKey (String key) {
+    default String resolveEntityKey(String key) {
         return key;
     }
 
-    default boolean onDismount (EntityMountEvent event) {
+    default boolean onDismount(EntityMountEvent event) {
         if (event.isDismounting() && event.getEntityMounting() instanceof EntityPlayer && isMyMod(event.getEntityBeingMounted()) && DWMHConfig.Ocarina.home && !DWMHConfig.Ocarina.skipDismount) {
             EntityCreature entity = (EntityCreature) event.getEntityBeingMounted();
             entity.detachHome();
@@ -121,24 +121,24 @@ public interface ISteedProxy {
         return false;
     }
 
-    default void doGenericMessage (Entity entity, EntityPlayer player, String keyOverride) {
+    default void doGenericMessage(Entity entity, EntityPlayer player, String keyOverride) {
         doGenericMessage(entity, player, Generic.EMPTY, keyOverride, null);
     }
 
-    default void doGenericMessage (Entity entity, EntityPlayer player, String keyOverride, TextFormatting format) {
+    default void doGenericMessage(Entity entity, EntityPlayer player, String keyOverride, TextFormatting format) {
         doGenericMessage(entity, player, Generic.EMPTY, keyOverride, format);
     }
 
-    default void doGenericMessage (Entity entity, EntityPlayer player, Generic generic, TextFormatting format) {
+    default void doGenericMessage(Entity entity, EntityPlayer player, Generic generic, TextFormatting format) {
         doGenericMessage(entity, player, generic, null, format);
     }
 
-    default void doGenericMessage (Entity entity, EntityPlayer player, Generic generic) {
+    default void doGenericMessage(Entity entity, EntityPlayer player, Generic generic) {
         doGenericMessage(entity, player, generic, null, null);
     }
 
     // This... probably shouldn't be here
-    default void doGenericMessage (Entity entity, EntityPlayer player, Generic generic, @Nullable String keyOverride, @Nullable TextFormatting format) {
+    default void doGenericMessage(Entity entity, EntityPlayer player, Generic generic, @Nullable String keyOverride, @Nullable TextFormatting format) {
         String langKey;
 
         if (generic != null && !generic.isEmpty()) {
@@ -172,15 +172,15 @@ public interface ISteedProxy {
 
         String languageKey;
 
-        Generic (String langKey) {
+        Generic(String langKey) {
             this.languageKey = langKey;
         }
 
-        public String getLanguageKey () {
+        public String getLanguageKey() {
             return this.languageKey;
         }
 
-        public boolean isEmpty () {
+        public boolean isEmpty() {
             return this.equals(Generic.EMPTY);
         }
     }

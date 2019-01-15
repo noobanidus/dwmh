@@ -53,7 +53,7 @@ public class ClientEntityCommand extends CommandBase implements IClientCommand {
 
     @Override
     @ParametersAreNonnullByDefault
-    public void execute (MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         if (args.length == 1 && args[0].equals("entity")) {
             if (sender instanceof EntityPlayerSP) {
                 RayTraceResult res = Minecraft.getMinecraft().objectMouseOver;
@@ -83,7 +83,7 @@ public class ClientEntityCommand extends CommandBase implements IClientCommand {
     @ParametersAreNonnullByDefault
     @Nonnull
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
-        return args.length == 1 ? getListOfStringsMatchingLastWord(args, "entity"): Collections.emptyList();
+        return args.length == 1 ? getListOfStringsMatchingLastWord(args, "entity") : Collections.emptyList();
     }
 
     @Override

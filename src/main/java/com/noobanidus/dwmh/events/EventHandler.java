@@ -15,22 +15,22 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 @Mod.EventBusSubscriber
 public class EventHandler {
     @SubscribeEvent
-    public static void onDismount (EntityMountEvent event) {
+    public static void onDismount(EntityMountEvent event) {
         DWMH.steedProxy.onDismount(event);
     }
 
     @SubscribeEvent
-    public static void onInteractCarrot (PlayerInteractEvent.EntityInteract event) {
+    public static void onInteractCarrot(PlayerInteractEvent.EntityInteract event) {
         ItemEnchantedCarrot.onInteractCarrot(event);
     }
 
     @SubscribeEvent
-    public static void onInteractOcarina (PlayerInteractEvent.EntityInteract event) {
+    public static void onInteractOcarina(PlayerInteractEvent.EntityInteract event) {
         ItemOcarina.onInteractOcarina(event);
     }
 
     @SubscribeEvent
-    public static void onAttack (AttackEntityEvent event) {
+    public static void onAttack(AttackEntityEvent event) {
         EntityPlayer player = event.getEntityPlayer();
         ItemStack is = player.getHeldItemMainhand();
         if (is.isEmpty()) return;

@@ -18,8 +18,33 @@ public class ItemDWMHRepairable extends Item {
     private String internalRepair;
     private ItemStack defaultRepair = ItemStack.EMPTY;
 
-    public void registerPredicate (String predicate_name) {
-         addPropertyOverride(new ResourceLocation("dwmh", predicate_name), new IItemPropertyGetter() {
+    @SuppressWarnings("deprecation")
+    public static boolean useableItem(ItemStack item) {
+        if (item.getItemDamage() > item.getMaxDamage()) {
+            item.setItemDamage(item.getMaxDamage());
+            return false;
+        } else if (item.getItemDamage() == item.getMaxDamage()) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public static void damageItem(ItemStack item, EntityPlayer player) {
+        // Most calls to this should be wrapped in this but it doesn't hurt
+        if (player.capabilities.isCreativeMode) return;
+
+        if (item.getItem() instanceof ItemDWMHRepairable) {
+            if (useableItem(item)) {
+                item.damageItem(1, player);
+            }
+        } else {
+            DWMH.LOG.error(String.format("Attempted to damage a non-DWMH item! |%s|", item.getDisplayName()));
+        }
+    }
+
+    public void registerPredicate(String predicate_name) {
+        addPropertyOverride(new ResourceLocation("dwmh", predicate_name), new IItemPropertyGetter() {
             @Override
             public float apply(@Nonnull ItemStack stack, @Nullable World worldIn, @Nullable EntityLivingBase entityIn) {
                 if (stack.getItem() instanceof ItemEnchantedCarrot) {
@@ -37,39 +62,40 @@ public class ItemDWMHRepairable extends Item {
         });
     }
 
-    public void setInternalDefault (ItemStack item) {
+    public void setInternalDefault(ItemStack item) {
         defaultRepair = item;
     }
 
-    public void updateConfig () { }
-
-    public void setInternalRepair (String item) {
-        internalRepair = item;
+    public void updateConfig() {
     }
 
-    public String getInternalRepair () {
+    public String getInternalRepair() {
         return internalRepair;
     }
 
-    public ItemStack getRepairItem () {
+    public void setInternalRepair(String item) {
+        internalRepair = item;
+    }
+
+    public ItemStack getRepairItem() {
         ItemStack repairItem = parseItem(getInternalRepair());
         if (repairItem.isEmpty()) return defaultRepair;
         return repairItem;
     }
 
-    public void checkRepairItem () {
+    public void checkRepairItem() {
         parseItem(getInternalRepair(), null, true);
     }
 
-    public ItemStack parseItem (String intr) {
+    public ItemStack parseItem(String intr) {
         return parseItem(intr, null);
     }
 
-    public ItemStack parseItem (String intr, ItemStack def) {
+    public ItemStack parseItem(String intr, ItemStack def) {
         return parseItem(intr, def, false);
     }
 
-    public ItemStack parseItem (String intr, ItemStack def, Boolean errors) {
+    public ItemStack parseItem(String intr, ItemStack def, Boolean errors) {
         String[] parts = intr.split(":");
 
         if (def == null) def = ItemStack.EMPTY;
@@ -88,7 +114,8 @@ public class ItemDWMHRepairable extends Item {
 
         Item repairInt = Item.REGISTRY.getObject(new ResourceLocation(parts[0], parts[1]));
         if (repairInt == null) {
-            if (errors) DWMH.LOG.error(String.format("Item specified in configuration does not exist: |%s|. Using default |%s| instead.", intr, defName));
+            if (errors)
+                DWMH.LOG.error(String.format("Item specified in configuration does not exist: |%s|. Using default |%s| instead.", intr, defName));
             return def;
         }
 
@@ -96,7 +123,8 @@ public class ItemDWMHRepairable extends Item {
         try {
             metadata = Integer.parseInt(parts[2]);
         } catch (NumberFormatException nfe) {
-            if (errors) DWMH.LOG.error(String.format("Item metadata is not a valid integer: |%s|. Using default instead of 0 instead.", intr));
+            if (errors)
+                DWMH.LOG.error(String.format("Item metadata is not a valid integer: |%s|. Using default instead of 0 instead.", intr));
             return def;
         }
 
@@ -104,38 +132,13 @@ public class ItemDWMHRepairable extends Item {
     }
 
     @Override
-    public boolean getIsRepairable (ItemStack item, ItemStack repairingItem) {
+    public boolean getIsRepairable(ItemStack item, ItemStack repairingItem) {
         ItemStack myRepair = getRepairItem();
         if (repairingItem.getItem().equals(myRepair.getItem()) && repairingItem.getMetadata() == myRepair.getMetadata()) {
             return true;
         }
 
         return false;
-    }
-
-    @SuppressWarnings("deprecation")
-    public static boolean useableItem (ItemStack item) {
-        if (item.getItemDamage() > item.getMaxDamage()) {
-            item.setItemDamage(item.getMaxDamage());
-            return false;
-        } else if (item.getItemDamage() == item.getMaxDamage()) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    public static void damageItem (ItemStack item, EntityPlayer player) {
-        // Most calls to this should be wrapped in this but it doesn't hurt
-        if (player.capabilities.isCreativeMode) return;
-
-        if (item.getItem() instanceof ItemDWMHRepairable) {
-            if (useableItem(item)) {
-                item.damageItem(1, player);
-            }
-        } else {
-            DWMH.LOG.error(String.format("Attempted to damage a non-DWMH item! |%s|", item.getDisplayName()));
-        }
     }
 
     @Override
@@ -146,7 +149,7 @@ public class ItemDWMHRepairable extends Item {
     }
 
     @SuppressWarnings("deprecation")
-    public int getMaxDamage (ItemStack stack) {
+    public int getMaxDamage(ItemStack stack) {
         int max = getMaxDamage();
 
         if (stack.getItemDamage() > max) {

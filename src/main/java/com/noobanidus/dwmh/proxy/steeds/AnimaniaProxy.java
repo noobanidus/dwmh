@@ -13,7 +13,7 @@ import net.minecraft.util.text.TextFormatting;
 // Instantiated by buildSoftDependProxy
 @SuppressWarnings("unused")
 public class AnimaniaProxy implements ISteedProxy {
-    public boolean isTeleportable (Entity entity, EntityPlayer player) {
+    public boolean isTeleportable(Entity entity, EntityPlayer player) {
         if (!isListable(entity, player)) {
             return false;
         }
@@ -22,7 +22,8 @@ public class AnimaniaProxy implements ISteedProxy {
 
         if (!globalTeleportCheck(entity, player)) return false;
 
-        if (horse.isTame() && horse.getOwnerUniqueId() != null && horse.getOwnerUniqueId().equals(player.getUniqueID())) return true;
+        if (horse.isTame() && horse.getOwnerUniqueId() != null && horse.getOwnerUniqueId().equals(player.getUniqueID()))
+            return true;
 
         if (!entity.hasCustomName() || horse.isTame()) {
             return false;
@@ -31,12 +32,12 @@ public class AnimaniaProxy implements ISteedProxy {
         return entity.getCustomNameTag().equals(generateName(player));
     }
 
-    private String generateName (EntityPlayer player) {
+    private String generateName(EntityPlayer player) {
         return String.format("%s's Steed", player.getName());
     }
 
     // This can result in way too many mods being listed.
-    public boolean isListable (Entity entity, EntityPlayer player) {
+    public boolean isListable(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return false;
 
         EntityAnimaniaHorse horse = (EntityAnimaniaHorse) entity;
@@ -47,7 +48,7 @@ public class AnimaniaProxy implements ISteedProxy {
     }
 
     // Can't tame Animania animals -- OR CAN YOU?
-    public boolean isTameable (Entity entity, EntityPlayer player) {
+    public boolean isTameable(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return false;
 
         EntityAnimaniaHorse horse = (EntityAnimaniaHorse) entity;
@@ -55,7 +56,7 @@ public class AnimaniaProxy implements ISteedProxy {
         return !horse.isTame();
     }
 
-    public void tame (Entity entity, EntityPlayer player) {
+    public void tame(Entity entity, EntityPlayer player) {
         AbstractHorse horse = (AbstractHorse) entity;
 
         String name = generateName(player);
@@ -72,18 +73,22 @@ public class AnimaniaProxy implements ISteedProxy {
     }
 
     // Foal interactions -> uncertain
-    public boolean isAgeable (Entity entity, EntityPlayer player) {
+    public boolean isAgeable(Entity entity, EntityPlayer player) {
         return false;
     }
-    public void age (Entity entity, EntityPlayer player) { }
+
+    public void age(Entity entity, EntityPlayer player) {
+    }
 
     // Not currently implemented
-    public boolean isBreedable (Entity entity, EntityPlayer player) {
+    public boolean isBreedable(Entity entity, EntityPlayer player) {
         return false;
     }
-    public void breed (Entity entity, EntityPlayer player) { }
 
-    public boolean isMyMod (Entity entity) {
+    public void breed(Entity entity, EntityPlayer player) {
+    }
+
+    public boolean isMyMod(Entity entity) {
         if (!(entity instanceof EntityAnimaniaHorse)) return false;
 
         String clazz = entity.getClass().getName();
@@ -94,7 +99,7 @@ public class AnimaniaProxy implements ISteedProxy {
         return false;
     }
 
-    public ITextComponent getResponseKey (Entity entity, EntityPlayer player) {
+    public ITextComponent getResponseKey(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return null;
 
         ITextComponent temp = null;
@@ -138,7 +143,7 @@ public class AnimaniaProxy implements ISteedProxy {
         return temp;
     }
 
-    public String proxyName () {
+    public String proxyName() {
         return "animania";
     }
 }

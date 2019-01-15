@@ -62,3 +62,5 @@ sign.bat
 
 /*node*/
 *.json
+
+CHANGELOG.md

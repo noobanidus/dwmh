@@ -250,6 +250,11 @@ public class DWMHConfig {
             @Config.Ignore
             public ItemStack repairItemDefault = new ItemStack(Blocks.GOLD_BLOCK);
 
+            @Config.LangKey("config.carrot.durability.breaks")
+            @Config.Comment("Set to true to have the carrot break when it reaches 0 durability instead of becoming unusable")
+            @Config.Name("Carrot Is Breakable")
+            public boolean breakableCarrot = false;
+
             public int getMaxUses() {
                 return Math.max(maxUses, 1);
             }

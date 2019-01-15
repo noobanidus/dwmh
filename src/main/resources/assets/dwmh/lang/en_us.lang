@@ -166,3 +166,5 @@ config.proxies.mocreatures.classes.tooltip=Specify list of entity translation ke
 config.proxies.mocreatures.classes=Mo Creatures Classes
 config.proxies.zawa.classes.tooltip=Specify list of ZAWA Rebuilt classes that are considered steeds. Use /dwmh entity while targetting to get the full name
 config.proxies.zawa.classes=ZAWA Classes
+config.carrot.durability.breaks=Carrot Is Breakable
+config.carrot.durability.breaks.tooltip=Set to true to have the carrot break when it reaches 0 durability instead of becoming unusable

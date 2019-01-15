@@ -20,6 +20,8 @@ public class ItemDWMHRepairable extends Item {
 
     @SuppressWarnings("deprecation")
     public static boolean useableItem(ItemStack item) {
+        if (item.getItem() instanceof ItemEnchantedCarrot && DWMHConfig.EnchantedCarrot.durability.breakableCarrot) return true;
+
         if (item.getItemDamage() > item.getMaxDamage()) {
             item.setItemDamage(item.getMaxDamage());
             return false;
@@ -36,7 +38,7 @@ public class ItemDWMHRepairable extends Item {
 
         if (item.getItem() instanceof ItemDWMHRepairable) {
             if (useableItem(item)) {
-                item.attemptDamageItem(1, player.world.rand, null);
+                item.damageItem(1, player);
             }
         } else {
             DWMH.LOG.error(String.format("Attempted to damage a non-DWMH item! |%s|", item.getDisplayName()));
@@ -48,6 +50,8 @@ public class ItemDWMHRepairable extends Item {
             @Override
             public float apply(@Nonnull ItemStack stack, @Nullable World worldIn, @Nullable EntityLivingBase entityIn) {
                 if (stack.getItem() instanceof ItemEnchantedCarrot) {
+                    if (DWMHConfig.EnchantedCarrot.durability.breakableCarrot)
+                        return 0;
                     if (stack.getItemDamage() == DWMHConfig.EnchantedCarrot.durability.getMaxUses())
                         return 1;
                     return 0;
@@ -134,15 +138,14 @@ public class ItemDWMHRepairable extends Item {
     @Override
     public boolean getIsRepairable(ItemStack item, ItemStack repairingItem) {
         ItemStack myRepair = getRepairItem();
-        if (repairingItem.getItem().equals(myRepair.getItem()) && repairingItem.getMetadata() == myRepair.getMetadata()) {
-            return true;
-        }
+        return repairingItem.getItem().equals(myRepair.getItem()) && repairingItem.getMetadata() == myRepair.getMetadata();
 
-        return false;
     }
 
     @Override
     public boolean showDurabilityBar(ItemStack stack) {
+        if (stack.getItem() instanceof ItemEnchantedCarrot && DWMHConfig.EnchantedCarrot.durability.breakableCarrot) return true;
+
         if (stack.getItemDamage() == stack.getMaxDamage()) return false;
 
         return super.showDurabilityBar(stack);

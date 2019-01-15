@@ -74,12 +74,11 @@ Dude! Where's my Horse? is currently compatible with the following creatures & m
   * Kirin
   * Reindeer
     * Additional compatibility: steeds of the Vagabond Knight will be tamed to the player who kills the night; if no player kills it, the steed will drop its saddle and become untamed. Additionally, spawned, specially-named unicorns (such as Alea) can have the Enchanted Carrot applied to them in order to mark them as "yours", allowing you to summon them.
-* Zoo and Wild Animals: Rebuilt (1.4.0 only)
+* Zoo and Wild Animals: Rebuilt (healing, taming and ageing Carrot, full Ocarina)
   * Asian Elephant
   * Grevys Zebra
   * Gaur
   * Reticulated Giraffe
   * Okapi
-    * Currently, only support for the 1.4.0 release of ZAWA is included. The recently-released 1.5.2 will be a target for 2.0.1
     * Currently, only land-based ZAWA animals are supported.
 

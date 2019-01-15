@@ -54,6 +54,7 @@ dwmh.strings.not_your_horse=This isn't your horse, so you cannot unname it.
 dwmh.strings.quark_poisoned=Not aging a horse affected by Quark's poisonous potato effect!
 dwmh.strings.zawa.tamed=Successfully tamed %s!
 dwmh.strings.broken_whistle=The broken ocarina sounds harshly, and no steeds come to you... You should repair it!
+dwmh.strings.break_whistle=The ocarina breaks! No more steeds can be summoned until it is repaired.
 dwmh.strings.repair_carrot=Repair this object with %s!
 dwmh.strings.animania_naming=an Animania steed to name it or unname it.
 dwmh.strings.command.entity_found=Copied to the clipboard the entity: %s

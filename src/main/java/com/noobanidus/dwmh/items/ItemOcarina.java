@@ -29,6 +29,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
 public class ItemOcarina extends ItemDWMHRepairable {
     private List<TextComponentTranslation> directions = new ArrayList<>();
@@ -163,6 +165,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
 
             ITextComponent temp;
 
+            /** Listing entities. **/
             if (player.isSneaking() && !DWMHConfig.Ocarina.swap || !player.isSneaking() && DWMHConfig.Ocarina.swap) {
                 List<Entity> nearbyHorses = world.getEntities(Entity.class, (entity) -> isValidHorse(entity, player, true));
                 for (Entity horse : nearbyHorses) {
@@ -195,7 +198,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
                     player.sendMessage(temp);
                 }
                 player.swingArm(hand);
-            } else {
+            } else { /** Actually summoning. **/
                 int totalConsumed = 0;
 
                 ItemStack itemCost = getCostItem();
@@ -220,13 +223,20 @@ public class ItemOcarina extends ItemDWMHRepairable {
                 }
 
                 // Early breakpoint: if the Ocarina is broken
-                if (!useableItem(stack)) {
-                    temp = new TextComponentTranslation("dwmh.strings.broken_whistle");
-                    temp.getStyle().setColor(TextFormatting.BLUE);
-                    player.sendMessage(temp);
-                    SoundType.BROKEN.playSound(player, stack);
-                    return actionResult;
-                }
+                BiFunction<String, Boolean, Boolean> durabilityCheck = (key, playSound) -> {
+                    if (!useableItem(stack)) {
+                        ITextComponent temp2 = new TextComponentTranslation(key); // );
+                        temp2.getStyle().setColor(TextFormatting.BLUE);
+                        player.sendMessage(temp2);
+                        if (playSound)
+                            SoundType.BROKEN.playSound(player, stack);
+                        return false;
+                    }
+
+                    return true;
+                };
+
+                if (!durabilityCheck.apply("dwmh.strings.broken_whistle", true)) return actionResult;
 
                 List<Entity> nearbyHorses = world.getEntities(Entity.class, (entity) -> isValidHorse(entity, player));
                 for (Entity entity : nearbyHorses) {
@@ -255,7 +265,10 @@ public class ItemOcarina extends ItemDWMHRepairable {
                         }
                         horse.moveToBlockPosAndAngles(pos, horse.rotationYaw, horse.rotationPitch);
                         didStuff = true;
-                        if (DWMHConfig.Ocarina.functionality.getMaxUses() != 0) damageItem(stack, player);
+                        if (DWMHConfig.Ocarina.functionality.getMaxUses() != 0) {
+                            damageItem(stack, player);
+                            if (!durabilityCheck.apply("dwmh.strings.break_whistle", false)) return actionResult;
+                        }
                         if (!DWMHConfig.Ocarina.responses.quiet && !DWMHConfig.Ocarina.responses.simple) {
                             if (DWMH.steedProxy.hasCustomName(horse)) {
                                 temp = new TextComponentTranslation("dwmh.strings.teleport_with_name", DWMH.steedProxy.getCustomNameTag(horse));

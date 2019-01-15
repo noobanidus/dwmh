@@ -135,10 +135,23 @@ public class ZawaProxy implements ISteedProxy {
     }
 
     public boolean isAgeable(Entity entity, EntityPlayer player) {
+        if (!isMyMod(entity)) return false;
+
+        ZAWABaseLand animal = (ZAWABaseLand) entity;
+
+        if (animal.isChild()) return true;
+
         return false;
     }
 
     public void age(Entity entity, EntityPlayer player) {
+        ZAWABaseLand animal = (ZAWABaseLand) entity;
+        animal.setGrowingAge(0);
+        animal.world.setEntityState(animal, (byte) 7);
+
+        if (DWMHConfig.EnchantedCarrot.messages.aging) {
+            doGenericMessage(entity, player, Generic.AGING);
+        }
     }
 
     // The healing is by default in the interface

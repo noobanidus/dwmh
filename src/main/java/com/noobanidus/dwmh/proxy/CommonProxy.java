@@ -42,13 +42,13 @@ public class CommonProxy implements ISidedProxy {
         }
         if (DWMHConfig.proxies.enable.zawa) {
             DWMH.zawaProxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("zawa", "com.noobanidus.dwmh.proxy.steeds.ZawaProxy")).orElse(new DummySteedProxy());
-            if (Loader.isModLoaded("zawa")) {
+            /*if (Loader.isModLoaded("zawa")) {
                 ModContainer zawa = Loader.instance().getIndexedModList().get("zawa");
                 if (!zawa.getVersion().equals("1.12.2-1.4.0")) {
                     DWMH.zawaProxy = new DummySteedProxy();
                     DWMH.LOG.error("ZAWA is only supported for version 1.4.0. ZAWA compatibility has been disabled");
                 }
-            }
+            }*/
         }
         if (DWMHConfig.proxies.enable.ultimate_unicorn_mod) {
             DWMH.unicornProxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("ultimate_unicorn_mod", "com.noobanidus.dwmh.proxy.steeds.UnicornProxy")).orElse(new DummySteedProxy());

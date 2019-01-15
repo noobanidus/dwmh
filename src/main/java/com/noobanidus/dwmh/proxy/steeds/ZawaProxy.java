@@ -4,10 +4,8 @@ import com.noobanidus.dwmh.DWMH;
 import com.noobanidus.dwmh.config.DWMHConfig;
 import com.noobanidus.dwmh.items.ItemEnchantedCarrot;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.ITextComponent;
@@ -15,15 +13,13 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import org.zawamod.entity.base.ZAWABaseLand;
-import org.zawamod.entity.core.AnimalData;
-import org.zawamod.init.advancement.Triggers;
 
 @SuppressWarnings("unused")
 public class ZawaProxy implements ISteedProxy {
     ZAWABaseLand.AIFight aifight = null;
     EntityAINearestAttackableTarget ainearatt = null;
 
-    public boolean isTeleportable (Entity entity, EntityPlayer player) {
+    public boolean isTeleportable(Entity entity, EntityPlayer player) {
         if (!isListable(entity, player)) {
             return false;
         }
@@ -31,7 +27,7 @@ public class ZawaProxy implements ISteedProxy {
         return isSaddled((ZAWABaseLand) entity) && globalTeleportCheck(entity, player);
     }
 
-    public boolean isListable (Entity entity, EntityPlayer player) {
+    public boolean isListable(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) {
             return false;
         }
@@ -44,7 +40,7 @@ public class ZawaProxy implements ISteedProxy {
         return true;
     }
 
-    private boolean isSaddled (ZAWABaseLand entity) {
+    private boolean isSaddled(ZAWABaseLand entity) {
         NBTTagCompound nbt = new NBTTagCompound();
         entity.writeEntityToNBT(nbt);
 
@@ -54,13 +50,15 @@ public class ZawaProxy implements ISteedProxy {
     }
 
     //  These do nothing
-    public boolean isTameable (Entity entity, EntityPlayer player) {
+    public boolean isTameable(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return false;
 
         ZAWABaseLand animal = (ZAWABaseLand) entity;
         return !animal.isTamed();
     }
 
+    /* Below code from ZAWA 1.4.0
+    /*
     public void tame (Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return;
 
@@ -100,24 +98,59 @@ public class ZawaProxy implements ISteedProxy {
         if (DWMHConfig.EnchantedCarrot.messages.taming) {
             doGenericMessage(entity, player, Generic.TAMING, TextFormatting.GOLD);
         }
+    }*/
+
+    /* 1.5.3 */
+    public void tame(Entity entity, EntityPlayer player) {
+        if (!isMyMod(entity)) return;
+
+        ZAWABaseLand animal = (ZAWABaseLand) entity;
+
+        animal.setTamedBy(player);
+        animal.setOwnerId(player.getUniqueID());
+        if (!player.capabilities.isCreativeMode) {
+            ItemStack item = player.inventory.getCurrentItem();
+            ItemEnchantedCarrot.damageItem(item, player);
+        }
+
+        if (aifight == null || ainearatt == null) {
+            aifight = ReflectionHelper.getPrivateValue(ZAWABaseLand.class, animal, "AIFight");
+            ainearatt = ReflectionHelper.getPrivateValue(ZAWABaseLand.class, animal, "AINearAtt");
+        }
+
+        if (aifight != null && ainearatt != null) {
+            animal.tasks.removeTask(aifight);
+            animal.targetTasks.removeTask(ainearatt);
+        } else {
+            DWMH.LOG.error("Unable to remove AI tasks for recently tamed entity.");
+        }
+
+        animal.setHunger(animal.getMaxFood());
+        animal.setEnrichment(animal.getMaxEnrichment());
+        animal.world.setEntityState(animal, (byte) 7);
+
+        if (DWMHConfig.EnchantedCarrot.messages.taming) {
+            doGenericMessage(entity, player, Generic.TAMING, TextFormatting.GOLD);
+        }
     }
 
-    public boolean isAgeable (Entity entity, EntityPlayer player) {
+    public boolean isAgeable(Entity entity, EntityPlayer player) {
         return false;
     }
 
-    public void age (Entity entity, EntityPlayer player) { }
+    public void age(Entity entity, EntityPlayer player) {
+    }
 
     // The healing is by default in the interface
 
-    public boolean isBreedable (Entity entity, EntityPlayer player) {
+    public boolean isBreedable(Entity entity, EntityPlayer player) {
         return false;
     }
 
-    public void breed (Entity entity, EntityPlayer player) {
+    public void breed(Entity entity, EntityPlayer player) {
     }
 
-    public ITextComponent getResponseKey (Entity entity, EntityPlayer player) {
+    public ITextComponent getResponseKey(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return null;
 
         ITextComponent temp;
@@ -150,7 +183,7 @@ public class ZawaProxy implements ISteedProxy {
         return temp;
     }
 
-    public boolean isMyMod (Entity entity) {
+    public boolean isMyMod(Entity entity) {
         if (!(entity instanceof ZAWABaseLand)) return false;
 
         String clazz = entity.getClass().getName();
@@ -161,7 +194,7 @@ public class ZawaProxy implements ISteedProxy {
         return false;
     }
 
-    public String proxyName () {
+    public String proxyName() {
         return "zawa";
     }
 }

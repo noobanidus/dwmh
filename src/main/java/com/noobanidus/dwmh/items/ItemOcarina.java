@@ -36,7 +36,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
         // These are the only "whistles" that hang around because I don't
         // want to break any backwards compatibility to people upgrading.
         setRegistryName("dwmh:whistle");
-        setUnlocalizedName("dwmh.whistle");
+        setTranslationKey("dwmh.whistle");
         registerPredicate("whistle_damage");
         updateConfig();
         setInternalDefault(DWMHConfig.Ocarina.functionality.repairItemDefault);

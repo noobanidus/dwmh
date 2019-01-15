@@ -11,7 +11,7 @@ public class CreativeTabDWMH extends CreativeTabs {
     }
 
     @SideOnly(Side.CLIENT)
-    public ItemStack getTabIconItem() {
+    public ItemStack createIcon() {
         return new ItemStack(Registrar.ocarina);
     }
 }

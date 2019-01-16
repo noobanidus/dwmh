@@ -41,13 +41,6 @@ public class CommonProxy implements ISidedProxy {
         }
         if (DWMHConfig.proxies.enable.zawa) {
             DWMH.zawaProxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("zawa", "com.noobanidus.dwmh.proxy.steeds.ZawaProxy")).orElse(new DummySteedProxy());
-            /*if (Loader.isModLoaded("zawa")) {
-                ModContainer zawa = Loader.instance().getIndexedModList().get("zawa");
-                if (!zawa.getVersion().equals("1.12.2-1.4.0")) {
-                    DWMH.zawaProxy = new DummySteedProxy();
-                    DWMH.LOG.error("ZAWA is only supported for version 1.4.0. ZAWA compatibility has been disabled");
-                }
-            }*/
         }
         if (DWMHConfig.proxies.enable.ultimate_unicorn_mod) {
             DWMH.unicornProxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("ultimate_unicorn_mod", "com.noobanidus.dwmh.proxy.steeds.UnicornProxy")).orElse(new DummySteedProxy());
@@ -55,8 +48,11 @@ public class CommonProxy implements ISidedProxy {
                 MinecraftForge.EVENT_BUS.register(DWMH.unicornProxy.getClass());
             }
         }
+        if (DWMHConfig.proxies.enable.atum2) {
+            DWMH.atum2Proxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("atum", "com.noobanidus.dwmh.proxy.steeds.Atum2Proxy")).orElse(new DummySteedProxy());
+        }
 
-        DWMH.proxyList = Lists.newArrayList(DWMH.animaniaProxy, DWMH.mocProxy, DWMH.zawaProxy, DWMH.unicornProxy, DWMH.vanillaProxy);
+        DWMH.proxyList = Lists.newArrayList(DWMH.animaniaProxy, DWMH.mocProxy, DWMH.zawaProxy, DWMH.unicornProxy, DWMH.atum2Proxy, DWMH.vanillaProxy);
         DWMH.proxyList.removeIf(i -> !i.isLoaded());
         DWMH.resolveClasses();
 

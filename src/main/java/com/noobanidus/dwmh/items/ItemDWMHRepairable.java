@@ -3,6 +3,7 @@ package com.noobanidus.dwmh.items;
 import com.noobanidus.dwmh.DWMH;
 import com.noobanidus.dwmh.config.DWMHConfig;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IJumpingMount;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.Item;

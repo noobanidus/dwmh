@@ -50,6 +50,12 @@ runClient {
     args '--username', 'DWMH'
 }
 
+jar {
+    manifest {
+        attributes 'FMLAT': 'dwmh_at.cfg'
+    }
+}
+
 processResources {
     inputs.property "version", project.version
     inputs.property "mcversion", project.minecraft.version

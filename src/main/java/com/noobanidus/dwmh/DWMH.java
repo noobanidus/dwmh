@@ -37,6 +37,7 @@ public class DWMH {
     public static ISteedProxy mocProxy = new DummySteedProxy();
     public static ISteedProxy zawaProxy = new DummySteedProxy();
     public static ISteedProxy unicornProxy = new DummySteedProxy();
+    public static ISteedProxy atum2Proxy = new DummySteedProxy();
 
     // This is more of an overall helper class that checks everything
     public static ISteedProxy steedProxy;
@@ -44,6 +45,7 @@ public class DWMH {
     public static List<ISteedProxy> proxyList;
     public static Set<String> zawaClasses;
     public static Set<String> animaniaClasses;
+    public static Set<String> atum2Classes;
     public static Set<String> ignoreList = Sets.newHashSet();
     public static Set<String> entityBlacklist;
     @SidedProxy(clientSide = "com.noobanidus.dwmh.proxy.ClientProxy", serverSide = "com.noobanidus.dwmh.proxy.CommonProxy")
@@ -52,13 +54,14 @@ public class DWMH {
     @Mod.Instance(DWMH.MODID)
     public static DWMH instance;
     @SuppressWarnings("unused")
-    private List<String> supportedMods = Arrays.asList("animania", "mocreatures", "zawa", "ultimate_unicorn_mod");
+    private List<String> supportedMods = Arrays.asList("animania", "mocreatures", "zawa", "ultimate_unicorn_mod", "atum");
 
     public static void resolveClasses() {
         // All of these are string-based now hooray
         DWMH.animaniaClasses = Sets.newHashSet(DWMHConfig.proxies.Animania.classes);
         DWMH.zawaClasses = Sets.newHashSet(DWMHConfig.proxies.ZAWA.classes);
         DWMH.entityBlacklist = Sets.newHashSet(DWMHConfig.blacklist);
+        DWMH.atum2Classes = Sets.newHashSet(DWMHConfig.proxies.Atum2.classes);
         DWMH.ignoreList.clear();
     }
 

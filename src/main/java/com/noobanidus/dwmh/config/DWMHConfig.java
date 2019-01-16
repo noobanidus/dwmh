@@ -279,6 +279,10 @@ public class DWMHConfig {
         @Config.Comment("Options related specifically to Mo Creatures")
         @Config.Name("Mo Creatures Settings")
         public MoCreatures MoCreatures = new MoCreatures();
+        @Config.LangKey("config.category.proxies.atum2") // TODO: FILL IN
+        @Config.Comment("Options related specifically to Atum 2")
+        @Config.Name("Atum 2 Settings")
+        public Atum2 Atum2 = new Atum2();
 
         public class Enable {
             @Config.RequiresMcRestart
@@ -304,6 +308,12 @@ public class DWMHConfig {
             @Config.Comment("Set to false to disable the Ultimate Unicorn Mod proxy (even if it would normally load)")
             @Config.Name("Ultimate Unicorn Mod")
             public boolean ultimate_unicorn_mod = true;
+
+            @Config.RequiresMcRestart
+            @Config.LangKey("config.proxies.disable.atum2") // fill in
+            @Config.Comment("Set to false to disable the Atum 2 proxy (even if it would normally load)")
+            @Config.Name("Atum 2")
+            public boolean atum2 = true;
         }
 
         public class Animania {
@@ -323,8 +333,15 @@ public class DWMHConfig {
         public class MoCreatures {
             @Config.LangKey("config.proxies.mocreatures.classes")
             @Config.Comment("Specify list of entity translation keys which should be modified to insert spaces (where relevant)")
-            @Config.Name("Mo Creatures Classes")
+            @Config.Name("Mo Creatures Entities") // TODO: Update lang
             public String[] entities = new String[]{"entity.mocreatures:blackbear.name", "entity.mocreatures:grizzlybear.name", "entity.mocreatures:komododragon.name", "entity.mocreatures:petscorpion.name", "entity.mocreatures:wildhorse.name", "entity.mocreatures:wildpolarbear.name"};
+        }
+
+        public class Atum2 {
+            @Config.LangKey("config.proxies.atum2.classes")
+            @Config.Comment("Specify list of Atum 2 classes that are connsidered steeds. Use /dwmh entity while targetting to get the full name")
+            @Config.Name("Atum 2 Classes")
+            public String[] classes = new String[]{"com.teammetallurgy.atum.entity.animal.EntityCamel", "com.teammetallurgy.atum.entity.animal.EntityDesertWolf"};
         }
     }
 }

@@ -159,8 +159,8 @@ public class SteedProxy implements ISteedProxy {
     }
 
     // This may be sufficient to implement #5
-    public boolean blacklisted(Entity entity) {
-        return DWMH.entityBlacklist.contains(entity.getClass());
+    private boolean blacklisted(Entity entity) {
+        return DWMH.entityBlacklist.contains(entity.getClass().getName());
     }
 
     public boolean isMyMod(Entity entity) {
@@ -196,7 +196,6 @@ public class SteedProxy implements ISteedProxy {
 
         return null;
     }
-
 
     public String proxyName() {
         return "main";

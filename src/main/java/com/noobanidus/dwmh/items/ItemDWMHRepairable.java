@@ -145,9 +145,11 @@ public class ItemDWMHRepairable extends Item {
 
     @Override
     public boolean showDurabilityBar(ItemStack stack) {
-        if (stack.getItem() instanceof ItemEnchantedCarrot && DWMHConfig.EnchantedCarrot.durability.breakableCarrot) return true;
-
         if (stack.getItemDamage() == stack.getMaxDamage()) return false;
+
+        if (stack.getItemDamage() == 0) return false;
+
+        if (stack.getItem() instanceof ItemEnchantedCarrot && DWMHConfig.EnchantedCarrot.durability.breakableCarrot) return true;
 
         return super.showDurabilityBar(stack);
     }

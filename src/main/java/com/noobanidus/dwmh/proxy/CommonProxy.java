@@ -51,8 +51,11 @@ public class CommonProxy implements ISidedProxy {
         if (DWMHConfig.proxies.enable.atum2) {
             DWMH.atum2Proxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("atum", "com.noobanidus.dwmh.proxy.steeds.Atum2Proxy")).orElse(new DummySteedProxy());
         }
+        if (DWMHConfig.proxies.enable.iceandfire) {
+            DWMH.iceandfireProxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("iceandfire", "com.noobanidus.dwmh.proxy.steeds.IceAndFireProxy")).orElse(new DummySteedProxy());
+        }
 
-        DWMH.proxyList = Lists.newArrayList(DWMH.animaniaProxy, DWMH.mocProxy, DWMH.zawaProxy, DWMH.unicornProxy, DWMH.atum2Proxy, DWMH.vanillaProxy);
+        DWMH.proxyList = Lists.newArrayList(DWMH.animaniaProxy, DWMH.mocProxy, DWMH.zawaProxy, DWMH.unicornProxy, DWMH.atum2Proxy, DWMH.iceandfireProxy, DWMH.vanillaProxy);
         DWMH.proxyList.removeIf(i -> !i.isLoaded());
         DWMH.resolveClasses();
 

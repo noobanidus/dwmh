@@ -283,6 +283,10 @@ public class DWMHConfig {
         @Config.Comment("Options related specifically to Atum 2")
         @Config.Name("Atum 2 Settings")
         public Atum2 Atum2 = new Atum2();
+        @Config.LangKey("config.category.proxies.iceandfire") // TODO: FILL IN
+        @Config.Comment("Options related specifically to Ice & Fire")
+        @Config.Name("Ice & Fire Settings")
+        public IceAndFire IceAndFire = new IceAndFire();
 
         public class Enable {
             @Config.RequiresMcRestart
@@ -310,10 +314,16 @@ public class DWMHConfig {
             public boolean ultimate_unicorn_mod = true;
 
             @Config.RequiresMcRestart
-            @Config.LangKey("config.proxies.disable.atum2") // fill in
+            @Config.LangKey("config.proxies.disable.atum2") // fill in TODO
             @Config.Comment("Set to false to disable the Atum 2 proxy (even if it would normally load)")
             @Config.Name("Atum 2")
             public boolean atum2 = true;
+
+            @Config.RequiresMcRestart
+            @Config.LangKey("config.proxies.disable.iceandfire") // TODO: FILL IN
+            @Config.Comment("Set to false to disable the Ice & Fire proxy (even if it would normally load)")
+            @Config.Name("Ice & Fire")
+            public boolean iceandfire = true;
         }
 
         public class Animania {
@@ -338,10 +348,22 @@ public class DWMHConfig {
         }
 
         public class Atum2 {
-            @Config.LangKey("config.proxies.atum2.classes")
-            @Config.Comment("Specify list of Atum 2 classes that are connsidered steeds. Use /dwmh entity while targetting to get the full name")
+            @Config.LangKey("config.proxies.atum2.classes") // TODO: FILL IN
+            @Config.Comment("Specify list of Atum 2 classes that are considered steeds. Use /dwmh entity while targetting to get the full name")
             @Config.Name("Atum 2 Classes")
             public String[] classes = new String[]{"com.teammetallurgy.atum.entity.animal.EntityCamel", "com.teammetallurgy.atum.entity.animal.EntityDesertWolf"};
+        }
+
+        public class IceAndFire {
+            @Config.LangKey("config.proxies.iceandfire.classes")
+            @Config.Comment("Specify list of Ice and Fire classes that are considered steeds. Use /dwmh entity while targetting to get the full name")
+            @Config.Name("Ice & Fire Classes")
+            public String[] classes = new String[]{"com.github.alexthe666.iceandfire.entity.EntityIceDragon", "com.github.alexthe666.iceandfire.entity.EntityFireDragon", "com.github.alexthe666.iceandfire.entity.EntityHippocampus", "com.github.alexthe666.iceandfire.entity.EntityHippogryph"};
+
+            @Config.LangKey("config.proxies.iceandfire.excluded")
+            @Config.Comment("Specify list of Ice and Fire classes that are excuded from Carrot taming, ageing and breeding. Use /dwmh entity while targetting to get the full name")
+            @Config.Name("Ice & Fire Exclusions")
+            public String[] exclusions = new String[]{"com.github.alexthe666.iceandfire.entity.EntityIceDragon", "com.github.alexthe666.iceandfire.entity.EntityFireDragon"};
         }
     }
 }

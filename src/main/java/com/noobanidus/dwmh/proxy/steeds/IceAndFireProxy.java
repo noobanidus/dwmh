@@ -1,89 +1,71 @@
 package com.noobanidus.dwmh.proxy.steeds;
 
+import com.github.alexthe666.iceandfire.entity.EntityDragonBase;
+import com.github.alexthe666.iceandfire.entity.EntityHippocampus;
+import com.github.alexthe666.iceandfire.entity.EntityHippogryph;
 import com.noobanidus.dwmh.DWMH;
 import com.noobanidus.dwmh.config.DWMHConfig;
-import com.noobanidus.dwmh.wrappers.Atum2Wrapper;
-import com.teammetallurgy.atum.entity.animal.EntityCamel;
-import com.teammetallurgy.atum.entity.animal.EntityDesertWolf;
+import com.noobanidus.dwmh.wrappers.IceAndFireWrapper;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.passive.AbstractHorse;
-import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 
 @SuppressWarnings("unused")
-public class Atum2Proxy implements ISteedProxy {
-    public boolean isTeleportable(Entity entity, EntityPlayer player) { // TODO
+public class IceAndFireProxy implements ISteedProxy {
+    public boolean isTeleportable(Entity entity, EntityPlayer player) {
         if (!isListable(entity, player)) {
             return false;
         }
 
-        return new Atum2Wrapper(entity).isHorseSaddled() && globalTeleportCheck(entity, player);
+        IceAndFireWrapper wrapper = new IceAndFireWrapper(entity);
+
+        if (wrapper.getIsDragon() && wrapper.getDragonStage() <= 2)
+            return false;
+
+        return !wrapper.isDead() && wrapper.isHorseSaddled() && globalTeleportCheck(entity, player);
     }
 
     public boolean isListable(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return false;
 
-        Atum2Wrapper wrapper = new Atum2Wrapper(entity);
+        IceAndFireWrapper wrapper = new IceAndFireWrapper(entity);
 
-        if (wrapper.isChild() || !wrapper.isTame() || wrapper.dimension != player.dimension) {
-            return false;
-        }
+        if (!wrapper.isTame() || wrapper.dimension != player.dimension || !wrapper.isListable()) return false;
 
         return wrapper.getOwnerUniqueId() != null && wrapper.getOwnerUniqueId().equals(player.getUniqueID());
     }
 
     // Carrot
     public boolean isTameable(Entity entity, EntityPlayer player) {
-        if (!isMyMod(entity)) return false;
-
-        Atum2Wrapper wrapper = new Atum2Wrapper(entity);
-
-        if (wrapper.isChild()) return false;
-
-        if (!wrapper.isAlpha()) return false;
-
-        if (wrapper.isTame() && wrapper.getOwnerUniqueId() == null) return true; // TODO can this even happen?
-
-        return !wrapper.isTame();
+        IceAndFireWrapper wrapper = new IceAndFireWrapper(entity);
+        return notExcluded(entity) && !wrapper.isTame();
     }
 
-    public void tame(Entity entity, EntityPlayer player) { // TODO
-        if (entity instanceof AbstractHorse) {
-            ((AbstractHorse) entity).setTamedBy(player);
-        } else {
-            EntityDesertWolf wolf = (EntityDesertWolf) entity;
+    public void tame(Entity entity, EntityPlayer player) {
+        IceAndFireWrapper wrapper = new IceAndFireWrapper(entity);
 
-            wolf.setTamedBy(player);
-            wolf.getNavigator().clearPath();
-            wolf.setAttackTarget(null);
-            if (!wolf.isAlpha()) {
-                wolf.aiSit.setSitting(true);
-            }
-
-            wolf.setHealth(40.0F);
-            wolf.playTameEffect(true);
-            wolf.world.setEntityState(wolf, (byte) 7);
-        }
+        wrapper.setTamedBy(player);
+        wrapper.world.setEntityState(entity, (byte)7);
 
         if (DWMHConfig.EnchantedCarrot.messages.taming) {
             doGenericMessage(entity, player, Generic.TAMING);
         }
     }
 
-    public boolean isAgeable(Entity entity, EntityPlayer player) { // TODO
-        if (!isMyMod(entity)) return false;
+    public boolean isAgeable(Entity entity, EntityPlayer player) {
+        IceAndFireWrapper wrapper = new IceAndFireWrapper(entity);
 
-        return new Atum2Wrapper(entity).isChild();
+        return notExcluded(entity) && wrapper.isChild();
     }
 
-    public void age(Entity entity, EntityPlayer player) { // TODO
-        Atum2Wrapper wrapper = new Atum2Wrapper(entity);
+    public void age(Entity entity, EntityPlayer player) {
+        IceAndFireWrapper wrapper = new IceAndFireWrapper(entity);
 
         wrapper.setGrowingAge(0);
-        wrapper.world.setEntityState(entity, (byte) 7);
+        wrapper.world.setEntityState(entity, (byte)7);
 
         if (DWMHConfig.EnchantedCarrot.messages.aging) {
             doGenericMessage(entity, player, Generic.AGING);
@@ -91,32 +73,35 @@ public class Atum2Proxy implements ISteedProxy {
     }
 
     // Not currently implemented
-    public boolean isBreedable(Entity entity, EntityPlayer player) { // TODO
-        if (!isMyMod(entity)) return false;
+    public boolean isBreedable(Entity entity, EntityPlayer player) {
+        IceAndFireWrapper wrapper = new IceAndFireWrapper(entity);
 
-        Atum2Wrapper wrapper = new Atum2Wrapper(entity);
-
-        return !wrapper.isChild() && wrapper.getGrowingAge() == 0 && !wrapper.isInLove();
+        return notExcluded(entity) && !wrapper.isChild() && wrapper.getGrowingAge() == 0 && !wrapper.isInLove();
     }
 
-    public void breed(Entity entity, EntityPlayer player) { // TODO
-        if (!isMyMod(entity)) return;
+    public void breed(Entity entity, EntityPlayer player) {
+        IceAndFireWrapper wrapper = new IceAndFireWrapper(entity);
 
-        EntityAnimal animal = (EntityAnimal) entity;
-
-        animal.setInLove(player);
+        wrapper.setInLove(player);
+        wrapper.world.setEntityState(entity, (byte)7);
 
         if (DWMHConfig.EnchantedCarrot.messages.breeding) {
             doGenericMessage(entity, player, Generic.BREEDING);
         }
     }
 
+    private boolean notExcluded(Entity entity) {
+        if (!isMyMod(entity)) return false;
+
+        return !DWMH.iceandFireExclusions.contains(entity.getClass().getName());
+    }
+
     public boolean isMyMod(Entity entity) {
-        if (!(entity instanceof EntityCamel) && !(entity instanceof EntityDesertWolf)) return false;
+        if (!(entity instanceof EntityDragonBase) && !(entity instanceof EntityHippocampus) && !(entity instanceof EntityHippogryph)) return false;
 
         String clazz = entity.getClass().getName();
 
-        if (DWMH.atum2Classes.contains(clazz)) return true;
+        if (DWMH.iceandfireClasses.contains(clazz)) return true;
 
         DWMH.ignoreList.add(clazz);
         return false;
@@ -125,11 +110,14 @@ public class Atum2Proxy implements ISteedProxy {
     public ITextComponent getResponseKey(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return null;
 
-        Atum2Wrapper wrapper = new Atum2Wrapper(entity);
-
+        IceAndFireWrapper wrapper = new IceAndFireWrapper(entity);
         ITextComponent temp;
-
-        if (wrapper.hasHome() && wrapper.world.getTileEntity(wrapper.getHomePosition()) != null) {
+        if (wrapper.isDead()) {
+            temp = new TextComponentTranslation("dwmh.strings.unsummonable.dead").setStyle(new Style().setColor(TextFormatting.DARK_RED));
+        } else if (wrapper.getDragonStage() <= 2 && wrapper.getIsDragon()) {
+            temp = new TextComponentTranslation("dwmh.strings.unsummonable.child");
+            temp.getStyle().setColor(TextFormatting.DARK_RED);
+        } else if (wrapper.hasHome() && wrapper.world.getTileEntity(wrapper.getHomePosition()) != null) {
             temp = new TextComponentTranslation("dwmh.strings.unsummonable.working");
             temp.getStyle().setColor(TextFormatting.DARK_RED);
         } else if (wrapper.getLeashed()) {
@@ -154,5 +142,4 @@ public class Atum2Proxy implements ISteedProxy {
 
         return temp;
     }
-
 }

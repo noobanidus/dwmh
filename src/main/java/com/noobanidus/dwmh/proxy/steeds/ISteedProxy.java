@@ -55,7 +55,7 @@ public interface ISteedProxy {
     // Carrot
     boolean isTameable(Entity entity, EntityPlayer player);
 
-    void tame(Entity entity, EntityPlayer player);
+    int tame(Entity entity, EntityPlayer player);
 
     boolean isAgeable(Entity entity, EntityPlayer player);
 

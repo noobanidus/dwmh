@@ -45,7 +45,7 @@ public class IceAndFireProxy implements ISteedProxy {
         return notExcluded(entity) && !wrapper.isTame();
     }
 
-    public void tame(Entity entity, EntityPlayer player) {
+    public int tame(Entity entity, EntityPlayer player) {
         IceAndFireWrapper wrapper = new IceAndFireWrapper(entity);
 
         wrapper.setTamedBy(player);
@@ -54,6 +54,8 @@ public class IceAndFireProxy implements ISteedProxy {
         if (DWMHConfig.EnchantedCarrot.messages.taming) {
             doGenericMessage(entity, player, Generic.TAMING);
         }
+
+        return 1;
     }
 
     public boolean isAgeable(Entity entity, EntityPlayer player) {

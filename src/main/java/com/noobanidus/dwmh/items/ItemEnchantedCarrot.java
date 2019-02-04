@@ -6,6 +6,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
@@ -14,6 +15,8 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.living.AnimalTameEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -22,6 +25,13 @@ import javax.annotation.Nonnull;
 import java.util.List;
 
 public class ItemEnchantedCarrot extends ItemDWMHRepairable {
+    private static void tameHandler (Entity entity, EntityPlayer player) {
+        if (!(entity instanceof EntityAnimal)) return;
+
+        AnimalTameEvent ate = new AnimalTameEvent((EntityAnimal) entity, player);
+        MinecraftForge.EVENT_BUS.post(ate);
+    }
+
     public static void onInteractCarrot(PlayerInteractEvent.EntityInteract event) {
         ITextComponent temp;
 
@@ -40,9 +50,12 @@ public class ItemEnchantedCarrot extends ItemDWMHRepairable {
 
         boolean didStuff = false;
 
+        int res = -1;
+
         // A little bit of a hack to prioritise
         if (DWMH.dragonProxy.isMyMod(entity) && DWMH.dragonProxy.isTameable(entity, player) && DWMHConfig.EnchantedCarrot.effects.taming) {
-            DWMH.dragonProxy.tame(entity, player);
+            res = DWMH.dragonProxy.tame(entity, player);
+            if (res > 0) tameHandler(entity, player);
             didStuff = true;
         } else if (DWMH.steedProxy.isAgeable(entity, player) && DWMHConfig.EnchantedCarrot.effects.aging) {
             if (entity.getEntityData().getBoolean("quark:poison_potato_applied")) {
@@ -55,7 +68,8 @@ public class ItemEnchantedCarrot extends ItemDWMHRepairable {
             DWMH.steedProxy.age(entity, player);
             didStuff = true;
         } else if (DWMH.steedProxy.isTameable(entity, player) && DWMHConfig.EnchantedCarrot.effects.taming) {
-            DWMH.steedProxy.tame(entity, player);
+            res = DWMH.steedProxy.tame(entity, player);
+            if (res > 0) tameHandler(entity, player);
             didStuff = true;
         } else if (DWMH.steedProxy.isHealable(entity, player) && DWMHConfig.EnchantedCarrot.effects.healing) {
             DWMH.steedProxy.heal(entity, player);

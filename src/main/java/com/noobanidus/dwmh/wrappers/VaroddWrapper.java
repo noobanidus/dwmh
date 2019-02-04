@@ -93,10 +93,13 @@ public class VaroddWrapper implements IWrapper {
     }
 
     public void setTamedBy (EntityPlayer player) {
-        if (pegasi == null) return;
-
-        pegasi.setTamedBy(player);
-        pegasi.world.setEntityState(pegasi, (byte)7);
+        if (pegasi == null) {
+            gryphon.setTamedBy(player);
+            gryphon.world.setEntityState(gryphon, (byte) 7);
+        } else {
+            pegasi.setTamedBy(player);
+            pegasi.world.setEntityState(pegasi, (byte) 7);
+        }
     }
 
     public void setInLove (EntityPlayer player) {

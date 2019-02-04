@@ -3,14 +3,9 @@ package com.noobanidus.dwmh.proxy.steeds;
 import com.lying.variousoddities.entity.mount.AbstractMount;
 import com.lying.variousoddities.entity.mount.EntityChestPegasus;
 import com.lying.variousoddities.entity.mount.EntityPegasus;
-import com.noobanidus.dwmh.DWMH;
 import com.noobanidus.dwmh.config.DWMHConfig;
 import com.noobanidus.dwmh.wrappers.VaroddWrapper;
-import com.teammetallurgy.atum.entity.animal.EntityCamel;
-import com.teammetallurgy.atum.entity.animal.EntityDesertWolf;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.passive.AbstractHorse;
-import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -71,16 +66,16 @@ public class VaroddProxy implements ISteedProxy {
         return !wrapper.isTame();
     }
 
-    public void tame(Entity entity, EntityPlayer player) { // TODO
+    public int tame(Entity entity, EntityPlayer player) { // TODO
         VaroddWrapper wrapper = new VaroddWrapper(entity);
-
-        if (wrapper.isGryphon()) return;
 
         wrapper.setTamedBy(player);
 
         if (DWMHConfig.EnchantedCarrot.messages.taming) {
             doGenericMessage(entity, player, Generic.TAMING);
         }
+
+        return 1;
     }
 
     public boolean isAgeable(Entity entity, EntityPlayer player) { // TODO

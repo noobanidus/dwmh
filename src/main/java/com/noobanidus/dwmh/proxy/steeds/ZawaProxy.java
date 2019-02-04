@@ -101,8 +101,8 @@ public class ZawaProxy implements ISteedProxy {
     }*/
 
     /* 1.5.3 */
-    public void tame(Entity entity, EntityPlayer player) {
-        if (!isMyMod(entity)) return;
+    public int tame(Entity entity, EntityPlayer player) {
+        if (!isMyMod(entity)) return 0;
 
         ZAWABaseLand animal = (ZAWABaseLand) entity;
 
@@ -132,6 +132,8 @@ public class ZawaProxy implements ISteedProxy {
         if (DWMHConfig.EnchantedCarrot.messages.taming) {
             doGenericMessage(entity, player, Generic.TAMING, TextFormatting.GOLD);
         }
+
+        return 1;
     }
 
     public boolean isAgeable(Entity entity, EntityPlayer player) {

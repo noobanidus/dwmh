@@ -73,13 +73,14 @@ public class SteedProxy implements ISteedProxy {
         return false;
     }
 
-    public void tame(Entity entity, EntityPlayer player) {
+    public int tame(Entity entity, EntityPlayer player) {
         for (ISteedProxy proxy : DWMH.proxyList) {
             if (proxy.isMyMod(entity)) {
-                proxy.tame(entity, player);
-                return;
+                return proxy.tame(entity, player);
             }
         }
+
+        return 0;
     }
 
     public boolean isAgeable(Entity entity, EntityPlayer player) {

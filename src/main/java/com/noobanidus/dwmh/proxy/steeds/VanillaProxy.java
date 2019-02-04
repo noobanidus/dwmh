@@ -50,12 +50,14 @@ public class VanillaProxy implements ISteedProxy {
         return !horse.isTame();
     }
 
-    public void tame(Entity entity, EntityPlayer player) {
+    public int tame(Entity entity, EntityPlayer player) {
         ((AbstractHorse) entity).setTamedBy(player);
 
         if (DWMHConfig.EnchantedCarrot.messages.taming) {
             doGenericMessage(entity, player, Generic.TAMING);
         }
+
+        return 1;
     }
 
     public boolean isAgeable(Entity entity, EntityPlayer player) {

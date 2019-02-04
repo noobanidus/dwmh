@@ -1,6 +1,5 @@
 package com.noobanidus.dwmh.proxy.steeds;
 
-import com.TheRPGAdventurer.ROTD.DragonMountsConfig;
 import com.TheRPGAdventurer.ROTD.server.entity.EntityTameableDragon;
 import com.TheRPGAdventurer.ROTD.server.entity.helper.DragonLifeStageHelper;
 import com.TheRPGAdventurer.ROTD.server.entity.helper.EnumDragonLifeStage;
@@ -43,13 +42,15 @@ public class DragonMountProxy implements ISteedProxy {
         return !dragon.isTamed() && !dragon.isEgg();
     }
 
-    public void tame(Entity entity, EntityPlayer player) {
+    public int tame(Entity entity, EntityPlayer player) {
         EntityTameableDragon dragon = (EntityTameableDragon) entity;
         dragon.tamedFor(player, true);
 
         if (DWMHConfig.EnchantedCarrot.messages.taming) {
             doGenericMessage(entity, player, Generic.TAMING);
         }
+
+        return 5;
     }
 
     public boolean isAgeable(Entity entity, EntityPlayer player) {

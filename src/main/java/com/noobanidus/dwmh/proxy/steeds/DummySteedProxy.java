@@ -18,7 +18,8 @@ public class DummySteedProxy implements ISteedProxy {
         return false;
     }
 
-    public void tame(Entity entity, EntityPlayer player) {
+    public int tame(Entity entity, EntityPlayer player) {
+        return 0;
     }
 
     public boolean isAgeable(Entity entity, EntityPlayer player) {

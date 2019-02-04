@@ -50,7 +50,7 @@ public class Atum2Proxy implements ISteedProxy {
         return !wrapper.isTame();
     }
 
-    public void tame(Entity entity, EntityPlayer player) { // TODO
+    public int tame(Entity entity, EntityPlayer player) { // TODO
         if (entity instanceof AbstractHorse) {
             ((AbstractHorse) entity).setTamedBy(player);
         } else {
@@ -71,6 +71,8 @@ public class Atum2Proxy implements ISteedProxy {
         if (DWMHConfig.EnchantedCarrot.messages.taming) {
             doGenericMessage(entity, player, Generic.TAMING);
         }
+
+        return true;
     }
 
     public boolean isAgeable(Entity entity, EntityPlayer player) { // TODO

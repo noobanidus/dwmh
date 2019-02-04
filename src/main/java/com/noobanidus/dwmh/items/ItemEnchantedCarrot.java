@@ -40,7 +40,11 @@ public class ItemEnchantedCarrot extends ItemDWMHRepairable {
 
         boolean didStuff = false;
 
-        if (DWMH.steedProxy.isAgeable(entity, player) && DWMHConfig.EnchantedCarrot.effects.aging) {
+        // A little bit of a hack to prioritise
+        if (DWMH.dragonProxy.isMyMod(entity) && DWMH.dragonProxy.isTameable(entity, player) && DWMHConfig.EnchantedCarrot.effects.taming) {
+            DWMH.dragonProxy.tame(entity, player);
+            didStuff = true;
+        } else if (DWMH.steedProxy.isAgeable(entity, player) && DWMHConfig.EnchantedCarrot.effects.aging) {
             if (entity.getEntityData().getBoolean("quark:poison_potato_applied")) {
                 temp = new TextComponentTranslation("dwmh.strings.quark_poisoned");
                 temp.getStyle().setColor(TextFormatting.GREEN);

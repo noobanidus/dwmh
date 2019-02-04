@@ -117,7 +117,7 @@ public class SteedProxy implements ISteedProxy {
 
     public void heal(Entity entity, EntityPlayer player) {
         for (ISteedProxy proxy : DWMH.proxyList) {
-            if (proxy.isMyMod(entity)) {
+            if (proxy.isMyMod(entity) && !proxy.isTameable(entity, player)) {
                 proxy.heal(entity, player);
                 return;
             }

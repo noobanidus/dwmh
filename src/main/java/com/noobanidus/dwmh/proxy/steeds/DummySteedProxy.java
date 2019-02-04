@@ -26,14 +26,14 @@ public class DummySteedProxy implements ISteedProxy {
         return false;
     }
 
-    public void age(Entity entity, EntityPlayer player) {
+    public int age(Entity entity, EntityPlayer player) {
     }
 
     public boolean isHealable(Entity entity, EntityPlayer player) {
         return false;
     }
 
-    public void heal(Entity entity, EntityPlayer player) {
+    public int heal(Entity entity, EntityPlayer player) {
     }
 
     // Not currently implemented
@@ -41,7 +41,7 @@ public class DummySteedProxy implements ISteedProxy {
         return false;
     }
 
-    public void breed(Entity entity, EntityPlayer player) {
+    public int breed(Entity entity, EntityPlayer player) {
     }
 
     public boolean isLoaded() {

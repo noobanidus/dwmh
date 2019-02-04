@@ -59,7 +59,7 @@ public interface ISteedProxy {
 
     boolean isAgeable(Entity entity, EntityPlayer player);
 
-    void age(Entity entity, EntityPlayer player);
+    int age(Entity entity, EntityPlayer player);
 
     default boolean isHealable(Entity entity, EntityPlayer player) {
         if (isMyMod(entity)) {
@@ -72,7 +72,7 @@ public interface ISteedProxy {
         return false;
     }
 
-    default void heal(Entity entity, EntityPlayer player) {
+    default int heal(Entity entity, EntityPlayer player) {
         EntityLiving horse = (EntityLiving) entity;
         horse.heal(horse.getMaxHealth() - horse.getHealth());
         horse.world.setEntityState(horse, (byte) 7);
@@ -80,12 +80,14 @@ public interface ISteedProxy {
         if (DWMHConfig.EnchantedCarrot.messages.healing) {
             doGenericMessage(entity, player, Generic.HEALING);
         }
+
+        return 1;
     }
 
     // Not currently implemented
     boolean isBreedable(Entity entity, EntityPlayer player);
 
-    void breed(Entity entity, EntityPlayer player);
+    int breed(Entity entity, EntityPlayer player);
 
     ITextComponent getResponseKey(Entity entity, EntityPlayer player);
 

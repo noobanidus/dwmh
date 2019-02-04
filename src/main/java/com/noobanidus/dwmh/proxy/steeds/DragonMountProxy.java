@@ -63,7 +63,7 @@ public class DragonMountProxy implements ISteedProxy {
         return !helper.isAdult();
     }
 
-    public void age(Entity entity, EntityPlayer player) {
+    public int age(Entity entity, EntityPlayer player) {
         EntityTameableDragon dragon = (EntityTameableDragon) entity;
 
         DragonLifeStageHelper helper = dragon.getLifeStageHelper();
@@ -76,6 +76,8 @@ public class DragonMountProxy implements ISteedProxy {
         if (DWMHConfig.EnchantedCarrot.messages.aging) {
             doGenericMessage(entity, player, "dwmh.strings.dragonmount.age");
         }
+
+        return 5;
     }
 
     public boolean isBreedable(Entity entity, EntityPlayer player) {
@@ -88,7 +90,7 @@ public class DragonMountProxy implements ISteedProxy {
         return true;
     }
 
-    public void breed(Entity entity, EntityPlayer player) {
+    public int breed(Entity entity, EntityPlayer player) {
         EntityTameableDragon dragon = (EntityTameableDragon) entity;
 
         dragon.setInLove(player);
@@ -97,6 +99,8 @@ public class DragonMountProxy implements ISteedProxy {
         if (DWMHConfig.EnchantedCarrot.messages.breeding) {
             doGenericMessage(entity, player, Generic.BREEDING);
         }
+
+        return 5;
     }
 
     public boolean isMyMod(Entity entity) {

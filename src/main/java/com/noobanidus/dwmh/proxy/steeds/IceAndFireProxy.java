@@ -64,7 +64,7 @@ public class IceAndFireProxy implements ISteedProxy {
         return notExcluded(entity) && wrapper.isChild();
     }
 
-    public void age(Entity entity, EntityPlayer player) {
+    public int age(Entity entity, EntityPlayer player) {
         IceAndFireWrapper wrapper = new IceAndFireWrapper(entity);
 
         wrapper.setGrowingAge(0);
@@ -73,6 +73,8 @@ public class IceAndFireProxy implements ISteedProxy {
         if (DWMHConfig.EnchantedCarrot.messages.aging) {
             doGenericMessage(entity, player, Generic.AGING);
         }
+
+        return 1;
     }
 
     // Not currently implemented
@@ -82,7 +84,7 @@ public class IceAndFireProxy implements ISteedProxy {
         return notExcluded(entity) && !wrapper.isChild() && wrapper.getGrowingAge() == 0 && !wrapper.isInLove();
     }
 
-    public void breed(Entity entity, EntityPlayer player) {
+    public int breed(Entity entity, EntityPlayer player) {
         IceAndFireWrapper wrapper = new IceAndFireWrapper(entity);
 
         wrapper.setInLove(player);
@@ -91,6 +93,8 @@ public class IceAndFireProxy implements ISteedProxy {
         if (DWMHConfig.EnchantedCarrot.messages.breeding) {
             doGenericMessage(entity, player, Generic.BREEDING);
         }
+
+        return 1;
     }
 
     private boolean notExcluded(Entity entity) {

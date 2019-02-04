@@ -95,13 +95,14 @@ public class SteedProxy implements ISteedProxy {
         return false;
     }
 
-    public void age(Entity entity, EntityPlayer player) {
+    public int age(Entity entity, EntityPlayer player) {
         for (ISteedProxy proxy : DWMH.proxyList) {
             if (proxy.isMyMod(entity)) {
-                proxy.age(entity, player);
-                return;
+                return proxy.age(entity, player);
             }
         }
+
+        return 0;
     }
 
     public boolean isHealable(Entity entity, EntityPlayer player) {
@@ -116,13 +117,14 @@ public class SteedProxy implements ISteedProxy {
         return false;
     }
 
-    public void heal(Entity entity, EntityPlayer player) {
+    public int heal(Entity entity, EntityPlayer player) {
         for (ISteedProxy proxy : DWMH.proxyList) {
             if (proxy.isMyMod(entity) && !proxy.isTameable(entity, player)) {
-                proxy.heal(entity, player);
-                return;
+                return proxy.heal(entity, player);
             }
         }
+
+        return 0;
     }
 
     // Not currently implemented
@@ -138,13 +140,14 @@ public class SteedProxy implements ISteedProxy {
         return false;
     }
 
-    public void breed(Entity entity, EntityPlayer player) {
+    public int breed(Entity entity, EntityPlayer player) {
         for (ISteedProxy proxy : DWMH.proxyList) {
             if (proxy.isMyMod(entity)) {
-                proxy.breed(entity, player);
-                return;
+                return proxy.breed(entity, player);
             }
         }
+
+        return 0;
     }
 
     public ITextComponent getResponseKey(Entity entity, EntityPlayer player) {

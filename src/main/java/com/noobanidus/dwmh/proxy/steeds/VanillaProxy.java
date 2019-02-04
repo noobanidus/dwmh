@@ -70,7 +70,7 @@ public class VanillaProxy implements ISteedProxy {
         return horse.isChild();
     }
 
-    public void age(Entity entity, EntityPlayer player) {
+    public int age(Entity entity, EntityPlayer player) {
         AbstractHorse horse = (AbstractHorse) entity;
 
         horse.setGrowingAge(0);
@@ -79,6 +79,8 @@ public class VanillaProxy implements ISteedProxy {
         if (DWMHConfig.EnchantedCarrot.messages.aging) {
             doGenericMessage(entity, player, Generic.AGING);
         }
+
+        return 1;
     }
 
     // Not currently implemented
@@ -98,8 +100,8 @@ public class VanillaProxy implements ISteedProxy {
         return true;
     }
 
-    public void breed(Entity entity, EntityPlayer player) {
-        if (!isMyMod(entity)) return;
+    public int breed(Entity entity, EntityPlayer player) {
+        if (!isMyMod(entity)) return 0;
 
         AbstractHorse horse = (AbstractHorse) entity;
         horse.setInLove(player);
@@ -107,6 +109,8 @@ public class VanillaProxy implements ISteedProxy {
         if (DWMHConfig.EnchantedCarrot.messages.breeding) {
             doGenericMessage(entity, player, Generic.BREEDING);
         }
+
+        return 1;
     }
 
     public boolean isMyMod(Entity entity) {

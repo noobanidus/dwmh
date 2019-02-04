@@ -79,7 +79,8 @@ public class AnimaniaProxy implements ISteedProxy {
         return false;
     }
 
-    public void age(Entity entity, EntityPlayer player) {
+    public int age(Entity entity, EntityPlayer player) {
+        return 0;
     }
 
     // Not currently implemented
@@ -87,7 +88,8 @@ public class AnimaniaProxy implements ISteedProxy {
         return false;
     }
 
-    public void breed(Entity entity, EntityPlayer player) {
+    public int breed(Entity entity, EntityPlayer player) {
+        return 0;
     }
 
     public boolean isMyMod(Entity entity) {

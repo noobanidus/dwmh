@@ -145,12 +145,12 @@ public class MOCProxy implements ISteedProxy {
         return !((MoCEntityTameableAnimal) entity).getIsAdult();
     }
 
-    public void age(Entity entity, EntityPlayer player) {
-        if (!isMyMod(entity)) return;
+    public int age(Entity entity, EntityPlayer player) {
+        if (!isMyMod(entity)) return 0;
 
         MoCEntityTameableAnimal animal = (MoCEntityTameableAnimal) entity;
 
-        if (animal.getIsAdult()) return;
+        if (animal.getIsAdult()) return 0;
 
         animal.setAdult(true);
         animal.setEdad(animal.getMaxEdad());
@@ -160,6 +160,8 @@ public class MOCProxy implements ISteedProxy {
         if (DWMHConfig.EnchantedCarrot.messages.aging) {
             doGenericMessage(entity, player, Generic.AGING);
         }
+
+        return 1;
     }
 
     // Not currently implemented
@@ -167,7 +169,8 @@ public class MOCProxy implements ISteedProxy {
         return false;
     }
 
-    public void breed(Entity entity, EntityPlayer player) {
+    public int breed(Entity entity, EntityPlayer player) {
+        return 0;
     }
 
     public ITextComponent getResponseKey(Entity entity, EntityPlayer player) {

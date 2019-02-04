@@ -146,7 +146,7 @@ public class ZawaProxy implements ISteedProxy {
         return false;
     }
 
-    public void age(Entity entity, EntityPlayer player) {
+    public int age(Entity entity, EntityPlayer player) {
         ZAWABaseLand animal = (ZAWABaseLand) entity;
         animal.setGrowingAge(0);
         animal.world.setEntityState(animal, (byte) 7);
@@ -154,6 +154,8 @@ public class ZawaProxy implements ISteedProxy {
         if (DWMHConfig.EnchantedCarrot.messages.aging) {
             doGenericMessage(entity, player, Generic.AGING);
         }
+
+        return 1;
     }
 
     // The healing is by default in the interface
@@ -162,7 +164,8 @@ public class ZawaProxy implements ISteedProxy {
         return false;
     }
 
-    public void breed(Entity entity, EntityPlayer player) {
+    public int breed(Entity entity, EntityPlayer player) {
+        return 0;
     }
 
     public ITextComponent getResponseKey(Entity entity, EntityPlayer player) {

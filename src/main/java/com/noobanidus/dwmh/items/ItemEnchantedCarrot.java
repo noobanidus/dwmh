@@ -52,6 +52,8 @@ public class ItemEnchantedCarrot extends ItemDWMHRepairable {
 
         int res = -1;
 
+        // TODO: handle if 5 is more than the breaking point of the item wiht the unbreakable carrot
+
         // A little bit of a hack to prioritise
         if (DWMH.dragonProxy.isMyMod(entity) && DWMH.dragonProxy.isTameable(entity, player) && DWMHConfig.EnchantedCarrot.effects.taming) {
             res = DWMH.dragonProxy.tame(entity, player);
@@ -65,22 +67,22 @@ public class ItemEnchantedCarrot extends ItemDWMHRepairable {
                 return;
             }
 
-            DWMH.steedProxy.age(entity, player);
+            res = DWMH.steedProxy.age(entity, player);
             didStuff = true;
         } else if (DWMH.steedProxy.isTameable(entity, player) && DWMHConfig.EnchantedCarrot.effects.taming) {
             res = DWMH.steedProxy.tame(entity, player);
             if (res > 0) tameHandler(entity, player);
             didStuff = true;
         } else if (DWMH.steedProxy.isHealable(entity, player) && DWMHConfig.EnchantedCarrot.effects.healing) {
-            DWMH.steedProxy.heal(entity, player);
+            res = DWMH.steedProxy.heal(entity, player);
             didStuff = true;
         } else if (DWMH.steedProxy.isBreedable(entity, player) && DWMHConfig.EnchantedCarrot.effects.breeding) {
-            DWMH.steedProxy.breed(entity, player);
+            res = DWMH.steedProxy.breed(entity, player);
             didStuff = true;
         }
 
         if (!player.capabilities.isCreativeMode && didStuff) {
-            damageItem(item, player);
+            damageItem(item, player, res);
         }
 
         if (didStuff) {

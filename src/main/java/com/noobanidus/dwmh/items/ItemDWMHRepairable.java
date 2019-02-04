@@ -34,12 +34,16 @@ public class ItemDWMHRepairable extends Item {
     }
 
     public static void damageItem(ItemStack item, EntityPlayer player) {
+        damageItem(item, player, 1);
+    }
+
+    public static void damageItem(ItemStack item, EntityPlayer player, int amount) {
         // Most calls to this should be wrapped in this but it doesn't hurt
         if (player.capabilities.isCreativeMode) return;
 
         if (item.getItem() instanceof ItemDWMHRepairable) {
             if (useableItem(item)) {
-                item.damageItem(1, player);
+                item.damageItem(amount, player);
             }
         } else {
             DWMH.LOG.error(String.format("Attempted to damage a non-DWMH item! |%s|", item.getDisplayName()));

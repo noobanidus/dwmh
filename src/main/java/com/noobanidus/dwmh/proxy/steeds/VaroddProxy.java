@@ -84,10 +84,10 @@ public class VaroddProxy implements ISteedProxy {
         return new VaroddWrapper(entity).ageable();
     }
 
-    public void age(Entity entity, EntityPlayer player) { // TODO
+    public int age(Entity entity, EntityPlayer player) { // TODO
         VaroddWrapper wrapper = new VaroddWrapper(entity);
 
-        if (!wrapper.ageable()) return;
+        if (!wrapper.ageable()) return 0;
 
         wrapper.setGrowingAge(0);
         wrapper.world.setEntityState(entity, (byte) 7);
@@ -95,6 +95,8 @@ public class VaroddProxy implements ISteedProxy {
         if (DWMHConfig.EnchantedCarrot.messages.aging) {
             doGenericMessage(entity, player, Generic.AGING);
         }
+
+        return 1;
     }
 
     public boolean isBreedable(Entity entity, EntityPlayer player) {
@@ -107,8 +109,8 @@ public class VaroddProxy implements ISteedProxy {
         return !wrapper.isChild() && wrapper.getGrowingAge() == 0 && !wrapper.isInLove();
     }
 
-    public void breed(Entity entity, EntityPlayer player) {
-        if (!isMyMod(entity)) return;
+    public int breed(Entity entity, EntityPlayer player) {
+        if (!isMyMod(entity)) return 0;
 
         VaroddWrapper wrapper = new VaroddWrapper(entity);
         wrapper.setInLove(player);
@@ -116,6 +118,8 @@ public class VaroddProxy implements ISteedProxy {
         if (DWMHConfig.EnchantedCarrot.messages.breeding) {
             doGenericMessage(entity, player, Generic.BREEDING);
         }
+
+        return 1;
     }
 
     public boolean isMyMod(Entity entity) {

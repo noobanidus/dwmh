@@ -39,6 +39,8 @@ public class DWMH {
     public static ISteedProxy unicornProxy = new DummySteedProxy();
     public static ISteedProxy atum2Proxy = new DummySteedProxy();
     public static ISteedProxy iceandfireProxy = new DummySteedProxy();
+    public static ISteedProxy dragonProxy = new DummySteedProxy();
+    public static ISteedProxy varoddProxy = new DummySteedProxy();
 
     // This is more of an overall helper class that checks everything
     public static ISteedProxy steedProxy;
@@ -57,7 +59,7 @@ public class DWMH {
     @Mod.Instance(DWMH.MODID)
     public static DWMH instance;
     @SuppressWarnings("unused")
-    private List<String> supportedMods = Arrays.asList("animania", "mocreatures", "zawa", "ultimate_unicorn_mod", "atum");
+    private List<String> supportedMods = Arrays.asList("animania", "mocreatures", "zawa", "ultimate_unicorn_mod", "atum", "dragonmounts", "varodd");
 
     public static void resolveClasses() {
         // All of these are string-based now hooray

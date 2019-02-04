@@ -54,8 +54,17 @@ public class CommonProxy implements ISidedProxy {
         if (DWMHConfig.proxies.enable.iceandfire) {
             DWMH.iceandfireProxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("iceandfire", "com.noobanidus.dwmh.proxy.steeds.IceAndFireProxy")).orElse(new DummySteedProxy());
         }
+        if (DWMHConfig.proxies.enable.dragon) {
+            DWMH.dragonProxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("dragonmounts", "com.noobanidus.dwmh.proxy.steeds.DragonMountProxy")).orElse(new DummySteedProxy());
+            if (Loader.isModLoaded("dragonmounts")) {
+                DWMH.dragonProxy.stopIt();
+            }
+        }
+        if (DWMHConfig.proxies.enable.varodd) {
+            DWMH.varoddProxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("varodd", "com.noobanidus.dwmh.proxy.steeds.VaroddProxy")).orElse(new DummySteedProxy());
+        }
 
-        DWMH.proxyList = Lists.newArrayList(DWMH.animaniaProxy, DWMH.mocProxy, DWMH.zawaProxy, DWMH.unicornProxy, DWMH.atum2Proxy, DWMH.iceandfireProxy, DWMH.vanillaProxy);
+        DWMH.proxyList = Lists.newArrayList(DWMH.animaniaProxy, DWMH.mocProxy, DWMH.zawaProxy, DWMH.unicornProxy, DWMH.atum2Proxy, DWMH.iceandfireProxy, DWMH.dragonProxy, DWMH.varoddProxy, DWMH.vanillaProxy);
         DWMH.proxyList.removeIf(i -> !i.isLoaded());
         DWMH.resolveClasses();
 

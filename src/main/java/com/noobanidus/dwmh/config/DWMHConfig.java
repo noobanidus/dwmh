@@ -324,6 +324,18 @@ public class DWMHConfig {
             @Config.Comment("Set to false to disable the Ice & Fire proxy (even if it would normally load)")
             @Config.Name("Ice & Fire")
             public boolean iceandfire = true;
+
+            @Config.RequiresMcRestart
+            @Config.LangKey("config.proxies.disable.dragonmounts") // TODO: FILL IN
+            @Config.Comment("Set to false to disable the Dragon Mounts proxy (even if it would normally load)")
+            @Config.Name("Dragon Mounts 2")
+            public boolean dragon = true;
+
+            @Config.RequiresMcRestart
+            @Config.LangKey("config.proxies.disable.varodd") // TODO: FILL IN
+            @Config.Comment("Set to false to disable the Various Oddities proxy (even if it would normally load)")
+            @Config.Name("Various Oddities")
+            public boolean varodd = true;
         }
 
         public class Animania {

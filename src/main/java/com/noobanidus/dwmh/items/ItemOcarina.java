@@ -7,6 +7,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
@@ -240,7 +241,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
 
                 List<Entity> nearbyHorses = world.getEntities(Entity.class, (entity) -> isValidHorse(entity, player));
                 for (Entity entity : nearbyHorses) {
-                    EntityAnimal horse = (EntityAnimal) entity;
+                    EntityCreature horse = (EntityCreature) entity;
                     double max = DWMHConfig.Ocarina.getMaxDistance();
                     if (horse.getDistanceSq(player) < (max * max) || max == 0) {
                         if (amountPer != 0) {

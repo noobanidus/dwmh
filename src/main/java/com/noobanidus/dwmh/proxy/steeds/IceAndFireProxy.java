@@ -25,7 +25,8 @@ public class IceAndFireProxy implements ISteedProxy {
         if (wrapper.getIsDragon() && wrapper.getDragonStage() <= 2)
             return false;
 
-        return !wrapper.isDead() && wrapper.isHorseSaddled() && globalTeleportCheck(entity, player);
+        // TODO: Should they still be summonable via config option?
+        return !wrapper.isDead() && wrapper.isHorseSaddled() && !wrapper.isSitting() && globalTeleportCheck(entity, player);
     }
 
     public boolean isListable(Entity entity, EntityPlayer player) {
@@ -117,6 +118,8 @@ public class IceAndFireProxy implements ISteedProxy {
         } else if (wrapper.getDragonStage() <= 2 && wrapper.getIsDragon()) {
             temp = new TextComponentTranslation("dwmh.strings.unsummonable.child");
             temp.getStyle().setColor(TextFormatting.DARK_RED);
+        } else if (wrapper.isSitting()) {
+            temp = new TextComponentTranslation("dwmh.strings.unsummonable.sitting").setStyle(new Style().setColor(TextFormatting.DARK_RED));
         } else if (wrapper.hasHome() && wrapper.world.getTileEntity(wrapper.getHomePosition()) != null) {
             temp = new TextComponentTranslation("dwmh.strings.unsummonable.working");
             temp.getStyle().setColor(TextFormatting.DARK_RED);

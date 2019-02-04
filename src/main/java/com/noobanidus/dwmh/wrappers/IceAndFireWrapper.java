@@ -34,6 +34,10 @@ public class IceAndFireWrapper implements IWrapper {
         world = base.world;
     }
 
+    public boolean isSitting () {
+        return (isDragon) ? dragon.isSitting() : ((hippogryph != null) ? hippogryph.isSitting() : hippocampus.isSitting());
+    }
+
     public boolean isHorseSaddled () {
         return (isDragon) || ((hippogryph != null) ? hippogryph.isSaddled() : hippocampus.isSaddled());
     }

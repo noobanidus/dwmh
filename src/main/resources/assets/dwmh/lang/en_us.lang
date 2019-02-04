@@ -164,6 +164,7 @@ dwmh.strings.unsummonable.unsaddled=unsummonable (unsaddled)
 dwmh.strings.unsummonable.vagabond=ridden by a Knight Vagabond
 dwmh.strings.unsummonable.working=unsummonable (busy working)
 dwmh.strings.unsummonable.dead=unsummonable (deceased)
+dwmh.strings.unsummonable.sitting=unsummonable (sitting)
 dwmh.strings.whistle.tooltip.list_horses=to list all eligible nearby horses.
 dwmh.strings.whistle.tooltip.teleport_horses=to teleport eligible nearby horses to you.
 dwmh.strings.zawa.tamed=Successfully tamed %s!

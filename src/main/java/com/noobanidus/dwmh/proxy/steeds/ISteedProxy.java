@@ -163,6 +163,9 @@ public interface ISteedProxy {
         player.sendMessage(temp);
     }
 
+    default void stopIt () {
+    }
+
     enum Generic {
         TAMING("dwmh.strings.generic.tamed"),
         HEALING("dwmh.strings.generic.healed"),

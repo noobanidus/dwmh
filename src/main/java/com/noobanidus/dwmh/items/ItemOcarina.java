@@ -159,10 +159,6 @@ public class ItemOcarina extends ItemDWMHRepairable {
     }
 
     public boolean doListing(World world, EntityPlayer player, @Nonnull EnumHand hand) {
-        ItemStack stack = player.getHeldItem(hand);
-
-        InventoryPlayer inv = player.inventory;
-
         BlockPos pos = player.getPosition();
         boolean didStuff = false;
 
@@ -334,6 +330,14 @@ public class ItemOcarina extends ItemDWMHRepairable {
 
     @Override
     public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack ist) {
+        if (!(entityLiving instanceof EntityPlayer)) return false;
+
+        if (ist.getItem() != this) return false;
+
+        EntityPlayer player = (EntityPlayer) entityLiving;
+
+        if (!player.isSneaking()) return false;
+
         return false;
     }
 

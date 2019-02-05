@@ -146,10 +146,12 @@ public class ItemOcarina extends ItemDWMHRepairable {
     @Nonnull
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
-        if (player.isSneaking() && !DWMHConfig.Ocarina.swap || !player.isSneaking() && DWMHConfig.Ocarina.swap) {
-            doListing(world, player, hand);
-        } else {
-            doSummoning(world, player, hand);
+        if (!world.isRemote) {
+            if (player.isSneaking() && !DWMHConfig.Ocarina.swap || !player.isSneaking() && DWMHConfig.Ocarina.swap) {
+                doListing(world, player, hand);
+            } else {
+                doSummoning(world, player, hand);
+            }
         }
 
         ItemStack stack = player.getHeldItem(hand);

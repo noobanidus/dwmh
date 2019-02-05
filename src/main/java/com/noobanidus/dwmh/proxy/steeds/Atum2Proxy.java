@@ -161,4 +161,8 @@ public class Atum2Proxy implements ISteedProxy {
         return temp;
     }
 
+    @Override
+    public String proxyName() {
+        return "atum";
+    }
 }

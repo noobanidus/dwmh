@@ -151,4 +151,9 @@ public class IceAndFireProxy implements ISteedProxy {
 
         return temp;
     }
+
+    @Override
+    public String proxyName(){
+        return "iceandfire";
+    }
 }

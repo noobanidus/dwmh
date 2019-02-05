@@ -99,9 +99,7 @@ public interface ISteedProxy {
         return false;
     }
 
-    default String proxyName() {
-        return "default";
-    }
+    String proxyName();
 
     default ITextComponent getEntityTypeName(Entity entity, EntityPlayer player) {
         String entityKey = resolveEntityKey(String.format("entity.%s.name", EntityList.getEntityString(entity)));

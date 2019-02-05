@@ -159,4 +159,7 @@ public class VaroddProxy implements ISteedProxy {
         return temp;
     }
 
+    public String proxyName() {
+        return "varodd";
+    }
 }

@@ -131,6 +131,11 @@ public class VanillaProxy implements ISteedProxy {
         return entity instanceof AbstractHorse;
     }
 
+    @Override
+    public String proxyName() {
+        return "default";
+    }
+
     public ITextComponent getResponseKey(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return null;
 

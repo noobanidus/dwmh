@@ -107,6 +107,11 @@ public class DragonMountProxy implements ISteedProxy {
         return entity instanceof EntityTameableDragon;
     }
 
+    @Override
+    public String proxyName() {
+        return "dragonmounts2";
+    }
+
     public ITextComponent getResponseKey(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return null;
 

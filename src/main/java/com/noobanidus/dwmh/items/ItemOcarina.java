@@ -10,6 +10,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.EnumRarity;
@@ -145,167 +146,193 @@ public class ItemOcarina extends ItemDWMHRepairable {
     @Nonnull
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
+        if (player.isSneaking() && !DWMHConfig.Ocarina.swap || !player.isSneaking() && DWMHConfig.Ocarina.swap) {
+            doListing(world, player, hand);
+        } else {
+            doSummoning(world, player, hand);
+        }
+
         ItemStack stack = player.getHeldItem(hand);
-        ActionResult<ItemStack> actionResult = new ActionResult<>(EnumActionResult.SUCCESS, stack);
+        return new ActionResult<>(EnumActionResult.SUCCESS, stack);
+    }
+
+    public boolean doListing(World world, EntityPlayer player, @Nonnull EnumHand hand) {
+        ItemStack stack = player.getHeldItem(hand);
+
         InventoryPlayer inv = player.inventory;
 
-        if (!world.isRemote) {
-            BlockPos pos = player.getPosition();
-            boolean didStuff = false;
+        BlockPos pos = player.getPosition();
+        boolean didStuff = false;
 
-            ITextComponent temp;
+        ITextComponent temp;
 
-            /** Listing entities. **/
-            if (player.isSneaking() && !DWMHConfig.Ocarina.swap || !player.isSneaking() && DWMHConfig.Ocarina.swap) {
-                List<Entity> nearbyHorses = world.getEntities(Entity.class, (entity) -> isValidHorse(entity, player, true));
-                for (Entity horse : nearbyHorses) {
-                    didStuff = true;
+        /** Listing entities. **/
 
-                    BlockPos hpos = horse.getPosition();
+        List<Entity> nearbyHorses = world.getEntities(Entity.class, (entity) -> isValidHorse(entity, player, true));
+        for (Entity horse : nearbyHorses) {
+            didStuff = true;
 
-                    ITextComponent entityName = DWMH.steedProxy.getEntityTypeName(horse, player);
-                    if (entityName == null) {
-                        // This is triggered when an entity that SHOULD be skipped is not skipped
-                        DWMH.LOG.error(String.format("Invalid response from proxy for entity %s", horse.getClass().getName()));
-                        entityName = new TextComponentString("INVALID: " + horse.getClass().getName());
+            BlockPos hpos = horse.getPosition();
+
+            ITextComponent entityName = DWMH.steedProxy.getEntityTypeName(horse, player);
+            if (entityName == null) {
+                // This is triggered when an entity that SHOULD be skipped is not skipped
+                DWMH.LOG.error(String.format("Invalid response from proxy for entity %s", horse.getClass().getName()));
+                entityName = new TextComponentString("INVALID: " + horse.getClass().getName());
+            }
+
+            float dist = player.getDistance(horse);
+
+            ITextComponent result = new TextComponentTranslation("dwmh.strings.is_at", entityName, (DWMH.steedProxy.hasCustomName(horse)) ? new TextComponentTranslation("dwmh.strings.named", DWMH.steedProxy.getCustomNameTag(horse)) : "", DWMH.steedProxy.getResponseKey(horse, player), hpos.getX(), hpos.getY(), hpos.getZ());
+
+            if (DWMHConfig.Ocarina.responses.distance) {
+                double angle = Math.atan2(hpos.getZ() - pos.getZ(), hpos.getX() - pos.getX());
+                int index = (int) Math.round(angle / Math.PI * 4 + 10) % 8;
+                result.appendSibling(new TextComponentTranslation("dwmh.strings.blocks", (int) dist, directions.get(index)));
+            }
+
+            player.sendMessage(result);
+        }
+        if (!didStuff) {
+            temp = new TextComponentTranslation("dwmh.strings.no_eligible_to_list");
+            temp.getStyle().setColor(TextFormatting.RED);
+            player.sendMessage(temp);
+        }
+        player.swingArm(hand);
+
+        return didStuff;
+    }
+
+    public boolean doSummoning(World world, EntityPlayer player, @Nonnull EnumHand hand) {
+        ItemStack stack = player.getHeldItem(hand);
+        InventoryPlayer inv = player.inventory;
+
+        BlockPos pos = player.getPosition();
+        boolean didStuff = false;
+
+        ITextComponent temp;
+
+        int totalConsumed = 0;
+
+        ItemStack itemCost = getCostItem();
+
+        int amountPer = DWMHConfig.Ocarina.functionality.getSummonCost();
+
+        if (player.capabilities.isCreativeMode) {
+            amountPer = 0;
+        }
+
+        int amountIn = inv.mainInventory.stream().filter(i -> i.getItem() == itemCost.getItem() && i.getMetadata() == itemCost.getMetadata()).mapToInt(ItemStack::getCount).sum();
+
+        // Early breakpoints: if there is an item cost but we don't have enough
+        if (amountPer != 0) {
+            if (amountIn < amountPer) {
+                temp = new TextComponentTranslation("dwmh.strings.summon_item_missing", itemCost.getDisplayName());
+                temp.getStyle().setColor(TextFormatting.DARK_RED);
+                SoundType.MINOR.playSound(player, stack);
+                player.sendMessage(temp);
+                return false;
+            }
+        }
+
+        // Early breakpoint: if the Ocarina is broken
+        BiFunction<String, Boolean, Boolean> durabilityCheck = (key, playSound) -> {
+            if (!useableItem(stack)) {
+                ITextComponent temp2 = new TextComponentTranslation(key); // );
+                temp2.getStyle().setColor(TextFormatting.BLUE);
+                player.sendMessage(temp2);
+                if (playSound)
+                    SoundType.BROKEN.playSound(player, stack);
+                return false;
+            }
+
+            return true;
+        };
+
+        if (!durabilityCheck.apply("dwmh.strings.broken_whistle", true)) return false;
+
+        List<Entity> nearbyHorses = world.getEntities(Entity.class, (entity) -> isValidHorse(entity, player));
+        for (Entity entity : nearbyHorses) {
+            EntityCreature horse = (EntityCreature) entity;
+            double max = DWMHConfig.Ocarina.getMaxDistance();
+            if (horse.getDistanceSq(player) < (max * max) || max == 0) {
+                if (amountPer != 0) {
+                    // Early breakpoint: if the number consumed thus far taken from the initial total is less than the amount, break
+                    if (amountIn - totalConsumed < amountPer) {
+                        if (totalConsumed == 0) {
+                            temp = new TextComponentTranslation("dwmh.strings.summon_item_missing", itemCost.getDisplayName());
+                        } else {
+                            temp = new TextComponentTranslation("dwmh.strings.summon_item_missing_middle", itemCost.getDisplayName(), totalConsumed);
+                        }
+                        temp.getStyle().setColor(TextFormatting.DARK_RED);
+                        player.sendMessage(temp);
+                        SoundType.MINOR.playSound(player, stack);
+                        return false;
+                    } else {
+                        int cleared = inv.clearMatchingItems(itemCost.getItem(), itemCost.getMetadata(), amountPer, null);
+                        if (cleared < amountPer) {
+                            DWMH.LOG.error(String.format("Error: inventory should contain %d of %s, with %d to be removed, but only %d were removed.", (amountIn - totalConsumed), itemCost.getDisplayName(), amountIn, cleared));
+                        }
+                        totalConsumed += cleared;
                     }
-
-                    float dist = player.getDistance(horse);
-
-                    ITextComponent result = new TextComponentTranslation("dwmh.strings.is_at", entityName, (DWMH.steedProxy.hasCustomName(horse)) ? new TextComponentTranslation("dwmh.strings.named", DWMH.steedProxy.getCustomNameTag(horse)) : "", DWMH.steedProxy.getResponseKey(horse, player), hpos.getX(), hpos.getY(), hpos.getZ());
-
-                    if (DWMHConfig.Ocarina.responses.distance) {
-                        double angle = Math.atan2(hpos.getZ() - pos.getZ(), hpos.getX() - pos.getX());
-                        int index = (int) Math.round(angle / Math.PI * 4 + 10) % 8;
-                        result.appendSibling(new TextComponentTranslation("dwmh.strings.blocks", (int) dist, directions.get(index)));
-                    }
-
-                    player.sendMessage(result);
                 }
-                if (!didStuff) {
-                    temp = new TextComponentTranslation("dwmh.strings.no_eligible_to_list");
-                    temp.getStyle().setColor(TextFormatting.RED);
+                horse.moveToBlockPosAndAngles(pos, horse.rotationYaw, horse.rotationPitch);
+                didStuff = true;
+                if (DWMHConfig.Ocarina.functionality.getMaxUses() != 0) {
+                    damageItem(stack, player);
+                    if (!durabilityCheck.apply("dwmh.strings.break_whistle", false)) return false;
+                }
+                if (!DWMHConfig.Ocarina.responses.quiet && !DWMHConfig.Ocarina.responses.simple) {
+                    if (DWMH.steedProxy.hasCustomName(horse)) {
+                        temp = new TextComponentTranslation("dwmh.strings.teleport_with_name", DWMH.steedProxy.getCustomNameTag(horse));
+                        temp.getStyle().setColor(TextFormatting.GOLD);
+                    } else {
+                        temp = new TextComponentTranslation("dwmh.strings.teleport");
+                        temp.getStyle().setColor(TextFormatting.GOLD);
+                    }
                     player.sendMessage(temp);
+                }
+                if (DWMHConfig.Ocarina.functionality.getCooldown() > 0) {
+                    player.getCooldownTracker().setCooldown(this, DWMHConfig.Ocarina.functionality.getCooldown());
                 }
                 player.swingArm(hand);
-            } else { /** Actually summoning. **/
-                int totalConsumed = 0;
-
-                ItemStack itemCost = getCostItem();
-
-                int amountPer = DWMHConfig.Ocarina.functionality.getSummonCost();
-
-                if (player.capabilities.isCreativeMode) {
-                    amountPer = 0;
-                }
-
-                int amountIn = inv.mainInventory.stream().filter(i -> i.getItem() == itemCost.getItem() && i.getMetadata() == itemCost.getMetadata()).mapToInt(ItemStack::getCount).sum();
-
-                // Early breakpoints: if there is an item cost but we don't have enough
-                if (amountPer != 0) {
-                    if (amountIn < amountPer) {
-                        temp = new TextComponentTranslation("dwmh.strings.summon_item_missing", itemCost.getDisplayName());
-                        temp.getStyle().setColor(TextFormatting.DARK_RED);
-                        SoundType.MINOR.playSound(player, stack);
-                        player.sendMessage(temp);
-                        return actionResult;
-                    }
-                }
-
-                // Early breakpoint: if the Ocarina is broken
-                BiFunction<String, Boolean, Boolean> durabilityCheck = (key, playSound) -> {
-                    if (!useableItem(stack)) {
-                        ITextComponent temp2 = new TextComponentTranslation(key); // );
-                        temp2.getStyle().setColor(TextFormatting.BLUE);
-                        player.sendMessage(temp2);
-                        if (playSound)
-                            SoundType.BROKEN.playSound(player, stack);
-                        return false;
-                    }
-
-                    return true;
-                };
-
-                if (!durabilityCheck.apply("dwmh.strings.broken_whistle", true)) return actionResult;
-
-                List<Entity> nearbyHorses = world.getEntities(Entity.class, (entity) -> isValidHorse(entity, player));
-                for (Entity entity : nearbyHorses) {
-                    EntityCreature horse = (EntityCreature) entity;
-                    double max = DWMHConfig.Ocarina.getMaxDistance();
-                    if (horse.getDistanceSq(player) < (max * max) || max == 0) {
-                        if (amountPer != 0) {
-                            // Early breakpoint: if the number consumed thus far taken from the initial total is less than the amount, break
-                            if (amountIn - totalConsumed < amountPer) {
-                                if (totalConsumed == 0) {
-                                    temp = new TextComponentTranslation("dwmh.strings.summon_item_missing", itemCost.getDisplayName());
-                                } else {
-                                    temp = new TextComponentTranslation("dwmh.strings.summon_item_missing_middle", itemCost.getDisplayName(), totalConsumed);
-                                }
-                                temp.getStyle().setColor(TextFormatting.DARK_RED);
-                                player.sendMessage(temp);
-                                SoundType.MINOR.playSound(player, stack);
-                                return actionResult;
-                            } else {
-                                int cleared = inv.clearMatchingItems(itemCost.getItem(), itemCost.getMetadata(), amountPer, null);
-                                if (cleared < amountPer) {
-                                    DWMH.LOG.error(String.format("Error: inventory should contain %d of %s, with %d to be removed, but only %d were removed.", (amountIn - totalConsumed), itemCost.getDisplayName(), amountIn, cleared));
-                                }
-                                totalConsumed += cleared;
-                            }
-                        }
-                        horse.moveToBlockPosAndAngles(pos, horse.rotationYaw, horse.rotationPitch);
-                        didStuff = true;
-                        if (DWMHConfig.Ocarina.functionality.getMaxUses() != 0) {
-                            damageItem(stack, player);
-                            if (!durabilityCheck.apply("dwmh.strings.break_whistle", false)) return actionResult;
-                        }
-                        if (!DWMHConfig.Ocarina.responses.quiet && !DWMHConfig.Ocarina.responses.simple) {
-                            if (DWMH.steedProxy.hasCustomName(horse)) {
-                                temp = new TextComponentTranslation("dwmh.strings.teleport_with_name", DWMH.steedProxy.getCustomNameTag(horse));
-                                temp.getStyle().setColor(TextFormatting.GOLD);
-                            } else {
-                                temp = new TextComponentTranslation("dwmh.strings.teleport");
-                                temp.getStyle().setColor(TextFormatting.GOLD);
-                            }
-                            player.sendMessage(temp);
-                        }
-                        if (DWMHConfig.Ocarina.functionality.getCooldown() > 0) {
-                            player.getCooldownTracker().setCooldown(this, DWMHConfig.Ocarina.functionality.getCooldown());
-                        }
-                        player.swingArm(hand);
-                        horse.getNavigator().clearPath();
-                        if (DWMHConfig.Ocarina.home) {
-                            horse.setHomePosAndDistance(pos, 5);
-                        }
-                    }
-                }
-                if (didStuff) {
-                    SoundType.NORMAL.playSound(player, stack);
-                }
-                if (didStuff && totalConsumed != 0) {
-                    temp = new TextComponentTranslation("dwmh.strings.summon_item_success", itemCost.getDisplayName(), totalConsumed);
-                    temp.getStyle().setColor(TextFormatting.RED);
-                    player.sendMessage(temp);
-                }
-                if (!didStuff) {
-                    if (player.isRiding()) {
-                        temp = new TextComponentTranslation("dwmh.strings.no_eligible_to_teleport_riding");
-                        temp.getStyle().setColor(TextFormatting.RED);
-                    } else {
-                        temp = new TextComponentTranslation("dwmh.strings.no_eligible_to_teleport");
-                        temp.getStyle().setColor(TextFormatting.RED);
-                    }
-                    player.sendMessage(temp);
-
-                    SoundType.MINOR.playSound(player, stack);
-                } else if (DWMHConfig.Ocarina.responses.simple) {
-                    temp = new TextComponentTranslation("dwmh.strings.simplest_teleport");
-                    temp.getStyle().setColor(TextFormatting.GOLD);
-                    player.sendMessage(temp);
+                horse.getNavigator().clearPath();
+                if (DWMHConfig.Ocarina.home) {
+                    horse.setHomePosAndDistance(pos, 5);
                 }
             }
         }
-        return actionResult;
+        if (didStuff) {
+            SoundType.NORMAL.playSound(player, stack);
+        }
+        if (didStuff && totalConsumed != 0) {
+            temp = new TextComponentTranslation("dwmh.strings.summon_item_success", itemCost.getDisplayName(), totalConsumed);
+            temp.getStyle().setColor(TextFormatting.RED);
+            player.sendMessage(temp);
+        }
+        if (!didStuff) {
+            if (player.isRiding()) {
+                temp = new TextComponentTranslation("dwmh.strings.no_eligible_to_teleport_riding");
+                temp.getStyle().setColor(TextFormatting.RED);
+            } else {
+                temp = new TextComponentTranslation("dwmh.strings.no_eligible_to_teleport");
+                temp.getStyle().setColor(TextFormatting.RED);
+            }
+            player.sendMessage(temp);
+
+            SoundType.MINOR.playSound(player, stack);
+        } else if (DWMHConfig.Ocarina.responses.simple) {
+            temp = new TextComponentTranslation("dwmh.strings.simplest_teleport");
+            temp.getStyle().setColor(TextFormatting.GOLD);
+            player.sendMessage(temp);
+        }
+
+        return didStuff;
+    }
+
+    @Override
+    public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack ist) {
+        return false;
     }
 
     @SideOnly(Side.CLIENT)

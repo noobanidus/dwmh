@@ -1,6 +1,5 @@
 package com.noobanidus.dwmh.proxy;
 
-import com.google.common.collect.Lists;
 import com.noobanidus.dwmh.DWMH;
 import com.noobanidus.dwmh.capability.CapabilityName;
 import com.noobanidus.dwmh.capability.CapabilityNameHandler;
@@ -19,6 +18,7 @@ import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 public class CommonProxy implements ISidedProxy {
@@ -68,7 +68,7 @@ public class CommonProxy implements ISidedProxy {
             DWMH.varoddProxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("varodd", "com.noobanidus.dwmh.proxy.steeds.VaroddProxy")).orElse(new DummySteedProxy());
         }
 
-        DWMH.proxyList = Lists.newArrayList(DWMH.animaniaProxy, DWMH.mocProxy, DWMH.zawaProxy, DWMH.unicornProxy, DWMH.atum2Proxy, DWMH.iceandfireProxy, DWMH.dragonProxy, DWMH.varoddProxy, DWMH.vanillaProxy);
+        DWMH.proxyList.addAll(Arrays.asList(DWMH.animaniaProxy, DWMH.mocProxy, DWMH.zawaProxy, DWMH.unicornProxy, DWMH.atum2Proxy, DWMH.iceandfireProxy, DWMH.dragonProxy, DWMH.varoddProxy, DWMH.vanillaProxy));
         DWMH.proxyList.removeIf(i -> !i.isLoaded());
         DWMH.resolveClasses();
 

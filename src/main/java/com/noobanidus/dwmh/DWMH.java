@@ -7,6 +7,7 @@ import com.noobanidus.dwmh.proxy.ISidedProxy;
 import com.noobanidus.dwmh.proxy.steeds.DummySteedProxy;
 import com.noobanidus.dwmh.proxy.steeds.ISteedProxy;
 import com.noobanidus.dwmh.proxy.steeds.VanillaProxy;
+import it.unimi.dsi.fastutil.Hash;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -16,9 +17,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Mod.EventBusSubscriber
 @Mod(modid = DWMH.MODID, name = DWMH.MODNAME, version = DWMH.VERSION)
@@ -31,6 +30,8 @@ public class DWMH {
     public final static Logger LOG = LogManager.getLogger(MODID);
 
     public static CreativeTabDWMH TAB;
+
+    public static Map<String, ISteedProxy> proxyMap = new HashMap<>();
 
     public static ISteedProxy vanillaProxy = new VanillaProxy();
     public static ISteedProxy animaniaProxy = new DummySteedProxy();
@@ -45,7 +46,7 @@ public class DWMH {
     // This is more of an overall helper class that checks everything
     public static ISteedProxy steedProxy;
 
-    public static List<ISteedProxy> proxyList;
+    public static List<ISteedProxy> proxyList = new ArrayList<>();
     public static Set<String> zawaClasses;
     public static Set<String> animaniaClasses;
     public static Set<String> atum2Classes;

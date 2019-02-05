@@ -1,22 +1,22 @@
 package com.noobanidus.dwmh.items;
 
 import com.noobanidus.dwmh.DWMH;
+import com.noobanidus.dwmh.capability.CapabilityName;
+import com.noobanidus.dwmh.capability.CapabilityNameHandler;
 import com.noobanidus.dwmh.config.DWMHConfig;
-import com.noobanidus.dwmh.config.Sound;
+import com.noobanidus.dwmh.util.SoundType;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
-import net.minecraft.entity.passive.AbstractHorse;
-import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
@@ -31,7 +31,6 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
-import java.util.function.Supplier;
 
 public class ItemOcarina extends ItemDWMHRepairable {
     private List<TextComponentTranslation> directions = new ArrayList<>();
@@ -43,51 +42,41 @@ public class ItemOcarina extends ItemDWMHRepairable {
     }
 
     public static void onInteractOcarina(PlayerInteractEvent.EntityInteract event) {
-        if (!DWMH.animaniaProxy.isLoaded()) return;
-
+        Entity entity = event.getTarget();
         EntityPlayer player = event.getEntityPlayer();
         ItemStack item = event.getItemStack();
 
-        if (item.isEmpty() || !(item.getItem() instanceof ItemOcarina) || !(DWMH.animaniaProxy.isMyMod(event.getTarget()))) {
+        if (item.isEmpty() || !(item.getItem() instanceof ItemOcarina)) {
             return;
         }
+
+        if (!entity.hasCapability(CapabilityNameHandler.INSTANCE, null)) return;
+
+        if (!DWMH.steedProxy.pseudoTaming(entity, player)) return;
+
+        if (!player.isSneaking()) return;
 
         event.setCanceled(true);
         event.setCancellationResult(EnumActionResult.SUCCESS);
 
         if (event.getWorld().isRemote) return;
 
-        if (!player.isSneaking()) return;
+        CapabilityName cap = entity.getCapability(CapabilityNameHandler.INSTANCE, null);
 
-        AbstractHorse horse = (AbstractHorse) event.getTarget();
+        if (cap == null) return;
 
-        event.setCanceled(true);
-
-        boolean tamed = horse.isTame();
-        boolean tamedBy = tamed && horse.getOwnerUniqueId() != null && horse.getOwnerUniqueId().equals(player.getUniqueID());
+        boolean tamed = cap.hasOwner();
+        boolean tamedBy = tamed && cap.getOwner() != null && cap.getOwner().equals(player.getUniqueID());
 
         ITextComponent temp;
-        String name = String.format("%s's Steed", player.getName());
-        if (DWMH.steedProxy.hasCustomName(horse)) {
-            if ((tamed && !tamedBy) || (DWMH.steedProxy.getCustomNameTag(horse).contains("'s Steed") && !DWMH.steedProxy.getCustomNameTag(horse).equals(name))) {
-                temp = new TextComponentTranslation("dwmh.strings.not_your_horse");
-                temp.getStyle().setColor(TextFormatting.RED);
-            } else if (!tamed) {
-                DWMH.steedProxy.setCustomNameTag(horse, "");
-                temp = new TextComponentTranslation("dwmh.strings.unnamed");
-                temp.getStyle().setColor(TextFormatting.YELLOW);
-            } else {
-                temp = new TextComponentTranslation("dwmh.strings.unnamed_fail");
-                temp.getStyle().setColor(TextFormatting.RED);
-            }
-            player.sendMessage(temp);
-        } else if (!tamed) {
-            horse.setCustomNameTag(name);
+        if (!tamed) {
+            cap.setOwner(player.getUniqueID());
             temp = new TextComponentTranslation("dwmh.strings.animania_named");
             temp.getStyle().setColor(TextFormatting.GOLD);
             player.sendMessage(temp);
         } else if (tamedBy) {
-            temp = new TextComponentTranslation("dwmh.strings.animania_tamed");
+            cap.setOwner(null);
+            temp = new TextComponentTranslation("dwmh.strings.animania_untamed");
             temp.getStyle().setColor(TextFormatting.GOLD);
             player.sendMessage(temp);
         } else {
@@ -341,7 +330,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
             stacks.add(right_click);
             stacks.add(sneak_right_click);
 
-            if (DWMH.animaniaProxy.isLoaded()) {
+            if (DWMH.steedProxy.pseudoTaming()) {
                 stacks.add(TextFormatting.GOLD + I18n.format("dwmh.strings.shift_right_click") + " " + TextFormatting.WHITE + I18n.format("dwmh.strings.animania_naming"));
             }
 

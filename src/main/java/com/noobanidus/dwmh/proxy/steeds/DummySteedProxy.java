@@ -27,6 +27,7 @@ public class DummySteedProxy implements ISteedProxy {
     }
 
     public int age(Entity entity, EntityPlayer player) {
+        return 0;
     }
 
     public boolean isHealable(Entity entity, EntityPlayer player) {
@@ -34,6 +35,7 @@ public class DummySteedProxy implements ISteedProxy {
     }
 
     public int heal(Entity entity, EntityPlayer player) {
+        return 0;
     }
 
     // Not currently implemented
@@ -42,6 +44,7 @@ public class DummySteedProxy implements ISteedProxy {
     }
 
     public int breed(Entity entity, EntityPlayer player) {
+        return 0;
     }
 
     public boolean isLoaded() {

@@ -2,6 +2,8 @@ package com.noobanidus.dwmh.proxy.steeds;
 
 import com.animania.common.entities.horses.EntityAnimaniaHorse;
 import com.noobanidus.dwmh.DWMH;
+import com.noobanidus.dwmh.capability.CapabilityName;
+import com.noobanidus.dwmh.capability.CapabilityNameHandler;
 import com.noobanidus.dwmh.config.DWMHConfig;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.AbstractHorse;
@@ -22,41 +24,43 @@ public class AnimaniaProxy implements ISteedProxy {
 
         if (!globalTeleportCheck(entity, player)) return false;
 
-        if (horse.isTame() && horse.getOwnerUniqueId() != null && horse.getOwnerUniqueId().equals(player.getUniqueID()))
-            return true;
+        if (!horse.hasCapability(CapabilityNameHandler.INSTANCE, null)) return false;
 
-        if (!entity.hasCustomName() || horse.isTame()) {
-            return false;
-        }
+        CapabilityName cap = horse.getCapability(CapabilityNameHandler.INSTANCE, null);
 
-        return entity.getCustomNameTag().equals(generateName(player));
+        if (cap == null) return false;
+
+        return cap.hasOwner() && cap.getOwner() != null && cap.getOwner().equals(player.getUniqueID());
+
     }
 
-    private String generateName(EntityPlayer player) {
-        return String.format("%s's Steed", player.getName());
+    private boolean hasOwner (Entity horse) {
+        CapabilityName cap = horse.getCapability(CapabilityNameHandler.INSTANCE, null);
+
+        if (cap == null) return false;
+
+        return cap.hasOwner();
     }
 
     // This can result in way too many mods being listed.
     public boolean isListable(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return false;
 
-        EntityAnimaniaHorse horse = (EntityAnimaniaHorse) entity;
+        return hasOwner(entity);
+    }
 
-        if (horse.isTame()) return true;
-
-        return entity.hasCustomName();
+    public boolean pseudoTaming () {
+        return true;
     }
 
     // Can't tame Animania animals -- OR CAN YOU?
     public boolean isTameable(Entity entity, EntityPlayer player) {
-        if (!isMyMod(entity)) return false;
-
-        EntityAnimaniaHorse horse = (EntityAnimaniaHorse) entity;
-
-        return !horse.isTame();
+        return false;
     }
 
     public int tame(Entity entity, EntityPlayer player) {
+        return 0;
+        /*
         AbstractHorse horse = (AbstractHorse) entity;
 
         String name = generateName(player);
@@ -71,7 +75,7 @@ public class AnimaniaProxy implements ISteedProxy {
             doGenericMessage(entity, player, "dwmh.strings.animania_taming");
         }
 
-        return 1;
+        return 1;*/
     }
 
     // Foal interactions -> uncertain
@@ -108,11 +112,11 @@ public class AnimaniaProxy implements ISteedProxy {
 
         ITextComponent temp = null;
 
-        String name = generateName(player);
-
         EntityAnimaniaHorse animal = (EntityAnimaniaHorse) entity;
 
-        if (animal.isTame() && (animal.getOwnerUniqueId() == null || !animal.getOwnerUniqueId().equals(player.getUniqueID()))) {
+        CapabilityName cap = animal.getCapability(CapabilityNameHandler.INSTANCE, null);
+
+        if (cap != null && cap.hasOwner() && !cap.getOwner().equals(player.getUniqueID())) {
             temp = new TextComponentTranslation("dwmh.strings.unsummonable.notyours");
             temp.getStyle().setColor(TextFormatting.DARK_RED);
         } else if (animal.hasHome() && animal.world.getTileEntity(animal.getHomePosition()) != null) {
@@ -120,12 +124,6 @@ public class AnimaniaProxy implements ISteedProxy {
             temp.getStyle().setColor(TextFormatting.DARK_RED);
         } else if (animal.getLeashed()) {
             temp = new TextComponentTranslation("dwmh.strings.unsummonable.leashed");
-            temp.getStyle().setColor(TextFormatting.DARK_RED);
-        } else if (!animal.hasCustomName() && !animal.isTame()) {
-            temp = new TextComponentTranslation("dwmh.strings.unsummonable.unnamed");
-            temp.getStyle().setColor(TextFormatting.DARK_RED);
-        } else if (animal.hasCustomName() && !animal.getCustomNameTag().equals(name) && !animal.isTame()) {
-            temp = new TextComponentTranslation("dwmh.strings.unsummonable.notyours");
             temp.getStyle().setColor(TextFormatting.DARK_RED);
         } else if (animal.isBeingRidden() && animal.isRidingOrBeingRiddenBy(player)) {
             temp = new TextComponentTranslation("dwmh.strings.unsummonable.ridden");
@@ -136,10 +134,7 @@ public class AnimaniaProxy implements ISteedProxy {
         } else if (animal.isBeingRidden() && DWMHConfig.Ocarina.otherRiders) {
             temp = new TextComponentTranslation("dwmh.strings.summonable.ridden_other");
             temp.getStyle().setColor(TextFormatting.DARK_AQUA);
-        } else if (animal.hasCustomName() && animal.getCustomNameTag().equals(name)) {
-            temp = new TextComponentTranslation("dwmh.strings.summonable");
-            temp.getStyle().setColor(TextFormatting.AQUA);
-        } else if (animal.isTame() && animal.getOwnerUniqueId() != null && animal.getOwnerUniqueId().equals(player.getUniqueID())) {
+        } else if (cap != null && cap.getOwner().equals(player.getUniqueID())) {
             temp = new TextComponentTranslation("dwmh.strings.summonable");
             temp.getStyle().setColor(TextFormatting.AQUA);
         }

@@ -201,6 +201,26 @@ public class SteedProxy implements ISteedProxy {
         return null;
     }
 
+    public boolean pseudoTaming (Entity entity, EntityPlayer player) {
+        for (ISteedProxy proxy : DWMH.proxyList) {
+            if (proxy.isMyMod(entity)) {
+                return proxy.pseudoTaming();
+            }
+        }
+
+        return false;
+    }
+
+    public boolean pseudoTaming () {
+        for (ISteedProxy proxy : DWMH.proxyList) {
+            if (proxy.pseudoTaming()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public String proxyName() {
         return "main";
     }

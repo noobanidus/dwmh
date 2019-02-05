@@ -165,6 +165,14 @@ public interface ISteedProxy {
         player.sendMessage(temp);
     }
 
+    default boolean pseudoTaming (Entity entity, EntityPlayer player) {
+        return false;
+    }
+
+    default boolean pseudoTaming () {
+        return false;
+    }
+
     default void stopIt () {
     }
 

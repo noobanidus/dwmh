@@ -5,7 +5,9 @@ import com.noobanidus.dwmh.DWMH;
 import com.noobanidus.dwmh.capability.CapabilityNameHandler;
 import com.noobanidus.dwmh.items.ItemEnchantedCarrot;
 import com.noobanidus.dwmh.items.ItemOcarina;
+import com.noobanidus.dwmh.proxy.steeds.SteedProxy;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -52,7 +54,7 @@ public class EventHandler {
     public static void onEntityCapabilitiesAttach (AttachCapabilitiesEvent<Entity> event) {
         Entity entity = event.getObject();
 
-        if (DWMH.animaniaProxy.isMyMod(entity)) {
+        if (SteedProxy.LOWEST_DENOMINATOR.isAssignableFrom(entity.getClass()) && DWMH.steedProxy.pseudoTaming(entity)) {
             event.addCapability(CapabilityNameHandler.IDENTIFIER, new CapabilityNameHandler());
         }
     }

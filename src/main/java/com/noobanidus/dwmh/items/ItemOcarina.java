@@ -53,7 +53,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
 
         if (!entity.hasCapability(CapabilityNameHandler.INSTANCE, null)) return;
 
-        if (!DWMH.steedProxy.pseudoTaming(entity, player)) return;
+        if (!DWMH.steedProxy.pseudoTaming(entity)) return;
 
         if (!player.isSneaking()) return;
 

@@ -93,14 +93,7 @@ public class MoolandProxy implements ISteedProxy {
     }
 
     public boolean isMyMod(Entity entity) {
-        if (!(entity instanceof EntityAwfulCow)) return false;
-
-        String clazz = entity.getClass().getName();
-
-        if (DWMH.animaniaClasses.contains(clazz)) return true;
-
-        DWMH.ignoreList.add(clazz);
-        return false;
+        return entity instanceof EntityAwfulCow;
     }
 
     public ITextComponent getResponseKey(Entity entity, EntityPlayer player) {

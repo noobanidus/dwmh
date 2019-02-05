@@ -25,7 +25,6 @@ public class CommonProxy implements ISidedProxy {
     public void preInit(FMLPreInitializationEvent event) {
         DWMH.TAB = new CreativeTabDWMH(CreativeTabs.getNextID(), DWMH.MODID);
         Registrar.preInit();
-        DWMH.steedProxy = new SteedProxy();
     }
 
     public void init(FMLInitializationEvent e) {
@@ -71,7 +70,7 @@ public class CommonProxy implements ISidedProxy {
             DWMH.moolandProxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("moolands", "com.noobanidus.dwmh.proxy.steeds.MoolandProxy")).orElse(new DummySteedProxy());
         }
 
-        DWMH.proxyList.addAll(Arrays.asList(DWMH.animaniaProxy, DWMH.mocProxy, DWMH.zawaProxy, DWMH.unicornProxy, DWMH.atum2Proxy, DWMH.iceandfireProxy, DWMH.dragonProxy, DWMH.varoddProxy, DWMH.vanillaProxy));
+        DWMH.proxyList.addAll(Arrays.asList(DWMH.animaniaProxy, DWMH.mocProxy, DWMH.zawaProxy, DWMH.unicornProxy, DWMH.atum2Proxy, DWMH.iceandfireProxy, DWMH.dragonProxy, DWMH.varoddProxy, DWMH.moolandProxy, DWMH.vanillaProxy));
         DWMH.proxyList.removeIf(i -> !i.isLoaded());
         DWMH.resolveClasses();
 

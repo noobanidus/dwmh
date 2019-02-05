@@ -2,11 +2,15 @@ package com.noobanidus.dwmh.proxy.steeds;
 
 import com.noobanidus.dwmh.DWMH;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.event.entity.EntityMountEvent;
 
 public class SteedProxy implements ISteedProxy {
+    // The current lowest common denominator class for supported entities
+    public static Class<?> LOWEST_DENOMINATOR = EntityCreature.class;
+
     public boolean hasCustomName(Entity entity) {
         for (ISteedProxy proxy : DWMH.proxyList) {
             if (proxy.isMyMod(entity)) {
@@ -201,7 +205,7 @@ public class SteedProxy implements ISteedProxy {
         return null;
     }
 
-    public boolean pseudoTaming (Entity entity, EntityPlayer player) {
+    public boolean pseudoTaming (Entity entity) {
         for (ISteedProxy proxy : DWMH.proxyList) {
             if (proxy.isMyMod(entity)) {
                 return proxy.pseudoTaming();

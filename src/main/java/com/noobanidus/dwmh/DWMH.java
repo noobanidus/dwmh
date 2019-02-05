@@ -6,6 +6,7 @@ import com.noobanidus.dwmh.config.DWMHConfig;
 import com.noobanidus.dwmh.proxy.ISidedProxy;
 import com.noobanidus.dwmh.proxy.steeds.DummySteedProxy;
 import com.noobanidus.dwmh.proxy.steeds.ISteedProxy;
+import com.noobanidus.dwmh.proxy.steeds.SteedProxy;
 import com.noobanidus.dwmh.proxy.steeds.VanillaProxy;
 import it.unimi.dsi.fastutil.Hash;
 import net.minecraftforge.fml.common.Mod;
@@ -45,7 +46,7 @@ public class DWMH {
     public static ISteedProxy moolandProxy = new DummySteedProxy();
 
     // This is more of an overall helper class that checks everything
-    public static ISteedProxy steedProxy;
+    public static ISteedProxy steedProxy = new SteedProxy();
 
     public static List<ISteedProxy> proxyList = new ArrayList<>();
     public static Set<String> zawaClasses;
@@ -61,7 +62,7 @@ public class DWMH {
     @Mod.Instance(DWMH.MODID)
     public static DWMH instance;
     @SuppressWarnings("unused")
-    private List<String> supportedMods = Arrays.asList("animania", "mocreatures", "zawa", "ultimate_unicorn_mod", "atum", "dragonmounts", "varodd");
+    private List<String> supportedMods = Arrays.asList("animania", "mocreatures", "zawa", "ultimate_unicorn_mod", "atum", "dragonmounts", "varodd", "moolands");
 
     public static void resolveClasses() {
         // All of these are string-based now hooray

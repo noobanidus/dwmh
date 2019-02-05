@@ -4,7 +4,7 @@ import com.lying.variousoddities.entity.mount.AbstractMount;
 import com.lying.variousoddities.entity.mount.EntityChestPegasus;
 import com.lying.variousoddities.entity.mount.EntityPegasus;
 import com.noobanidus.dwmh.config.DWMHConfig;
-import com.noobanidus.dwmh.wrappers.VaroddWrapper;
+import com.noobanidus.dwmh.proxy.steeds.wrappers.VaroddWrapper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.ITextComponent;

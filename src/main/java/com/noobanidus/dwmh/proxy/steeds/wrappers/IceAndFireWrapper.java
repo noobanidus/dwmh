@@ -1,4 +1,4 @@
-package com.noobanidus.dwmh.wrappers;
+package com.noobanidus.dwmh.proxy.steeds.wrappers;
 
 import com.github.alexthe666.iceandfire.entity.EntityDragonBase;
 import com.github.alexthe666.iceandfire.entity.EntityHippocampus;

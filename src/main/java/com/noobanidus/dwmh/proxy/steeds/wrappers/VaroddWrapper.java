@@ -1,13 +1,10 @@
-package com.noobanidus.dwmh.wrappers;
+package com.noobanidus.dwmh.proxy.steeds.wrappers;
 
 import com.lying.variousoddities.entity.mount.AbstractMount;
 import com.lying.variousoddities.entity.mount.EntityGryphon;
-import com.teammetallurgy.atum.entity.animal.EntityCamel;
-import com.teammetallurgy.atum.entity.animal.EntityDesertWolf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.passive.AbstractHorse;
-import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;

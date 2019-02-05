@@ -2,7 +2,7 @@ package com.noobanidus.dwmh.proxy.steeds;
 
 import com.noobanidus.dwmh.DWMH;
 import com.noobanidus.dwmh.config.DWMHConfig;
-import com.noobanidus.dwmh.wrappers.Atum2Wrapper;
+import com.noobanidus.dwmh.proxy.steeds.wrappers.Atum2Wrapper;
 import com.teammetallurgy.atum.entity.animal.EntityCamel;
 import com.teammetallurgy.atum.entity.animal.EntityDesertWolf;
 import net.minecraft.entity.Entity;

@@ -5,7 +5,7 @@ import com.github.alexthe666.iceandfire.entity.EntityHippocampus;
 import com.github.alexthe666.iceandfire.entity.EntityHippogryph;
 import com.noobanidus.dwmh.DWMH;
 import com.noobanidus.dwmh.config.DWMHConfig;
-import com.noobanidus.dwmh.wrappers.IceAndFireWrapper;
+import com.noobanidus.dwmh.proxy.steeds.wrappers.IceAndFireWrapper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.ITextComponent;

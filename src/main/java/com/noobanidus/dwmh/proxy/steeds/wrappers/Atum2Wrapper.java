@@ -1,4 +1,4 @@
-package com.noobanidus.dwmh.wrappers;
+package com.noobanidus.dwmh.proxy.steeds.wrappers;
 
 import com.teammetallurgy.atum.entity.animal.EntityCamel;
 import com.teammetallurgy.atum.entity.animal.EntityDesertWolf;
@@ -8,7 +8,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import javax.annotation.Nonnull;
 import java.util.UUID;
 
 public class Atum2Wrapper implements IWrapper {

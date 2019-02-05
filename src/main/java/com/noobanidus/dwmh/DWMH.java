@@ -42,6 +42,7 @@ public class DWMH {
     public static ISteedProxy iceandfireProxy = new DummySteedProxy();
     public static ISteedProxy dragonProxy = new DummySteedProxy();
     public static ISteedProxy varoddProxy = new DummySteedProxy();
+    public static ISteedProxy moolandProxy = new DummySteedProxy();
 
     // This is more of an overall helper class that checks everything
     public static ISteedProxy steedProxy;

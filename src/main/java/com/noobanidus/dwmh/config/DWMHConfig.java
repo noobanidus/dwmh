@@ -336,6 +336,12 @@ public class DWMHConfig {
             @Config.Comment("Set to false to disable the Various Oddities proxy (even if it would normally load)")
             @Config.Name("Various Oddities")
             public boolean varodd = true;
+
+            @Config.RequiresMcRestart
+            @Config.LangKey("config.proxies.disable.mooland") // TODO: FILL IN
+            @Config.Comment("Set to false to disable the Moolands proxy (even if it would normally load)")
+            @Config.Name("Moolands")
+            public boolean moolands = true;
         }
 
         public class Animania {

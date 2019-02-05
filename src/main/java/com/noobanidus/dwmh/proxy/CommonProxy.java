@@ -67,6 +67,9 @@ public class CommonProxy implements ISidedProxy {
         if (DWMHConfig.proxies.enable.varodd) {
             DWMH.varoddProxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("varodd", "com.noobanidus.dwmh.proxy.steeds.VaroddProxy")).orElse(new DummySteedProxy());
         }
+        if (DWMHConfig.proxies.enable.moolands) {
+            DWMH.moolandProxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("moolands", "com.noobanidus.dwmh.proxy.steeds.MoolandProxy")).orElse(new DummySteedProxy());
+        }
 
         DWMH.proxyList.addAll(Arrays.asList(DWMH.animaniaProxy, DWMH.mocProxy, DWMH.zawaProxy, DWMH.unicornProxy, DWMH.atum2Proxy, DWMH.iceandfireProxy, DWMH.dragonProxy, DWMH.varoddProxy, DWMH.vanillaProxy));
         DWMH.proxyList.removeIf(i -> !i.isLoaded());

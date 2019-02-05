@@ -1,16 +1,22 @@
 package com.noobanidus.dwmh.events;
 
+import com.animania.common.capabilities.ICapabilityPlayer;
 import com.noobanidus.dwmh.DWMH;
+import com.noobanidus.dwmh.capability.CapabilityNameHandler;
 import com.noobanidus.dwmh.items.ItemEnchantedCarrot;
 import com.noobanidus.dwmh.items.ItemOcarina;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.items.IItemHandler;
 
 @Mod.EventBusSubscriber
 public class EventHandler {
@@ -39,6 +45,15 @@ public class EventHandler {
 
         if (item instanceof ItemOcarina || item instanceof ItemEnchantedCarrot) {
             event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onEntityCapabilitiesAttach (AttachCapabilitiesEvent<Entity> event) {
+        Entity entity = event.getObject();
+
+        if (DWMH.animaniaProxy.isMyMod(entity)) {
+            event.addCapability(CapabilityNameHandler.IDENTIFIER, new CapabilityNameHandler());
         }
     }
 }

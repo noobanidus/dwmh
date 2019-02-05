@@ -2,6 +2,8 @@ package com.noobanidus.dwmh.proxy;
 
 import com.google.common.collect.Lists;
 import com.noobanidus.dwmh.DWMH;
+import com.noobanidus.dwmh.capability.CapabilityName;
+import com.noobanidus.dwmh.capability.CapabilityNameHandler;
 import com.noobanidus.dwmh.config.CreativeTabDWMH;
 import com.noobanidus.dwmh.config.DWMHConfig;
 import com.noobanidus.dwmh.config.Registrar;
@@ -10,6 +12,7 @@ import com.noobanidus.dwmh.proxy.steeds.ISteedProxy;
 import com.noobanidus.dwmh.proxy.steeds.SteedProxy;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
@@ -26,6 +29,7 @@ public class CommonProxy implements ISidedProxy {
     }
 
     public void init(FMLInitializationEvent e) {
+        CapabilityManager.INSTANCE.register(CapabilityName.class, new CapabilityNameHandler.CapabilityNameStorage(), CapabilityName::new);
     }
 
     @SuppressWarnings("unchecked")

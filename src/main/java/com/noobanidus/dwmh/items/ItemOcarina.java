@@ -36,10 +36,10 @@ import java.util.function.BiFunction;
 public class ItemOcarina extends ItemDWMHRepairable {
     private List<TextComponentTranslation> directions = new ArrayList<>();
 
-    public static boolean useableItem(ItemStack item) {
-        if (DWMHConfig.Ocarina.functionality.getMaxUses() == 0) return true;
+    private static boolean unuseableItem(ItemStack item) {
+        if (DWMHConfig.Ocarina.functionality.getMaxUses() == 0) return false;
 
-        return ItemDWMHRepairable.useableItem(item);
+        return !ItemDWMHRepairable.useableItem(item);
     }
 
     public static void onInteractOcarina(PlayerInteractEvent.EntityInteract event) {
@@ -235,7 +235,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
 
         // Early breakpoint: if the Ocarina is broken
         BiFunction<String, Boolean, Boolean> durabilityCheck = (key, playSound) -> {
-            if (!useableItem(stack)) {
+            if (unuseableItem(stack)) {
                 ITextComponent temp2 = new TextComponentTranslation(key); // );
                 temp2.getStyle().setColor(TextFormatting.BLUE);
                 player.sendMessage(temp2);
@@ -345,7 +345,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
     @Override
     public void addInformation(ItemStack par1ItemStack, World world, List<String> stacks, ITooltipFlag flags) {
         if (GuiScreen.isShiftKeyDown()) {
-            if (!useableItem(par1ItemStack) && DWMHConfig.Ocarina.functionality.getMaxUses() != 0) {
+            if (unuseableItem(par1ItemStack) && DWMHConfig.Ocarina.functionality.getMaxUses() != 0) {
                 stacks.add(TextFormatting.DARK_RED + I18n.format("dwmh.strings.carrot.tooltip.broken"));
             }
 

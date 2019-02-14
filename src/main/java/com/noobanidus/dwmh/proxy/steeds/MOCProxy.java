@@ -42,7 +42,7 @@ public class MOCProxy implements ISteedProxy {
                 TextComponentTranslation name = (TextComponentTranslation) args[0];
 
                 if (MOCProxy.entities == null) {
-                    entities = Lists.newArrayList(DWMHConfig.proxies.MoCreatures.entities);
+                    entities = Lists.newArrayList(DWMHConfig.proxies.MoCreatures.mocClasses);
                 }
 
                 if (!entities.contains(name.getKey())) return;
@@ -139,9 +139,7 @@ public class MOCProxy implements ISteedProxy {
         animal.setTamed(true);
         MoCTools.tameWithName(player, animal);
 
-        if (DWMHConfig.EnchantedCarrot.messages.taming) {
-            doGenericMessage(entity, player, Generic.TAMING);
-        }
+        doGenericMessage(entity, player, Generic.TAMING);
 
         return 1;
     }
@@ -166,9 +164,7 @@ public class MOCProxy implements ISteedProxy {
         animal.setType(0);
         animal.selectType();
 
-        if (DWMHConfig.EnchantedCarrot.messages.aging) {
-            doGenericMessage(entity, player, Generic.AGING);
-        }
+        doGenericMessage(entity, player, Generic.AGING);
 
         return 1;
     }

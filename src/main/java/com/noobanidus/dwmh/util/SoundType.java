@@ -41,7 +41,8 @@ public enum SoundType {
     public void playSound(EntityPlayer player, ItemStack stack) {
         // This is predicated on a !player.world.isRemote check
 
-        if (!DWMHConfig.Ocarina.responses.sounds) return;
+        // TODO
+        if (!DWMHConfig.client.clientOcarina.sounds) return;
 
         SoundEvent e = this.getSoundEvent();
         if (e == null) return;
@@ -56,7 +57,7 @@ public enum SoundType {
 
         if (tag.hasKey("dwmh:last_played")) {
             long lastPlayed = tag.getLong("dwmh:last_played");
-            if (cur - lastPlayed < DWMHConfig.Ocarina.responses.soundDelay * 1000) {
+            if (cur - lastPlayed < DWMHConfig.Ocarina.soundDelay * 1000) {
                 return;
             }
         }

@@ -60,50 +60,6 @@ public class ZawaProxy implements ISteedProxy {
         return !animal.isTamed();
     }
 
-    /* Below code from ZAWA 1.4.0
-    /*
-    public void tame (Entity entity, EntityPlayer player) {
-        if (!isMyMod(entity)) return;
-
-        ZAWABaseLand animal = (ZAWABaseLand) entity;
-
-        animal.setTamedBy(player);
-        animal.setOwnerId(player.getUniqueID());
-        if (!player.capabilities.isCreativeMode) {
-            ItemStack item = player.inventory.getCurrentItem();
-            ItemEnchantedCarrot.damageItem(item, player);
-        }
-
-        if (player instanceof EntityPlayerMP) {
-            Triggers.TAME_ANIMAL_ZAWA.trigger((EntityPlayerMP)player);
-        }
-
-        if (aifight == null || ainearatt == null) {
-            aifight = ReflectionHelper.getPrivateValue(ZAWABaseLand.class, animal, "AIFight");
-            ainearatt = ReflectionHelper.getPrivateValue(ZAWABaseLand.class, animal, "AINearAtt");
-        }
-
-        if (aifight != null && ainearatt != null) {
-            animal.tasks.removeTask(aifight);
-            animal.targetTasks.removeTask(ainearatt);
-        } else {
-            DWMH.LOG.error("Unable to remove AI tasks for recently tamed entity.");
-        }
-
-        if (animal.setNature() == AnimalData.EnumNature.AGGRESSIVE && player instanceof EntityPlayerMP) {
-            Triggers.RISK_TAME.trigger((EntityPlayerMP)player);
-        }
-
-        animal.setHunger(animal.getMaxFood());
-        animal.setEnrichment(animal.getMaxEnrichment());
-        animal.world.setEntityState(animal, (byte)7);
-
-        if (DWMHConfig.EnchantedCarrot.messages.taming) {
-            doGenericMessage(entity, player, Generic.TAMING, TextFormatting.GOLD);
-        }
-    }*/
-
-    /* 1.5.3 */
     @Override
     public int tame(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return 0;
@@ -133,9 +89,7 @@ public class ZawaProxy implements ISteedProxy {
         animal.setEnrichment(animal.getMaxEnrichment());
         animal.world.setEntityState(animal, (byte) 7);
 
-        if (DWMHConfig.EnchantedCarrot.messages.taming) {
             doGenericMessage(entity, player, Generic.TAMING, TextFormatting.GOLD);
-        }
 
         return 1;
     }
@@ -157,9 +111,7 @@ public class ZawaProxy implements ISteedProxy {
         animal.setGrowingAge(0);
         animal.world.setEntityState(animal, (byte) 7);
 
-        if (DWMHConfig.EnchantedCarrot.messages.aging) {
             doGenericMessage(entity, player, Generic.AGING);
-        }
 
         return 1;
     }

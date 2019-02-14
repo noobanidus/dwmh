@@ -28,7 +28,7 @@ public class VanillaProxy implements ISteedProxy {
 
         AbstractHorse horse = (AbstractHorse) entity;
 
-        if (DWMHConfig.Ocarina.responses.noLlamas && entity instanceof EntityLlama) return false;
+        if (DWMHConfig.client.clientOcarina.noLlamas && entity instanceof EntityLlama) return false;
 
         if (horse.isChild() || !horse.isTame() || horse.dimension != player.dimension) {
             return false;
@@ -57,9 +57,7 @@ public class VanillaProxy implements ISteedProxy {
     public int tame(Entity entity, EntityPlayer player) {
         ((AbstractHorse) entity).setTamedBy(player);
 
-        if (DWMHConfig.EnchantedCarrot.messages.taming) {
-            doGenericMessage(entity, player, Generic.TAMING);
-        }
+        doGenericMessage(entity, player, Generic.TAMING);
 
         return 1;
     }
@@ -82,9 +80,7 @@ public class VanillaProxy implements ISteedProxy {
         horse.setGrowingAge(0);
         horse.world.setEntityState(horse, (byte) 7);
 
-        if (DWMHConfig.EnchantedCarrot.messages.aging) {
-            doGenericMessage(entity, player, Generic.AGING);
-        }
+        doGenericMessage(entity, player, Generic.AGING);
 
         return 1;
     }
@@ -114,26 +110,24 @@ public class VanillaProxy implements ISteedProxy {
         AbstractHorse horse = (AbstractHorse) entity;
         horse.setInLove(player);
 
-        if (DWMHConfig.EnchantedCarrot.messages.breeding) {
-            doGenericMessage(entity, player, Generic.BREEDING);
-        }
+        doGenericMessage(entity, player, Generic.BREEDING);
 
         return 1;
     }
 
     @Override
     public boolean isMyMod(Entity entity) {
-        if (DWMH.ignoreList.contains(entity.getClass().getName())) return false;
+        if (DWMH.sets("ignore").contains(entity.getClass().getName())) return false;
 
         String clazz = entity.getClass().getName();
 
-        if (!DWMH.animaniaProxy.isLoaded() && clazz.contains("animania")) {
-            DWMH.ignoreList.add(clazz);
+        if (!DWMH.proxy("animania").isLoaded() && clazz.contains("animania")) {
+            DWMH.sets("ignore").add(clazz);
             return false;
         }
 
-        if (!DWMH.unicornProxy.isLoaded() && clazz.contains("ultimate_unicorn")) {
-            DWMH.ignoreList.add(clazz);
+        if (!DWMH.proxy("ultimate_unicorn_mod").isLoaded() && clazz.contains("ultimate_unicorn")) {
+            DWMH.sets("ignore").add(clazz);
             return false;
         }
 

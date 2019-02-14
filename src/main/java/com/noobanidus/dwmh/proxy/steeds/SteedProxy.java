@@ -8,7 +8,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.event.entity.EntityMountEvent;
 
 public class SteedProxy implements ISteedProxy {
-    // The current lowest common denominator class for supported entities
+    // The current lowest common denominator class for supported mocClasses
     public static Class<?> LOWEST_DENOMINATOR = EntityCreature.class;
 
     @Override

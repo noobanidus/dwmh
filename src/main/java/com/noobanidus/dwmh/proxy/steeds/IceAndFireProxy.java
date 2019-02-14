@@ -53,11 +53,9 @@ public class IceAndFireProxy implements ISteedProxy {
         IceAndFireWrapper wrapper = new IceAndFireWrapper(entity);
 
         wrapper.setTamedBy(player);
-        wrapper.world.setEntityState(entity, (byte)7);
+        wrapper.world.setEntityState(entity, (byte) 7);
 
-        if (DWMHConfig.EnchantedCarrot.messages.taming) {
-            doGenericMessage(entity, player, Generic.TAMING);
-        }
+        doGenericMessage(entity, player, Generic.TAMING);
 
         return 1;
     }
@@ -74,11 +72,9 @@ public class IceAndFireProxy implements ISteedProxy {
         IceAndFireWrapper wrapper = new IceAndFireWrapper(entity);
 
         wrapper.setGrowingAge(0);
-        wrapper.world.setEntityState(entity, (byte)7);
+        wrapper.world.setEntityState(entity, (byte) 7);
 
-        if (DWMHConfig.EnchantedCarrot.messages.aging) {
-            doGenericMessage(entity, player, Generic.AGING);
-        }
+        doGenericMessage(entity, player, Generic.AGING);
 
         return 1;
     }
@@ -96,11 +92,9 @@ public class IceAndFireProxy implements ISteedProxy {
         IceAndFireWrapper wrapper = new IceAndFireWrapper(entity);
 
         wrapper.setInLove(player);
-        wrapper.world.setEntityState(entity, (byte)7);
+        wrapper.world.setEntityState(entity, (byte) 7);
 
-        if (DWMHConfig.EnchantedCarrot.messages.breeding) {
-            doGenericMessage(entity, player, Generic.BREEDING);
-        }
+        doGenericMessage(entity, player, Generic.BREEDING);
 
         return 1;
     }
@@ -113,7 +107,8 @@ public class IceAndFireProxy implements ISteedProxy {
 
     @Override
     public boolean isMyMod(Entity entity) {
-        if (!(entity instanceof EntityDragonBase) && !(entity instanceof EntityHippocampus) && !(entity instanceof EntityHippogryph)) return false;
+        if (!(entity instanceof EntityDragonBase) && !(entity instanceof EntityHippocampus) && !(entity instanceof EntityHippogryph))
+            return false;
 
         String clazz = entity.getClass().getName();
 
@@ -163,7 +158,7 @@ public class IceAndFireProxy implements ISteedProxy {
     }
 
     @Override
-    public String proxyName(){
+    public String proxyName() {
         return "iceandfire";
     }
 }

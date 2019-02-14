@@ -81,7 +81,7 @@ public interface ISteedProxy {
         horse.heal(horse.getMaxHealth() - horse.getHealth());
         horse.world.setEntityState(horse, (byte) 7);
 
-        if (DWMHConfig.EnchantedCarrot.messages.healing) {
+        if (DWMHConfig.client.clientCarrot.healing) {
             doGenericMessage(entity, player, Generic.HEALING);
         }
 

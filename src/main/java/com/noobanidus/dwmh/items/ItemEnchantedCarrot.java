@@ -125,7 +125,7 @@ public class ItemEnchantedCarrot extends ItemDWMHRepairable {
             return false;
         }
 
-        return DWMHConfig.EnchantedCarrot.glint;
+        return DWMHConfig.client.clientCarrot.glint;
     }
 
     @SideOnly(Side.CLIENT)

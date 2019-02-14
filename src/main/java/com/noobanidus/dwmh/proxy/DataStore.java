@@ -1,18 +1,17 @@
 package com.noobanidus.dwmh.proxy;
 
 import com.google.common.collect.Lists;
+import com.noobanidus.dwmh.config.DWMHConfig;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
-public class ProxyList {
-    public static Map<String, String> PROXY_LIST;
+public class DataStore {
+    private static Map<String, String> PROXY_LIST = new HashMap<>();
+    private static Map<String, Set<String>> CLASS_REFERENCE = new HashMap<>();
 
     static {
-        ProxyList.putAll("animania", "com.noobanidus.dwmh.proxy.steeds.AnimaniaProxy",
+        DataStore.putAll("animania", "com.noobanidus.dwmh.proxy.steeds.AnimaniaProxy",
                 "mocreatures", "com.noobanidus.dwmh.proxy.steeds.MOCProxy",
                 "zawa", "com.noobanidus.dwmh.proxy.steeds.ZawaProxy",
                 "ultimate_unicorn_mod", "com.noobanidus.dwmh.proxy.steeds.UnicornProxy",
@@ -21,6 +20,13 @@ public class ProxyList {
                 "dragonmounts", "com.noobanidus.dwmh.proxy.steeds.DragonMountProxy",
                 "varodd", "com.noobanidus.dwmh.proxy.steeds.VaroddProxy",
                 "moolands", "com.noobanidus.dwmh.proxy.steeds.MoolandProxy");
+
+        CLASS_REFERENCE.put("zawa", new HashSet<>());
+        CLASS_REFERENCE.put("animania", new HashSet<>());
+        CLASS_REFERENCE.put("iceandfire", new HashSet<>());
+        CLASS_REFERENCE.put("iceandfire_exclusions", new HashSet<>());
+        CLASS_REFERENCE.put("ignore", new HashSet<>());
+        CLASS_REFERENCE.put("blacklist", new HashSet<>());
     }
 
     private static void putAll(String... input) {
@@ -38,6 +44,12 @@ public class ProxyList {
         return Lists.newArrayList(PROXY_LIST.keySet());
     }
 
+    public static Set<String> set (String setName) {
+        if (CLASS_REFERENCE.containsKey(setName)) return CLASS_REFERENCE.get(setName);
+
+        return new HashSet<>();
+    }
+
     public static class Proxy {
         private String modId;
         private String classPath;
@@ -53,6 +65,10 @@ public class ProxyList {
 
         public String getClassPath() {
             return classPath;
+        }
+
+        public boolean isEnabled() {
+            return DWMHConfig.instance.proxy(modId);
         }
     }
 }

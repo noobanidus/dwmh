@@ -72,9 +72,7 @@ public class Atum2Proxy implements ISteedProxy {
             wolf.world.setEntityState(wolf, (byte) 7);
         }
 
-        if (DWMHConfig.EnchantedCarrot.messages.taming) {
-            doGenericMessage(entity, player, Generic.TAMING);
-        }
+        doGenericMessage(entity, player, Generic.TAMING);
 
         return 1;
     }
@@ -93,9 +91,7 @@ public class Atum2Proxy implements ISteedProxy {
         wrapper.setGrowingAge(0);
         wrapper.world.setEntityState(entity, (byte) 7);
 
-        if (DWMHConfig.EnchantedCarrot.messages.aging) {
-            doGenericMessage(entity, player, Generic.AGING);
-        }
+        doGenericMessage(entity, player, Generic.AGING);
 
         return 1;
     }
@@ -118,9 +114,7 @@ public class Atum2Proxy implements ISteedProxy {
 
         animal.setInLove(player);
 
-        if (DWMHConfig.EnchantedCarrot.messages.breeding) {
-            doGenericMessage(entity, player, Generic.BREEDING);
-        }
+        doGenericMessage(entity, player, Generic.BREEDING);
 
         return 1;
     }

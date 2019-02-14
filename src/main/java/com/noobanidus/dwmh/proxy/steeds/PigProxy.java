@@ -66,9 +66,7 @@ public class PigProxy extends VanillaProxy {
         pig.setGrowingAge(0);
         pig.world.setEntityState(pig, (byte) 7);
 
-        if (DWMHConfig.EnchantedCarrot.messages.aging) {
-            doGenericMessage(entity, player, Generic.AGING);
-        }
+        doGenericMessage(entity, player, Generic.AGING);
 
         return 1;
     }
@@ -79,9 +77,7 @@ public class PigProxy extends VanillaProxy {
 
         ((EntityPig) entity).setInLove(player);
 
-        if (DWMHConfig.EnchantedCarrot.messages.breeding) {
-            doGenericMessage(entity, player, Generic.BREEDING);
-        }
+        doGenericMessage(entity, player, Generic.BREEDING);
 
         return 1;
     }

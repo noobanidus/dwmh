@@ -50,9 +50,7 @@ public class DragonMountProxy implements ISteedProxy {
         EntityTameableDragon dragon = (EntityTameableDragon) entity;
         dragon.tamedFor(player, true);
 
-        if (DWMHConfig.EnchantedCarrot.messages.taming) {
-            doGenericMessage(entity, player, Generic.TAMING);
-        }
+        doGenericMessage(entity, player, Generic.TAMING);
 
         return 5;
     }
@@ -75,13 +73,11 @@ public class DragonMountProxy implements ISteedProxy {
         DragonLifeStageHelper helper = dragon.getLifeStageHelper();
 
         EnumDragonLifeStage current = helper.getLifeStage();
-        EnumDragonLifeStage next = EnumDragonLifeStage.values()[current.ordinal()+1];
+        EnumDragonLifeStage next = EnumDragonLifeStage.values()[current.ordinal() + 1];
 
         helper.setLifeStage(next);
 
-        if (DWMHConfig.EnchantedCarrot.messages.aging) {
-            doGenericMessage(entity, player, "dwmh.strings.dragonmount.age");
-        }
+        doGenericMessage(entity, player, "dwmh.strings.dragonmount.age");
 
         return 5;
     }
@@ -104,9 +100,7 @@ public class DragonMountProxy implements ISteedProxy {
         dragon.setInLove(player);
         dragon.world.setEntityState(entity, (byte) 7);
 
-        if (DWMHConfig.EnchantedCarrot.messages.breeding) {
-            doGenericMessage(entity, player, Generic.BREEDING);
-        }
+        doGenericMessage(entity, player, Generic.BREEDING);
 
         return 5;
     }

@@ -37,7 +37,7 @@ public class VaroddProxy implements ISteedProxy {
         return wrapper.getOwnerUniqueId() != null && wrapper.getOwnerUniqueId().equals(player.getUniqueID());
     }
 
-     public boolean globalTeleportCheck(VaroddWrapper wrapper, EntityPlayer player) {
+    public boolean globalTeleportCheck(VaroddWrapper wrapper, EntityPlayer player) {
         if (wrapper.getLeashed() || (wrapper.isBeingRidden() && wrapper.isRidingSameEntity(player))) {
             return false;
         }
@@ -75,9 +75,7 @@ public class VaroddProxy implements ISteedProxy {
 
         wrapper.setTamedBy(player);
 
-        if (DWMHConfig.EnchantedCarrot.messages.taming) {
-            doGenericMessage(entity, player, Generic.TAMING);
-        }
+        doGenericMessage(entity, player, Generic.TAMING);
 
         return 1;
     }
@@ -98,9 +96,7 @@ public class VaroddProxy implements ISteedProxy {
         wrapper.setGrowingAge(0);
         wrapper.world.setEntityState(entity, (byte) 7);
 
-        if (DWMHConfig.EnchantedCarrot.messages.aging) {
-            doGenericMessage(entity, player, Generic.AGING);
-        }
+        doGenericMessage(entity, player, Generic.AGING);
 
         return 1;
     }
@@ -123,9 +119,7 @@ public class VaroddProxy implements ISteedProxy {
         VaroddWrapper wrapper = new VaroddWrapper(entity);
         wrapper.setInLove(player);
 
-        if (DWMHConfig.EnchantedCarrot.messages.breeding) {
-            doGenericMessage(entity, player, Generic.BREEDING);
-        }
+        doGenericMessage(entity, player, Generic.BREEDING);
 
         return 1;
     }

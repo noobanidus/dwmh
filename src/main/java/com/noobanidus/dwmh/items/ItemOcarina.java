@@ -148,7 +148,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
         if (!world.isRemote) {
-            if (player.isSneaking() && !DWMHConfig.Ocarina.swap || !player.isSneaking() && DWMHConfig.Ocarina.swap) {
+            if (player.isSneaking() && !DWMHConfig.client.clientOcarina.swap || !player.isSneaking() && DWMHConfig.client.clientOcarina.swap) {
                 doListing(world, player, hand);
             } else {
                 doSummoning(world, player, hand);
@@ -159,13 +159,14 @@ public class ItemOcarina extends ItemDWMHRepairable {
         return new ActionResult<>(EnumActionResult.SUCCESS, stack);
     }
 
+    // TODO
     public boolean doListing(World world, EntityPlayer player, @Nonnull EnumHand hand) {
         BlockPos pos = player.getPosition();
         boolean didStuff = false;
 
         ITextComponent temp;
 
-        /** Listing entities. **/
+        /** Listing mocClasses. **/
 
         List<Entity> nearbyHorses = world.getEntities(Entity.class, (entity) -> isValidHorse(entity, player, true));
         for (Entity horse : nearbyHorses) {
@@ -184,7 +185,8 @@ public class ItemOcarina extends ItemDWMHRepairable {
 
             ITextComponent result = new TextComponentTranslation("dwmh.strings.is_at", entityName, (DWMH.steedProxy.hasCustomName(horse)) ? new TextComponentTranslation("dwmh.strings.named", DWMH.steedProxy.getCustomNameTag(horse)) : "", DWMH.steedProxy.getResponseKey(horse, player), hpos.getX(), hpos.getY(), hpos.getZ());
 
-            if (DWMHConfig.Ocarina.responses.distance) {
+            // TODO
+            if (DWMHConfig.client.clientOcarina.distance) {
                 double angle = Math.atan2(hpos.getZ() - pos.getZ(), hpos.getX() - pos.getX());
                 int index = (int) Math.round(angle / Math.PI * 4 + 10) % 8;
                 result.appendSibling(new TextComponentTranslation("dwmh.strings.blocks", (int) dist, directions.get(index)));
@@ -281,7 +283,8 @@ public class ItemOcarina extends ItemDWMHRepairable {
                     damageItem(stack, player);
                     if (!durabilityCheck.apply("dwmh.strings.break_whistle", false)) return false;
                 }
-                if (!DWMHConfig.Ocarina.responses.quiet && !DWMHConfig.Ocarina.responses.simple) {
+                // TODO
+                if (!DWMHConfig.client.clientOcarina.quiet && !DWMHConfig.client.clientOcarina.simple) {
                     if (DWMH.steedProxy.hasCustomName(horse)) {
                         temp = new TextComponentTranslation("dwmh.strings.teleport_with_name", DWMH.steedProxy.getCustomNameTag(horse));
                         temp.getStyle().setColor(TextFormatting.GOLD);
@@ -320,7 +323,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
             player.sendMessage(temp);
 
             SoundType.MINOR.playSound(player, stack);
-        } else if (DWMHConfig.Ocarina.responses.simple) {
+        } else if (DWMHConfig.client.clientOcarina.simple) {
             temp = new TextComponentTranslation("dwmh.strings.simplest_teleport");
             temp.getStyle().setColor(TextFormatting.GOLD);
             player.sendMessage(temp);
@@ -353,7 +356,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
             String right_click;
             String sneak_right_click;
 
-            if (DWMHConfig.Ocarina.swap) {
+            if (DWMHConfig.client.clientOcarina.swap) {
                 right_click = TextFormatting.GOLD + I18n.format("dwmh.strings.right_click") + " " + TextFormatting.WHITE + I18n.format("dwmh.strings.whistle.tooltip.list_horses");
                 sneak_right_click = TextFormatting.GOLD + I18n.format("dwmh.strings.shift_right_click") + " " + TextFormatting.WHITE + I18n.format("dwmh.strings.whistle.tooltip.teleport_horses");
             } else {

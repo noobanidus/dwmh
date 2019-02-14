@@ -50,25 +50,8 @@ public class MoolandProxy implements ISteedProxy {
     @Override
     public int tame(Entity entity, EntityPlayer player) {
         return 0;
-        /*
-        AbstractHorse horse = (AbstractHorse) entity;
-
-        String name = generateName(player);
-
-        if (horse.hasCustomName() && horse.getCustomNameTag().equals(name)) {
-            horse.setCustomNameTag("");
-        }
-
-        horse.setTamedBy(player);
-
-        if (DWMHConfig.EnchantedCarrot.messages.taming) {
-            doGenericMessage(entity, player, "dwmh.strings.animania_taming");
-        }
-
-        return 1;*/
     }
 
-    // Foal interactions -> uncertain
     @Override
     public boolean isAgeable(Entity entity, EntityPlayer player) {
         return false;
@@ -79,7 +62,6 @@ public class MoolandProxy implements ISteedProxy {
         return 0;
     }
 
-    // Not currently implemented
     @Override
     public boolean isBreedable(Entity entity, EntityPlayer player) {
         return false;

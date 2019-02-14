@@ -4,11 +4,14 @@ import com.google.common.collect.Sets;
 import com.noobanidus.dwmh.config.CreativeTabDWMH;
 import com.noobanidus.dwmh.config.DWMHConfig;
 import com.noobanidus.dwmh.proxy.ISidedProxy;
+import com.noobanidus.dwmh.proxy.ProxyList;
 import com.noobanidus.dwmh.proxy.steeds.DummySteedProxy;
 import com.noobanidus.dwmh.proxy.steeds.ISteedProxy;
 import com.noobanidus.dwmh.proxy.steeds.SteedProxy;
 import com.noobanidus.dwmh.proxy.steeds.VanillaProxy;
 import it.unimi.dsi.fastutil.Hash;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -87,6 +90,50 @@ public class DWMH {
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
+        for (ProxyList.Proxy entry : ProxyList.get()) {
+
+        }
+         if (DWMHConfig.proxies.enable.animania) {
+            DWMH.animaniaProxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("animania", "com.noobanidus.dwmh.proxy.steeds.AnimaniaProxy")).orElse(new DummySteedProxy());
+        }
+        if (DWMHConfig.proxies.enable.mocreatures) {
+            DWMH.mocProxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("mocreatures", "com.noobanidus.dwmh.proxy.steeds.MOCProxy")).orElse(new DummySteedProxy());
+            if (Loader.isModLoaded("mocreatures")) {
+                MinecraftForge.EVENT_BUS.register(DWMH.mocProxy.getClass());
+            }
+        }
+        if (DWMHConfig.proxies.enable.zawa) {
+            DWMH.zawaProxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("zawa", "com.noobanidus.dwmh.proxy.steeds.ZawaProxy")).orElse(new DummySteedProxy());
+        }
+        if (DWMHConfig.proxies.enable.ultimate_unicorn_mod) {
+            DWMH.unicornProxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("ultimate_unicorn_mod", "com.noobanidus.dwmh.proxy.steeds.UnicornProxy")).orElse(new DummySteedProxy());
+            if (Loader.isModLoaded("ultimate_unicorn_mod")) {
+                MinecraftForge.EVENT_BUS.register(DWMH.unicornProxy.getClass());
+            }
+        }
+        if (DWMHConfig.proxies.enable.atum2) {
+            DWMH.atum2Proxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("atum", "com.noobanidus.dwmh.proxy.steeds.Atum2Proxy")).orElse(new DummySteedProxy());
+        }
+        if (DWMHConfig.proxies.enable.iceandfire) {
+            DWMH.iceandfireProxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("iceandfire", "com.noobanidus.dwmh.proxy.steeds.IceAndFireProxy")).orElse(new DummySteedProxy());
+        }
+        if (DWMHConfig.proxies.enable.dragon) {
+            DWMH.dragonProxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("dragonmounts", "com.noobanidus.dwmh.proxy.steeds.DragonMountProxy")).orElse(new DummySteedProxy());
+            if (Loader.isModLoaded("dragonmounts")) {
+                DWMH.dragonProxy.stopIt();
+            }
+        }
+        if (DWMHConfig.proxies.enable.varodd) {
+            DWMH.varoddProxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("varodd", "com.noobanidus.dwmh.proxy.steeds.VaroddProxy")).orElse(new DummySteedProxy());
+        }
+        if (DWMHConfig.proxies.enable.moolands) {
+            DWMH.moolandProxy = ((Optional<ISteedProxy>) e.buildSoftDependProxy("moolands", "com.noobanidus.dwmh.proxy.steeds.MoolandProxy")).orElse(new DummySteedProxy());
+        }
+
+        DWMH.proxyList.addAll(Arrays.asList(DWMH.animaniaProxy, DWMH.mocProxy, DWMH.zawaProxy, DWMH.unicornProxy, DWMH.atum2Proxy, DWMH.iceandfireProxy, DWMH.dragonProxy, DWMH.varoddProxy, DWMH.moolandProxy, DWMH.vanillaProxy));
+        DWMH.proxyList.removeIf(i -> !i.isLoaded());
+        DWMH.resolveClasses();
+
         proxy.postInit(event);
     }
 

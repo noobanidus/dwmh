@@ -7,6 +7,7 @@ import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 public class ClientProxy extends CommonProxy {
     @Override
     public void loadComplete(FMLLoadCompleteEvent event) {
+        super.loadComplete(event);
         ClientCommandHandler.instance.registerCommand(new ClientEntityCommand());
     }
 }

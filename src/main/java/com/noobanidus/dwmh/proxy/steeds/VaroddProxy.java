@@ -13,6 +13,7 @@ import net.minecraft.util.text.TextFormatting;
 
 @SuppressWarnings("unused")
 public class VaroddProxy implements ISteedProxy {
+    @Override
     public boolean isTeleportable(Entity entity, EntityPlayer player) { // TODO
         if (!isListable(entity, player)) {
             return false;
@@ -23,6 +24,7 @@ public class VaroddProxy implements ISteedProxy {
         return wrapper.isHorseSaddled() && globalTeleportCheck(wrapper, player);
     }
 
+    @Override
     public boolean isListable(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return false;
 
@@ -54,6 +56,7 @@ public class VaroddProxy implements ISteedProxy {
     }
 
     // Carrot
+    @Override
     public boolean isTameable(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return false;
 
@@ -66,6 +69,7 @@ public class VaroddProxy implements ISteedProxy {
         return !wrapper.isTame();
     }
 
+    @Override
     public int tame(Entity entity, EntityPlayer player) { // TODO
         VaroddWrapper wrapper = new VaroddWrapper(entity);
 
@@ -78,12 +82,14 @@ public class VaroddProxy implements ISteedProxy {
         return 1;
     }
 
+    @Override
     public boolean isAgeable(Entity entity, EntityPlayer player) { // TODO
         if (!isMyMod(entity)) return false;
 
         return new VaroddWrapper(entity).ageable();
     }
 
+    @Override
     public int age(Entity entity, EntityPlayer player) { // TODO
         VaroddWrapper wrapper = new VaroddWrapper(entity);
 
@@ -99,6 +105,7 @@ public class VaroddProxy implements ISteedProxy {
         return 1;
     }
 
+    @Override
     public boolean isBreedable(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return false;
 
@@ -109,6 +116,7 @@ public class VaroddProxy implements ISteedProxy {
         return !wrapper.isChild() && wrapper.getGrowingAge() == 0 && !wrapper.isInLove();
     }
 
+    @Override
     public int breed(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return 0;
 
@@ -122,10 +130,12 @@ public class VaroddProxy implements ISteedProxy {
         return 1;
     }
 
+    @Override
     public boolean isMyMod(Entity entity) {
         return entity instanceof AbstractMount || entity instanceof EntityPegasus || entity instanceof EntityChestPegasus;
     }
 
+    @Override
     public ITextComponent getResponseKey(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return null;
 
@@ -159,6 +169,7 @@ public class VaroddProxy implements ISteedProxy {
         return temp;
     }
 
+    @Override
     public String proxyName() {
         return "varodd";
     }

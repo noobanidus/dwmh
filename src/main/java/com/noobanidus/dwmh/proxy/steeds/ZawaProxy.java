@@ -19,6 +19,7 @@ public class ZawaProxy implements ISteedProxy {
     ZAWABaseLand.AIFight aifight = null;
     EntityAINearestAttackableTarget ainearatt = null;
 
+    @Override
     public boolean isTeleportable(Entity entity, EntityPlayer player) {
         if (!isListable(entity, player)) {
             return false;
@@ -27,6 +28,7 @@ public class ZawaProxy implements ISteedProxy {
         return isSaddled((ZAWABaseLand) entity) && globalTeleportCheck(entity, player);
     }
 
+    @Override
     public boolean isListable(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) {
             return false;
@@ -50,6 +52,7 @@ public class ZawaProxy implements ISteedProxy {
     }
 
     //  These do nothing
+    @Override
     public boolean isTameable(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return false;
 
@@ -101,6 +104,7 @@ public class ZawaProxy implements ISteedProxy {
     }*/
 
     /* 1.5.3 */
+    @Override
     public int tame(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return 0;
 
@@ -136,6 +140,7 @@ public class ZawaProxy implements ISteedProxy {
         return 1;
     }
 
+    @Override
     public boolean isAgeable(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return false;
 
@@ -146,6 +151,7 @@ public class ZawaProxy implements ISteedProxy {
         return false;
     }
 
+    @Override
     public int age(Entity entity, EntityPlayer player) {
         ZAWABaseLand animal = (ZAWABaseLand) entity;
         animal.setGrowingAge(0);
@@ -160,14 +166,17 @@ public class ZawaProxy implements ISteedProxy {
 
     // The healing is by default in the interface
 
+    @Override
     public boolean isBreedable(Entity entity, EntityPlayer player) {
         return false;
     }
 
+    @Override
     public int breed(Entity entity, EntityPlayer player) {
         return 0;
     }
 
+    @Override
     public ITextComponent getResponseKey(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return null;
 
@@ -201,6 +210,7 @@ public class ZawaProxy implements ISteedProxy {
         return temp;
     }
 
+    @Override
     public boolean isMyMod(Entity entity) {
         if (!(entity instanceof ZAWABaseLand)) return false;
 
@@ -212,6 +222,7 @@ public class ZawaProxy implements ISteedProxy {
         return false;
     }
 
+    @Override
     public String proxyName() {
         return "zawa";
     }

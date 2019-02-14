@@ -10,6 +10,7 @@ public class CreativeTabDWMH extends CreativeTabs {
         super(id, id2);
     }
 
+    @Override
     @SideOnly(Side.CLIENT)
     public ItemStack createIcon() {
         return new ItemStack(Registrar.ocarina);

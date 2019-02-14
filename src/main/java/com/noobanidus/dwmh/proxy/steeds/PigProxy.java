@@ -1,10 +1,9 @@
 package com.noobanidus.dwmh.proxy.steeds;
 
-import com.animania.common.entities.horses.EntityAnimaniaHorse;
-import com.noobanidus.dwmh.DWMH;
 import com.noobanidus.dwmh.capability.CapabilityOwner;
 import com.noobanidus.dwmh.config.DWMHConfig;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
@@ -13,14 +12,12 @@ import net.minecraft.util.text.TextFormatting;
 
 // Instantiated by buildSoftDependProxy
 @SuppressWarnings("unused")
-public class AnimaniaProxy implements ISteedProxy {
+public class PigProxy extends VanillaProxy {
     @Override
     public boolean isTeleportable(Entity entity, EntityPlayer player) {
         if (!isListable(entity, player)) {
             return false;
         }
-
-        EntityAnimaniaHorse horse = (EntityAnimaniaHorse) entity;
 
         if (!globalTeleportCheck(entity, player)) return false;
 
@@ -45,61 +42,78 @@ public class AnimaniaProxy implements ISteedProxy {
     }
 
     @Override
-    public int tame(Entity entity, EntityPlayer player) {
-        return 0;
-    }
-
-    @Override
     public boolean isAgeable(Entity entity, EntityPlayer player) {
-        return false;
-    }
+        if (!isMyMod(entity)) return false;
 
-    @Override
-    public int age(Entity entity, EntityPlayer player) {
-        return 0;
+        EntityPig pig = (EntityPig) entity;
+
+        return pig.isChild();
     }
 
     @Override
     public boolean isBreedable(Entity entity, EntityPlayer player) {
-        return false;
+        if (!isMyMod(entity)) return false;
+
+        EntityPig pig = (EntityPig) entity;
+
+        return !pig.isChild() && pig.getGrowingAge() == 0 && !pig.isInLove();
+    }
+
+    @Override
+    public int age(Entity entity, EntityPlayer player) {
+        EntityPig pig = (EntityPig) entity;
+
+        pig.setGrowingAge(0);
+        pig.world.setEntityState(pig, (byte) 7);
+
+        if (DWMHConfig.EnchantedCarrot.messages.aging) {
+            doGenericMessage(entity, player, Generic.AGING);
+        }
+
+        return 1;
     }
 
     @Override
     public int breed(Entity entity, EntityPlayer player) {
-        return 0;
+        if (!isMyMod(entity)) return 0;
+
+        ((EntityPig) entity).setInLove(player);
+
+        if (DWMHConfig.EnchantedCarrot.messages.breeding) {
+            doGenericMessage(entity, player, Generic.BREEDING);
+        }
+
+        return 1;
     }
 
     @Override
     public boolean isMyMod(Entity entity) {
-        if (!(entity instanceof EntityAnimaniaHorse)) return false;
-
-        String clazz = entity.getClass().getName();
-
-        if (DWMH.animaniaClasses.contains(clazz)) return true;
-
-        DWMH.ignoreList.add(clazz);
-        return false;
+        return entity instanceof EntityPig;
     }
 
     @Override
     public ITextComponent getResponseKey(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return null;
 
-        EntityAnimaniaHorse animal = (EntityAnimaniaHorse) entity;
+        ITextComponent temp = null;
 
-        CapabilityOwner cap = capability(animal);
+        EntityPig pig = (EntityPig) entity;
+
+        CapabilityOwner cap = capability(entity);
 
         if (cap != null && cap.hasOwner() && !cap.getOwner().equals(player.getUniqueID())) {
             return new TextComponentTranslation("dwmh.strings.unsummonable.notyours").setStyle(new Style().setColor(TextFormatting.DARK_RED));
-        } else if (animal.hasHome() && animal.world.getTileEntity(animal.getHomePosition()) != null) {
+        } else if (pig.hasHome() && pig.world.getTileEntity(pig.getHomePosition()) != null) {
             return new TextComponentTranslation("dwmh.strings.unsummonable.working").setStyle(new Style().setColor(TextFormatting.DARK_RED));
-        } else if (animal.getLeashed()) {
+        } else if (!pig.getSaddled()) {
+            return new TextComponentTranslation("dwmh.strings.unsummonable.unsaddled").setStyle(new Style().setColor(TextFormatting.DARK_RED));
+        } else if (pig.getLeashed()) {
             return new TextComponentTranslation("dwmh.strings.unsummonable.leashed").setStyle(new Style().setColor(TextFormatting.DARK_RED));
-        } else if (animal.isBeingRidden() && animal.isRidingOrBeingRiddenBy(player)) {
+        } else if (pig.isBeingRidden() && pig.isRidingOrBeingRiddenBy(player)) {
             return new TextComponentTranslation("dwmh.strings.unsummonable.ridden").setStyle(new Style().setColor(TextFormatting.DARK_RED));
-        } else if (animal.isBeingRidden() && !DWMHConfig.Ocarina.otherRiders) {
+        } else if (pig.isBeingRidden() && !DWMHConfig.Ocarina.otherRiders) {
             return new TextComponentTranslation("dwmh.strings.unsummonable.ridden_other").setStyle(new Style().setColor(TextFormatting.DARK_RED));
-        } else if (animal.isBeingRidden() && DWMHConfig.Ocarina.otherRiders) {
+        } else if (pig.isBeingRidden() && DWMHConfig.Ocarina.otherRiders) {
             return new TextComponentTranslation("dwmh.strings.summonable.ridden_other").setStyle(new Style().setColor(TextFormatting.DARK_AQUA));
         } else if (ownedBy(entity, player)) {
             return new TextComponentTranslation("dwmh.strings.summonable").setStyle(new Style().setColor(TextFormatting.AQUA));
@@ -110,7 +124,7 @@ public class AnimaniaProxy implements ISteedProxy {
 
     @Override
     public String proxyName() {
-        return "animania";
+        return "vanilla_pig";
     }
 }
 

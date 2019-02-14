@@ -25,55 +25,68 @@ public class Atum2Wrapper implements IWrapper {
         this.world = entity.world;
     }
 
+    @Override
     public boolean isHorseSaddled () {
         return (wolf != null) ? wolf.isSaddled() : camel.isHorseSaddled();
     }
 
+    @Override
     public boolean isTame () {
         return (wolf != null) ? wolf.isTamed() : camel.isTame();
     }
 
+    @Override
     public boolean isChild () {
         return (wolf != null) ? wolf.isChild() : camel.isChild();
     }
 
+    @Override
     public UUID getOwnerUniqueId () {
         return (wolf != null) ? wolf.getOwnerId() : camel.getOwnerUniqueId();
     }
 
+    @Override
     public void setGrowingAge (int age) {
         if (wolf != null) wolf.setGrowingAge(age);
         else camel.setGrowingAge(age);
     }
 
+    @Override
     public int getGrowingAge () {
         return (wolf != null) ? wolf.getGrowingAge() : camel.getGrowingAge();
     }
 
+    @Override
     public Entity getEntity () {
         return (wolf != null) ? wolf : camel;
     }
 
+    @Override
     public boolean isInLove () {
         return (wolf != null) ? wolf.isInLove() : camel.isInLove();
     }
 
+    @Override
     public boolean hasHome () {
         return (wolf != null) ? wolf.hasHome() : camel.hasHome();
     }
 
+    @Override
     public BlockPos getHomePosition () {
         return (wolf != null) ? wolf.getHomePosition() : camel.getHomePosition();
     }
 
+    @Override
     public boolean getLeashed () {
         return (wolf != null) ? wolf.getLeashed() : camel.getLeashed();
     }
 
+    @Override
     public boolean isBeingRidden () {
         return (wolf != null) ? wolf.isBeingRidden() : camel.isBeingRidden();
     }
 
+    @Override
     public boolean isRidingSameEntity (Entity entity) {
         return (wolf != null) ? wolf.isRidingSameEntity(entity) : camel.isRidingSameEntity(entity);
     }
@@ -82,10 +95,12 @@ public class Atum2Wrapper implements IWrapper {
         return (wolf != null) && wolf.isAlpha();
     }
 
+    @Override
     public void setTamedBy (EntityPlayer player) {
         // Don't use this
     }
 
+    @Override
     public void setInLove (EntityPlayer player) {
         ((EntityAnimal) getEntity()).setInLove(player);
     }

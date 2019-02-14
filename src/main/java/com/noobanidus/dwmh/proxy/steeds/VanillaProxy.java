@@ -11,6 +11,7 @@ import net.minecraft.util.text.TextFormatting;
 
 // Always instantiated by default
 public class VanillaProxy implements ISteedProxy {
+    @Override
     public boolean isTeleportable(Entity entity, EntityPlayer player) {
         if (!isListable(entity, player)) {
             return false;
@@ -21,6 +22,7 @@ public class VanillaProxy implements ISteedProxy {
         return horse.isHorseSaddled() && globalTeleportCheck(entity, player);
     }
 
+    @Override
     public boolean isListable(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return false;
 
@@ -36,6 +38,7 @@ public class VanillaProxy implements ISteedProxy {
     }
 
     // Carrot
+    @Override
     public boolean isTameable(Entity entity, EntityPlayer player) {
         if (!(entity instanceof AbstractHorse)) {
             return false;
@@ -50,6 +53,7 @@ public class VanillaProxy implements ISteedProxy {
         return !horse.isTame();
     }
 
+    @Override
     public int tame(Entity entity, EntityPlayer player) {
         ((AbstractHorse) entity).setTamedBy(player);
 
@@ -60,6 +64,7 @@ public class VanillaProxy implements ISteedProxy {
         return 1;
     }
 
+    @Override
     public boolean isAgeable(Entity entity, EntityPlayer player) {
         if (!(entity instanceof AbstractHorse)) {
             return false;
@@ -70,6 +75,7 @@ public class VanillaProxy implements ISteedProxy {
         return horse.isChild();
     }
 
+    @Override
     public int age(Entity entity, EntityPlayer player) {
         AbstractHorse horse = (AbstractHorse) entity;
 
@@ -84,6 +90,7 @@ public class VanillaProxy implements ISteedProxy {
     }
 
     // Not currently implemented
+    @Override
     public boolean isBreedable(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return false;
 
@@ -100,6 +107,7 @@ public class VanillaProxy implements ISteedProxy {
         return true;
     }
 
+    @Override
     public int breed(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return 0;
 
@@ -113,6 +121,7 @@ public class VanillaProxy implements ISteedProxy {
         return 1;
     }
 
+    @Override
     public boolean isMyMod(Entity entity) {
         if (DWMH.ignoreList.contains(entity.getClass().getName())) return false;
 
@@ -136,6 +145,7 @@ public class VanillaProxy implements ISteedProxy {
         return "default";
     }
 
+    @Override
     public ITextComponent getResponseKey(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return null;
 

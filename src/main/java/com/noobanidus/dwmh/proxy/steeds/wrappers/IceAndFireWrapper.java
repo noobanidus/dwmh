@@ -38,6 +38,7 @@ public class IceAndFireWrapper implements IWrapper {
         return (isDragon) ? dragon.isSitting() : ((hippogryph != null) ? hippogryph.isSitting() : hippocampus.isSitting());
     }
 
+    @Override
     public boolean isHorseSaddled () {
         return (isDragon) || ((hippogryph != null) ? hippogryph.isSaddled() : hippocampus.isSaddled());
     }
@@ -52,47 +53,59 @@ public class IceAndFireWrapper implements IWrapper {
         return isDragon;
     }
 
+    @Override
     public boolean isTame () {
         return base.isTamed();
     }
+    @Override
     public boolean isChild () {
         return base.isChild();
     }
+    @Override
     public UUID getOwnerUniqueId() {
         return base.getOwnerId();
     }
+    @Override
     public void setGrowingAge (int age) {
         if (!isDragon)
             base.setGrowingAge(age);
     }
+    @Override
     public int getGrowingAge () {
         return base.getGrowingAge();
     }
 
+    @Override
     public Entity getEntity () {
         return base;
     }
 
+    @Override
     public boolean isInLove () {
         return base.isInLove();
     }
 
+    @Override
     public boolean hasHome () {
         return base.hasHome();
     }
 
+    @Override
     public BlockPos getHomePosition () {
         return base.getHomePosition();
     }
 
+    @Override
     public boolean getLeashed () {
         return base.getLeashed();
     }
 
+    @Override
     public boolean isBeingRidden () {
         return base.isBeingRidden();
     }
 
+    @Override
     public boolean isRidingSameEntity (Entity entity) {
         return base.isRidingSameEntity(entity);
     }
@@ -103,10 +116,12 @@ public class IceAndFireWrapper implements IWrapper {
         return dragon.getDragonStage();
     }
 
+    @Override
     public void setTamedBy (EntityPlayer player) {
         ((EntityTameable) getEntity()).setTamedBy(player);
     }
 
+    @Override
     public void setInLove (EntityPlayer player) {
         ((EntityTameable) getEntity()).setInLove(player);
     }

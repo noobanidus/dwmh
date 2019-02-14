@@ -1,8 +1,8 @@
 package com.noobanidus.dwmh.items;
 
 import com.noobanidus.dwmh.DWMH;
-import com.noobanidus.dwmh.capability.CapabilityName;
-import com.noobanidus.dwmh.capability.CapabilityNameHandler;
+import com.noobanidus.dwmh.capability.CapabilityOwner;
+import com.noobanidus.dwmh.capability.CapabilityOwnHandler;
 import com.noobanidus.dwmh.config.DWMHConfig;
 import com.noobanidus.dwmh.util.SoundType;
 import net.minecraft.client.gui.GuiScreen;
@@ -51,7 +51,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
             return;
         }
 
-        if (!entity.hasCapability(CapabilityNameHandler.INSTANCE, null)) return;
+        if (!entity.hasCapability(CapabilityOwnHandler.INSTANCE, null)) return;
 
         if (!DWMH.steedProxy.pseudoTaming(entity)) return;
 
@@ -62,7 +62,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
 
         if (event.getWorld().isRemote) return;
 
-        CapabilityName cap = entity.getCapability(CapabilityNameHandler.INSTANCE, null);
+        CapabilityOwner cap = entity.getCapability(CapabilityOwnHandler.INSTANCE, null);
 
         if (cap == null) return;
 
@@ -103,6 +103,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
         }
     }
 
+    @Override
     public void updateConfig() {
         if (DWMHConfig.Ocarina.functionality.getMaxUses() != 0) {
             setMaxDamage(DWMHConfig.Ocarina.functionality.getMaxUses());

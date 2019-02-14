@@ -1,9 +1,8 @@
 package com.noobanidus.dwmh.proxy.steeds;
 
 import com.legacy.moolands.entities.cow.EntityAwfulCow;
-import com.noobanidus.dwmh.DWMH;
-import com.noobanidus.dwmh.capability.CapabilityName;
-import com.noobanidus.dwmh.capability.CapabilityNameHandler;
+import com.noobanidus.dwmh.capability.CapabilityOwner;
+import com.noobanidus.dwmh.capability.CapabilityOwnHandler;
 import com.noobanidus.dwmh.config.DWMHConfig;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,6 +13,7 @@ import net.minecraft.util.text.TextFormatting;
 // Instantiated by buildSoftDependProxy
 @SuppressWarnings("unused")
 public class MoolandProxy implements ISteedProxy {
+    @Override
     public boolean isTeleportable(Entity entity, EntityPlayer player) {
         if (!isListable(entity, player)) {
             return false;
@@ -23,37 +23,31 @@ public class MoolandProxy implements ISteedProxy {
 
         if (!globalTeleportCheck(entity, player)) return false;
 
-        if (!horse.hasCapability(CapabilityNameHandler.INSTANCE, null)) return false;
-
-        CapabilityName cap = horse.getCapability(CapabilityNameHandler.INSTANCE, null);
+        CapabilityOwner cap = capability(horse);
 
         if (cap == null) return false;
 
         return cap.hasOwner() && cap.getOwner() != null && cap.getOwner().equals(player.getUniqueID());
     }
 
-    private boolean hasOwner(Entity horse) {
-        CapabilityName cap = horse.getCapability(CapabilityNameHandler.INSTANCE, null);
-
-        if (cap == null) return false;
-
-        return cap.hasOwner();
-    }
-
+    @Override
     public boolean isListable(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return false;
 
         return hasOwner(entity);
     }
 
+    @Override
     public boolean pseudoTaming() {
         return true;
     }
 
+    @Override
     public boolean isTameable(Entity entity, EntityPlayer player) {
         return false;
     }
 
+    @Override
     public int tame(Entity entity, EntityPlayer player) {
         return 0;
         /*
@@ -75,27 +69,33 @@ public class MoolandProxy implements ISteedProxy {
     }
 
     // Foal interactions -> uncertain
+    @Override
     public boolean isAgeable(Entity entity, EntityPlayer player) {
         return false;
     }
 
+    @Override
     public int age(Entity entity, EntityPlayer player) {
         return 0;
     }
 
     // Not currently implemented
+    @Override
     public boolean isBreedable(Entity entity, EntityPlayer player) {
         return false;
     }
 
+    @Override
     public int breed(Entity entity, EntityPlayer player) {
         return 0;
     }
 
+    @Override
     public boolean isMyMod(Entity entity) {
         return entity instanceof EntityAwfulCow;
     }
 
+    @Override
     public ITextComponent getResponseKey(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return null;
 
@@ -103,7 +103,7 @@ public class MoolandProxy implements ISteedProxy {
 
         EntityAwfulCow animal = (EntityAwfulCow) entity;
 
-        CapabilityName cap = animal.getCapability(CapabilityNameHandler.INSTANCE, null);
+        CapabilityOwner cap = capability(animal);
 
         if (cap != null && cap.hasOwner() && !cap.getOwner().equals(player.getUniqueID())) {
             temp = new TextComponentTranslation("dwmh.strings.unsummonable.notyours");
@@ -131,6 +131,7 @@ public class MoolandProxy implements ISteedProxy {
         return temp;
     }
 
+    @Override
     public String proxyName() {
         return "mooland";
     }

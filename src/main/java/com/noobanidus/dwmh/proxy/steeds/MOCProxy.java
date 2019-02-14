@@ -70,6 +70,7 @@ public class MOCProxy implements ISteedProxy {
         }
     }
 
+    @Override
     public boolean hasCustomName(Entity entity) {
         if (!isMyMod(entity)) return false;
 
@@ -78,12 +79,14 @@ public class MOCProxy implements ISteedProxy {
         return !animal.getPetName().equals("");
     }
 
+    @Override
     public String getCustomNameTag(Entity entity) {
         if (!isMyMod(entity)) return entity.getCustomNameTag();
 
         return ((MoCEntityTameableAnimal) entity).getPetName();
     }
 
+    @Override
     public void setCustomNameTag(Entity entity, String name) {
         if (!isMyMod(entity)) {
             entity.setCustomNameTag(name);
@@ -92,6 +95,7 @@ public class MOCProxy implements ISteedProxy {
         }
     }
 
+    @Override
     public boolean isTeleportable(Entity entity, EntityPlayer player) {
         if (!isListable(entity, player)) {
             return false;
@@ -107,6 +111,7 @@ public class MOCProxy implements ISteedProxy {
         }
     }
 
+    @Override
     public boolean isListable(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) {
             return false;
@@ -118,6 +123,7 @@ public class MOCProxy implements ISteedProxy {
     }
 
     // Carrot
+    @Override
     public boolean isTameable(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) {
             return false;
@@ -127,6 +133,7 @@ public class MOCProxy implements ISteedProxy {
         return !animal.getIsTamed();
     }
 
+    @Override
     public int tame(Entity entity, EntityPlayer player) {
         MoCEntityTameableAnimal animal = (MoCEntityTameableAnimal) entity;
         animal.setTamed(true);
@@ -139,12 +146,14 @@ public class MOCProxy implements ISteedProxy {
         return 1;
     }
 
+    @Override
     public boolean isAgeable(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return false;
 
         return !((MoCEntityTameableAnimal) entity).getIsAdult();
     }
 
+    @Override
     public int age(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return 0;
 
@@ -165,14 +174,17 @@ public class MOCProxy implements ISteedProxy {
     }
 
     // Not currently implemented
+    @Override
     public boolean isBreedable(Entity entity, EntityPlayer player) {
         return false;
     }
 
+    @Override
     public int breed(Entity entity, EntityPlayer player) {
         return 0;
     }
 
+    @Override
     public ITextComponent getResponseKey(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return null;
 
@@ -209,6 +221,7 @@ public class MOCProxy implements ISteedProxy {
         return temp;
     }
 
+    @Override
     public boolean isMyMod(Entity entity) {
         if (entity instanceof MoCEntityTameableAnimal) {
             MoCEntityTameableAnimal animal = (MoCEntityTameableAnimal) entity;
@@ -218,6 +231,7 @@ public class MOCProxy implements ISteedProxy {
         return false;
     }
 
+    @Override
     public String resolveEntityKey(String entityKey) {
         if (entityKey.equalsIgnoreCase("entity.mocreatures:manticorepet.name"))
             return "entity.mocreatures:manticore.name";
@@ -225,6 +239,7 @@ public class MOCProxy implements ISteedProxy {
         return entityKey;
     }
 
+    @Override
     public String proxyName() {
         return "MOC";
     }

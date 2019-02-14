@@ -15,6 +15,7 @@ import net.minecraft.util.text.TextFormatting;
 
 @SuppressWarnings("unused")
 public class Atum2Proxy implements ISteedProxy {
+    @Override
     public boolean isTeleportable(Entity entity, EntityPlayer player) { // TODO
         if (!isListable(entity, player)) {
             return false;
@@ -23,6 +24,7 @@ public class Atum2Proxy implements ISteedProxy {
         return new Atum2Wrapper(entity).isHorseSaddled() && globalTeleportCheck(entity, player);
     }
 
+    @Override
     public boolean isListable(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return false;
 
@@ -36,6 +38,7 @@ public class Atum2Proxy implements ISteedProxy {
     }
 
     // Carrot
+    @Override
     public boolean isTameable(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return false;
 
@@ -50,6 +53,7 @@ public class Atum2Proxy implements ISteedProxy {
         return !wrapper.isTame();
     }
 
+    @Override
     public int tame(Entity entity, EntityPlayer player) { // TODO
         if (entity instanceof AbstractHorse) {
             ((AbstractHorse) entity).setTamedBy(player);
@@ -75,12 +79,14 @@ public class Atum2Proxy implements ISteedProxy {
         return 1;
     }
 
+    @Override
     public boolean isAgeable(Entity entity, EntityPlayer player) { // TODO
         if (!isMyMod(entity)) return false;
 
         return new Atum2Wrapper(entity).isChild();
     }
 
+    @Override
     public int age(Entity entity, EntityPlayer player) { // TODO
         Atum2Wrapper wrapper = new Atum2Wrapper(entity);
 
@@ -95,6 +101,7 @@ public class Atum2Proxy implements ISteedProxy {
     }
 
     // Not currently implemented
+    @Override
     public boolean isBreedable(Entity entity, EntityPlayer player) { // TODO
         if (!isMyMod(entity)) return false;
 
@@ -103,6 +110,7 @@ public class Atum2Proxy implements ISteedProxy {
         return !wrapper.isChild() && wrapper.getGrowingAge() == 0 && !wrapper.isInLove();
     }
 
+    @Override
     public int breed(Entity entity, EntityPlayer player) { // TODO
         if (!isMyMod(entity)) return 0;
 
@@ -117,6 +125,7 @@ public class Atum2Proxy implements ISteedProxy {
         return 1;
     }
 
+    @Override
     public boolean isMyMod(Entity entity) {
         if (!(entity instanceof EntityCamel) && !(entity instanceof EntityDesertWolf)) return false;
 
@@ -128,6 +137,7 @@ public class Atum2Proxy implements ISteedProxy {
         return false;
     }
 
+    @Override
     public ITextComponent getResponseKey(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return null;
 

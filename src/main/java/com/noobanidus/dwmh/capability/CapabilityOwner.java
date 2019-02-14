@@ -5,7 +5,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.UUID;
 
-public class CapabilityName implements INBTSerializable<NBTTagString> {
+public class CapabilityOwner implements INBTSerializable<NBTTagString> {
     private UUID owner = null;
 
     public UUID getOwner() {

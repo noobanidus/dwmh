@@ -15,6 +15,7 @@ import net.minecraft.util.text.TextFormatting;
 
 @SuppressWarnings("unused")
 public class IceAndFireProxy implements ISteedProxy {
+    @Override
     public boolean isTeleportable(Entity entity, EntityPlayer player) {
         if (!isListable(entity, player)) {
             return false;
@@ -29,6 +30,7 @@ public class IceAndFireProxy implements ISteedProxy {
         return !wrapper.isDead() && wrapper.isHorseSaddled() && !wrapper.isSitting() && globalTeleportCheck(entity, player);
     }
 
+    @Override
     public boolean isListable(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return false;
 
@@ -40,11 +42,13 @@ public class IceAndFireProxy implements ISteedProxy {
     }
 
     // Carrot
+    @Override
     public boolean isTameable(Entity entity, EntityPlayer player) {
         IceAndFireWrapper wrapper = new IceAndFireWrapper(entity);
         return notExcluded(entity) && !wrapper.isTame();
     }
 
+    @Override
     public int tame(Entity entity, EntityPlayer player) {
         IceAndFireWrapper wrapper = new IceAndFireWrapper(entity);
 
@@ -58,12 +62,14 @@ public class IceAndFireProxy implements ISteedProxy {
         return 1;
     }
 
+    @Override
     public boolean isAgeable(Entity entity, EntityPlayer player) {
         IceAndFireWrapper wrapper = new IceAndFireWrapper(entity);
 
         return notExcluded(entity) && wrapper.isChild();
     }
 
+    @Override
     public int age(Entity entity, EntityPlayer player) {
         IceAndFireWrapper wrapper = new IceAndFireWrapper(entity);
 
@@ -78,12 +84,14 @@ public class IceAndFireProxy implements ISteedProxy {
     }
 
     // Not currently implemented
+    @Override
     public boolean isBreedable(Entity entity, EntityPlayer player) {
         IceAndFireWrapper wrapper = new IceAndFireWrapper(entity);
 
         return notExcluded(entity) && !wrapper.isChild() && wrapper.getGrowingAge() == 0 && !wrapper.isInLove();
     }
 
+    @Override
     public int breed(Entity entity, EntityPlayer player) {
         IceAndFireWrapper wrapper = new IceAndFireWrapper(entity);
 
@@ -103,6 +111,7 @@ public class IceAndFireProxy implements ISteedProxy {
         return !DWMH.iceandFireExclusions.contains(entity.getClass().getName());
     }
 
+    @Override
     public boolean isMyMod(Entity entity) {
         if (!(entity instanceof EntityDragonBase) && !(entity instanceof EntityHippocampus) && !(entity instanceof EntityHippogryph)) return false;
 
@@ -114,6 +123,7 @@ public class IceAndFireProxy implements ISteedProxy {
         return false;
     }
 
+    @Override
     public ITextComponent getResponseKey(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return null;
 

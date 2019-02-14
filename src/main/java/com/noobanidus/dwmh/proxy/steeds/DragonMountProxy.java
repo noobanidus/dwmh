@@ -15,6 +15,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public class DragonMountProxy implements ISteedProxy {
+    @Override
     public boolean isTeleportable(Entity entity, EntityPlayer player) {
         if (!isListable(entity, player)) {
             return false;
@@ -25,6 +26,7 @@ public class DragonMountProxy implements ISteedProxy {
         return dragon.isSaddled() && !dragon.isSitting() && globalTeleportCheck(entity, player);
     }
 
+    @Override
     public boolean isListable(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return false;
 
@@ -35,6 +37,7 @@ public class DragonMountProxy implements ISteedProxy {
         return dragon.getOwnerId() != null && dragon.getOwnerId().equals(player.getUniqueID());
     }
 
+    @Override
     public boolean isTameable(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return false;
         EntityTameableDragon dragon = (EntityTameableDragon) entity;
@@ -42,6 +45,7 @@ public class DragonMountProxy implements ISteedProxy {
         return !dragon.isTamed() && !dragon.isEgg();
     }
 
+    @Override
     public int tame(Entity entity, EntityPlayer player) {
         EntityTameableDragon dragon = (EntityTameableDragon) entity;
         dragon.tamedFor(player, true);
@@ -53,6 +57,7 @@ public class DragonMountProxy implements ISteedProxy {
         return 5;
     }
 
+    @Override
     public boolean isAgeable(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return false;
 
@@ -63,6 +68,7 @@ public class DragonMountProxy implements ISteedProxy {
         return !helper.isAdult();
     }
 
+    @Override
     public int age(Entity entity, EntityPlayer player) {
         EntityTameableDragon dragon = (EntityTameableDragon) entity;
 
@@ -80,6 +86,7 @@ public class DragonMountProxy implements ISteedProxy {
         return 5;
     }
 
+    @Override
     public boolean isBreedable(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return false;
 
@@ -90,6 +97,7 @@ public class DragonMountProxy implements ISteedProxy {
         return true;
     }
 
+    @Override
     public int breed(Entity entity, EntityPlayer player) {
         EntityTameableDragon dragon = (EntityTameableDragon) entity;
 
@@ -103,6 +111,7 @@ public class DragonMountProxy implements ISteedProxy {
         return 5;
     }
 
+    @Override
     public boolean isMyMod(Entity entity) {
         return entity instanceof EntityTameableDragon;
     }
@@ -112,6 +121,7 @@ public class DragonMountProxy implements ISteedProxy {
         return "dragonmounts2";
     }
 
+    @Override
     public ITextComponent getResponseKey(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return null;
 

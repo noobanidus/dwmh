@@ -1,7 +1,10 @@
 package com.noobanidus.dwmh.proxy.steeds;
 
 import com.noobanidus.dwmh.DWMH;
+import com.noobanidus.dwmh.capability.CapabilityOwnHandler;
+import com.noobanidus.dwmh.capability.CapabilityOwner;
 import com.noobanidus.dwmh.config.DWMHConfig;
+import ibxm.Player;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityList;
@@ -11,6 +14,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.event.entity.EntityMountEvent;
 
 import javax.annotation.Nullable;
@@ -161,6 +165,27 @@ public interface ISteedProxy {
         ITextComponent temp = new TextComponentTranslation(langKey, entity.getDisplayName());
         temp.getStyle().setColor(formatKey);
         player.sendMessage(temp);
+    }
+
+    default CapabilityOwner capability (Entity entity) {
+        if (!entity.hasCapability(CapabilityOwnHandler.INSTANCE, null)) return null;
+
+        return entity.getCapability(CapabilityOwnHandler.INSTANCE, null);
+    }
+
+    default boolean ownedBy (Entity entity, EntityPlayer player) {
+        CapabilityOwner cap = capability(entity);
+        if (cap == null) return false;
+
+        return cap.getOwner().equals(player.getUniqueID());
+    }
+
+    default boolean hasOwner(Entity pig) {
+        CapabilityOwner cap = capability(pig);
+
+        if (cap == null) return false;
+
+        return cap.hasOwner();
     }
 
     default boolean pseudoTaming (Entity entity) {

@@ -53,6 +53,7 @@ public class UnicornProxy extends VanillaProxy {
         return entity instanceof EntityMagicalHorse;
     }
 
+    @Override
     public boolean hasCustomName(Entity entity) {
         if (!entity.hasCustomName()) return false;
 
@@ -119,6 +120,7 @@ public class UnicornProxy extends VanillaProxy {
         return temp;
     }
 
+    @Override
     public ITextComponent getEntityTypeName(Entity entity, EntityPlayer player) {
         // checks for isMyMod have already been made
         EntityMagicalHorse horse = (EntityMagicalHorse) entity;

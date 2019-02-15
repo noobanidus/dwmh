@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Random;
 
 @Mod.EventBusSubscriber
-public class Sound {
+public class SoundHandler {
     public static SoundEvent WHISTLE1 = createSoundEvent("whistle.1");
     public static SoundEvent WHISTLE2 = createSoundEvent("whistle.2");
     public static SoundEvent WHISTLE3 = createSoundEvent("whistle.3");

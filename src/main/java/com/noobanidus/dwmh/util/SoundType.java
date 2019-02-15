@@ -1,7 +1,7 @@
 package com.noobanidus.dwmh.util;
 
 import com.noobanidus.dwmh.config.DWMHConfig;
-import com.noobanidus.dwmh.config.Sound;
+import com.noobanidus.dwmh.config.SoundHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -25,13 +25,13 @@ public enum SoundType {
     public SoundEvent getSoundEvent() {
         switch (type) {
             case 0:
-                return Sound.getRandomWhistle();
+                return SoundHandler.getRandomWhistle();
             case 1:
-                return Sound.getRandomMinorWhistle();
+                return SoundHandler.getRandomMinorWhistle();
             case 2:
-                return Sound.WHISTLE_SPECIAL;
+                return SoundHandler.WHISTLE_SPECIAL;
             case 3:
-                return Sound.WHISTLE_BROKEN;
+                return SoundHandler.WHISTLE_BROKEN;
             case -1:
             default:
                 return null;

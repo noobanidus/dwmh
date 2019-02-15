@@ -1,22 +1,13 @@
 package com.noobanidus.dwmh.config;
 
-import com.google.gson.annotations.Expose;
 import com.noobanidus.dwmh.DWMH;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.config.*;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
-
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static net.minecraftforge.common.config.Config.*;
 
@@ -24,9 +15,6 @@ import static net.minecraftforge.common.config.Config.*;
 @Config(modid = DWMH.MODID)
 @Mod.EventBusSubscriber(modid = DWMH.MODID)
 public class DWMHConfig {
-    @Ignore
-    public static ConfigHandler instance = new ConfigHandler();
-
     @Comment("Settings related to the Ocarina and its use")
     @Name("Ocarina Settings")
     @LangKey("config.category.ocarina")
@@ -72,83 +60,6 @@ public class DWMHConfig {
                 DWMH.LOG.error(String.format("Invalid configuration value for Ocarina:summonCost: |%d|. Using default 0 instead.", Ocarina.functionality.summonCost));
             if (EnchantedCarrot.durability.getMaxUses() != EnchantedCarrot.durability.maxUses)
                 DWMH.LOG.error(String.format("Invalid configuration value for EnchantedCarrot:maxUses: |%d|. Using default 1 instead.", EnchantedCarrot.durability.maxUses));
-        }
-    }
-
-    public static class ConfigHandler {
-        private Configuration internalConfig = null;
-
-        private List<String> SERIALIZED_CATEGORIES = Arrays.asList("general.enchanted carrot settings", "general.enchanted carrot settings.durability settings", "general.enchanted carrot settings.effects", "general.enchanted carrot settings.messages", "general.ocarina settings", "general.ocarina settings.functionality", "general.ocarina settings.responses");
-
-        private Map<String, Boolean> PROXY_MAP = new HashMap<>();
-
-        public Configuration getConfig() {
-            if (internalConfig == null) {
-                Method getConfig = ReflectionHelper.findMethod(ConfigManager.class, "getConfiguration", null, String.class, String.class);
-                getConfig.setAccessible(true);
-                Configuration config = null;
-                try {
-                    config = (Configuration) getConfig.invoke(null, DWMH.MODID, null);
-                } catch (ReflectiveOperationException e) {
-                    DWMH.LOG.info("Failed to use reflection to get configuration", e);
-                }
-
-                internalConfig = config;
-            }
-
-            return internalConfig;
-        }
-
-        public boolean proxy (String proxy) {
-            if (PROXY_MAP.containsKey(proxy)) return PROXY_MAP.get(proxy);
-
-            Configuration config = getConfig();
-
-            ConfigCategory cat = config.getCategory("general.proxy settings.enable/disable proxies");
-
-            if (cat == null) return false;
-
-            for (Property prop : cat.values()) {
-                String[] langKey = prop.getLanguageKey().split("\\.");
-                String proxyName = langKey[langKey.length-1];
-                PROXY_MAP.put(proxyName, prop.getBoolean());
-            }
-
-            return PROXY_MAP.get(proxy);
-        }
-
-        public NBTTagCompound serialize() {
-            NBTTagCompound output = new NBTTagCompound();
-            Configuration config = getConfig();
-
-            if (config == null) return output;
-
-            for (String catName : config.getCategoryNames()) {
-                if (!SERIALIZED_CATEGORIES.contains(catName)) continue;
-
-                ConfigCategory cat = config.getCategory(catName);
-
-                for (Map.Entry<String, Property> entry : cat.entrySet()) {
-                    String value = catName + "." + entry.getKey();
-                    Property prop = entry.getValue();
-                    switch (prop.getType()) {
-                        case STRING:
-                            output.setString(value, prop.getString());
-                            break;
-                        case INTEGER:
-                            output.setInteger(value, prop.getInt());
-                            break;
-                        case BOOLEAN:
-                            output.setBoolean(value, prop.getBoolean());
-                            break;
-                        case DOUBLE:
-                            output.setDouble(value, prop.getDouble());
-                            break;
-                    }
-                }
-            }
-
-            return output;
         }
     }
 
@@ -229,6 +140,7 @@ public class DWMHConfig {
         @Comment("Specify the maximum distance steeds can be summoned from (set to 0 for infinite). Excludes mocClasses in unloaded chunks or different dimensions")
         @RangeDouble(min = 0d)
         @Name("Maximum Summon Distance")
+        // TODO Relevant to client
         public double maxDistance = 200d;
         @LangKey("config.ocarina.other_riders")
         @Comment("Set to true to enable summoning of horses even if they are being ridden by someone else.")
@@ -244,7 +156,7 @@ public class DWMHConfig {
         public boolean skipDismount = false;
         @LangKey("config.ocarina.responses.sound_delay")
         @Comment("The delay in seconds between uses of the Ocarina causing a sound event. The Ocarina will still trigger, but silently, during this delay.")
-        @Name("Ocarina Sound Delay")
+        @Name("Ocarina SoundHandler Delay")
         public int soundDelay = 5;
         @LangKey("config.category.ocarina.functionality")
         @Comment("Options related to the functionality of the Ocarina")
@@ -260,21 +172,25 @@ public class DWMHConfig {
             @Comment("Specify a cooldown for each usage of the Ocarina, or specify 0 to disable")
             @Name("Ocarina Cooldown Duration")
             @RangeInt(min = 0)
+            // TODO Relevant to client
             public int cooldown = 0;
             @LangKey("config.ocarina.functionality.max_durability")
             @Comment("Specify the maximum durability of the Ocarina. One horse summoned costs one durability. Set to 0 to disable durability.")
             @Name("Maximum Ocarina Durability")
             @RangeInt(min = 0)
+            // TODO Relevant to client
             public int maxUses = 0;
             @LangKey("config.ocarina.functionality.repair_item")
             @Comment("Specify the item that can be used to repair the Ocarina in an anvil. Items with NBT are not supported. Format mod:item:metadata (use \"minecraft\" for vanilla items), use 0 for no meteadata.")
             @Name("Ocarina Repair Item")
+            // TODO Relevant to client
             public String repairItem = "minecraft:golden_carrot:0";
             @Ignore
             public ItemStack repairItemDefault = new ItemStack(Items.GOLDEN_CARROT);
             @LangKey("config.ocarina.functionality.summon_item")
             @Comment("Specify the item to consume from the player's inventory before summoning a horse. Format: mod:item:metadata (use \"minecraft\" for vanilla items), use 0 for no metadata. Items with NBT are not supported.")
             @Name("Summon Item")
+            // TODO Relevant to client
             public String summonItem = "minecraft:carrot:0";
             @Ignore
             public ItemStack summonItemStack = new ItemStack(Items.CARROT);
@@ -282,6 +198,7 @@ public class DWMHConfig {
             @Comment("Specify the quantity of the item to consume from the player's inventory before summoning a horse. Set to 0 to consume nothing.")
             @Name("Summon Cost")
             @RangeInt(min = 0)
+            // TODO Relevant to client
             public int summonCost = 0;
 
             public int getCooldown() {
@@ -317,21 +234,25 @@ public class DWMHConfig {
             @LangKey("config.carrot.effects.taming")
             @Comment("Set to false to prevent the automatic taming of rideable mocClasses")
             @Name("Enable Eligible Entity Taming")
+            // TODO Relevant to client
             public boolean taming = true;
 
             @LangKey("config.carrot.effects.healing")
             @Comment("Set to false to prevent the healing to full of injured rideable mocClasses")
             @Name("Enable Eligible Entity Healing")
+            // TODO Relevant to client
             public boolean healing = true;
 
             @LangKey("config.carrot.effects.ageing")
             @Comment("Set to false to prevent the ageing to adulthood of rideable child mocClasses")
             @Name("Enable Eligible Entity Ageing")
+            // TODO Relevant to client
             public boolean aging = true;
 
             @LangKey("config.carrot.effects.breeding")
             @Comment("Set to false to prevent putting tamed, adult rideable mocClasses into \"breeding\" mode")
             @Name("Enable Eligible Entity Breeding")
+            // TODO Relevant to client
             public boolean breeding = true;
         }
 
@@ -340,11 +261,13 @@ public class DWMHConfig {
             @LangKey("config.carrot.durability.maximum_durability")
             @Comment("Maximum number of uses before the enchanted Enchanted Carrot becomes unusable")
             @Name("Maximum Carrot Durability")
+            // TODO Relevant to client
             public int maxUses = 30;
 
             @LangKey("config.carrot.durability.repair_item")
             @Comment("Specify the item that can be used to repair the Enchanted Carrot in an anvil. Items with NBT are not supported. Format: mod:item:metadata. Use \"minecraft\" for vanilla items, and 0 if no metadata is specified.")
             @Name("Carrot Repair Item")
+            // TODO Relevant to client
             public String repairItem = "minecraft:gold_block:0";
             @Ignore
             public ItemStack repairItemDefault = new ItemStack(Blocks.GOLD_BLOCK);
@@ -352,6 +275,7 @@ public class DWMHConfig {
             @LangKey("config.carrot.durability.breaks")
             @Comment("Set to true to have the carrot break when it reaches 0 durability instead of becoming unusable")
             @Name("Carrot Is Breakable")
+            // TODO Relevant to client
             public boolean breakableCarrot = false;
 
             public int getMaxUses() {
@@ -407,7 +331,7 @@ public class DWMHConfig {
             public boolean zawa = true;
 
             @RequiresMcRestart
-            @LangKey("config.proxies.disable.unicorn")
+            @LangKey("config.proxies.disable.ultimate_unicorn_mod")
             @Comment("Set to false to disable the Ultimate Unicorn Mod proxy (even if it would normally load)")
             @Name("Ultimate Unicorn Mod")
             public boolean ultimate_unicorn_mod = true;
@@ -428,7 +352,7 @@ public class DWMHConfig {
             @LangKey("config.proxies.disable.dragonmounts") // TODO: FILL IN
             @Comment("Set to false to disable the Dragon Mounts proxy (even if it would normally load)")
             @Name("Dragon Mounts 2")
-            public boolean dragon = true;
+            public boolean dragonmounts = true;
 
             @RequiresMcRestart
             @LangKey("config.proxies.disable.varodd") // TODO: FILL IN
@@ -437,48 +361,48 @@ public class DWMHConfig {
             public boolean varodd = true;
 
             @RequiresMcRestart
-            @LangKey("config.proxies.disable.mooland") // TODO: FILL IN
+            @LangKey("config.proxies.disable.moolands") // TODO: FILL IN
             @Comment("Set to false to disable the Moolands proxy (even if it would normally load)")
             @Name("Moolands")
             public boolean moolands = true;
         }
 
         public class Animania {
-            @LangKey("config.proxies.animania.animaniaClasses")
-            @Comment("Specify list of Animania animaniaClasses that are considered steeds. Use /dwmh entity while targetting to get the full name")
+            @LangKey("config.proxies.animania.classes")
+            @Comment("Specify list of Animania classes that are considered steeds. Use /dwmh entity while targetting to get the full name")
             @Name("Animania Classes")
-            public String[] animaniaClasses = new String[]{"com.animania.common.mocClasses.horses.EntityStallionDraftHorse", "com.animania.common.mocClasses.horses.EntityMareDraftHorse"};
+            public String[] animaniaClasses = new String[]{"com.animania.common.entities.horses.EntityStallionDraftHorse", "com.animania.common.entities.horses.EntityMareDraftHorse"};
         }
 
         public class ZAWA {
-            @LangKey("config.proxies.zawa.animaniaClasses")
-            @Comment("Specify list of ZAWA Rebuilt animaniaClasses that are considered steeds. Use /dwmh entity while targetting to get the full name")
+            @LangKey("config.proxies.zawa.classes")
+            @Comment("Specify list of ZAWA Rebuilt classes that are considered steeds. Use /dwmh entity while targetting to get the full name")
             @Name("ZAWA Classes")
             public String[] zawaClasses = new String[]{"org.zawamod.entity.land.EntityAsianElephant", "org.zawamod.entity.land.EntityGaur", "org.zawamod.entity.land.EntityGrevysZebra", "org.zawamod.entity.land.EntityOkapi", "org.zawamod.entity.land.EntityReticulatedGiraffe"};
         }
 
         public class MoCreatures {
-            @LangKey("config.proxies.mocreatures.animaniaClasses")
+            @LangKey("config.proxies.mocreatures.classes")
             @Comment("Specify list of entity translation keys which should be modified to insert spaces (where relevant)")
             @Name("Mo Creatures Entities") // TODO: Update lang
             public String[] mocClasses = new String[]{"entity.mocreatures:blackbear.name", "entity.mocreatures:grizzlybear.name", "entity.mocreatures:komododragon.name", "entity.mocreatures:petscorpion.name", "entity.mocreatures:wildhorse.name", "entity.mocreatures:wildpolarbear.name"};
         }
 
         public class Atum2 {
-            @LangKey("config.proxies.atum2.animaniaClasses") // TODO: FILL IN
-            @Comment("Specify list of Atum 2 animaniaClasses that are considered steeds. Use /dwmh entity while targetting to get the full name")
+            @LangKey("config.proxies.atum2.classes") // TODO: FILL IN
+            @Comment("Specify list of Atum 2 classes that are considered steeds. Use /dwmh entity while targetting to get the full name")
             @Name("Atum 2 Classes")
             public String[] atum2Classes = new String[]{"com.teammetallurgy.atum.entity.animal.EntityCamel", "com.teammetallurgy.atum.entity.animal.EntityDesertWolf"};
         }
 
         public class IceAndFire {
-            @LangKey("config.proxies.iceandfire.animaniaClasses")
-            @Comment("Specify list of Ice and Fire animaniaClasses that are considered steeds. Use /dwmh entity while targetting to get the full name")
+            @LangKey("config.proxies.iceandfire.classes")
+            @Comment("Specify list of Ice and Fire classes that are considered steeds. Use /dwmh entity while targetting to get the full name")
             @Name("Ice & Fire Classes")
             public String[] iceandfireClasses = new String[]{"com.github.alexthe666.iceandfire.entity.EntityIceDragon", "com.github.alexthe666.iceandfire.entity.EntityFireDragon", "com.github.alexthe666.iceandfire.entity.EntityHippocampus", "com.github.alexthe666.iceandfire.entity.EntityHippogryph"};
 
             @LangKey("config.proxies.iceandfire.excluded")
-            @Comment("Specify list of Ice and Fire animaniaClasses that are excuded from Carrot taming, ageing and breeding. Use /dwmh entity while targetting to get the full name")
+            @Comment("Specify list of Ice and Fire classes that are excuded from Carrot taming, ageing and breeding. Use /dwmh entity while targetting to get the full name")
             @Name("Ice & Fire Exclusions")
             public String[] iceandfireExclusions = new String[]{"com.github.alexthe666.iceandfire.entity.EntityIceDragon", "com.github.alexthe666.iceandfire.entity.EntityFireDragon"};
         }

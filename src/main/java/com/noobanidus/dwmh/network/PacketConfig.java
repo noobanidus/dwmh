@@ -1,4 +1,4 @@
 package com.noobanidus.dwmh.network;
 
-public class DWMHPacketHandler {
+public class PacketConfig {
 }

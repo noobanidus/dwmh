@@ -1,6 +1,7 @@
 package com.noobanidus.dwmh.proxy;
 
 import com.google.common.collect.Lists;
+import com.noobanidus.dwmh.config.ConfigHandler;
 import com.noobanidus.dwmh.config.DWMHConfig;
 
 import java.util.*;
@@ -23,6 +24,7 @@ public class DataStore {
 
         CLASS_REFERENCE.put("zawa", new HashSet<>());
         CLASS_REFERENCE.put("animania", new HashSet<>());
+        CLASS_REFERENCE.put("atum", new HashSet<>());
         CLASS_REFERENCE.put("iceandfire", new HashSet<>());
         CLASS_REFERENCE.put("iceandfire_exclusions", new HashSet<>());
         CLASS_REFERENCE.put("ignore", new HashSet<>());
@@ -68,7 +70,7 @@ public class DataStore {
         }
 
         public boolean isEnabled() {
-            return DWMHConfig.instance.proxy(modId);
+            return ConfigHandler.proxy(modId);
         }
     }
 }

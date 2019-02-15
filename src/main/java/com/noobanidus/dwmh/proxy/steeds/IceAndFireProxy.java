@@ -44,6 +44,8 @@ public class IceAndFireProxy implements ISteedProxy {
     // Carrot
     @Override
     public boolean isTameable(Entity entity, EntityPlayer player) {
+        if (!isMyMod(entity)) return false;
+
         IceAndFireWrapper wrapper = new IceAndFireWrapper(entity);
         return notExcluded(entity) && !wrapper.isTame();
     }
@@ -62,6 +64,8 @@ public class IceAndFireProxy implements ISteedProxy {
 
     @Override
     public boolean isAgeable(Entity entity, EntityPlayer player) {
+        if (!isMyMod(entity)) return false;
+
         IceAndFireWrapper wrapper = new IceAndFireWrapper(entity);
 
         return notExcluded(entity) && wrapper.isChild();
@@ -82,6 +86,8 @@ public class IceAndFireProxy implements ISteedProxy {
     // Not currently implemented
     @Override
     public boolean isBreedable(Entity entity, EntityPlayer player) {
+        if (!isMyMod(entity)) return false;
+
         IceAndFireWrapper wrapper = new IceAndFireWrapper(entity);
 
         return notExcluded(entity) && !wrapper.isChild() && wrapper.getGrowingAge() == 0 && !wrapper.isInLove();

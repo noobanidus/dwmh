@@ -168,9 +168,9 @@ public class ZawaProxy implements ISteedProxy {
 
         String clazz = entity.getClass().getName();
 
-        if (DWMH.zawaClasses.contains(clazz)) return true;
+        if (DWMH.sets("zawa").contains(clazz)) return true;
 
-        DWMH.ignoreList.add(clazz);
+        DWMH.sets("ignore").add(clazz);
         return false;
     }
 

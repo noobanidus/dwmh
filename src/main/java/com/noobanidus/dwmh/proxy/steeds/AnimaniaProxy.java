@@ -75,9 +75,9 @@ public class AnimaniaProxy implements ISteedProxy {
 
         String clazz = entity.getClass().getName();
 
-        if (DWMH.animaniaClasses.contains(clazz)) return true;
+        if (DWMH.sets("animania").contains(clazz)) return true;
 
-        DWMH.ignoreList.add(clazz);
+        DWMH.sets("ignore").add(clazz);
         return false;
     }
 

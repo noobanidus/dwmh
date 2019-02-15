@@ -102,7 +102,7 @@ public class IceAndFireProxy implements ISteedProxy {
     private boolean notExcluded(Entity entity) {
         if (!isMyMod(entity)) return false;
 
-        return !DWMH.iceandFireExclusions.contains(entity.getClass().getName());
+        return !DWMH.sets("iceandfire_exclusions").contains(entity.getClass().getName());
     }
 
     @Override
@@ -112,9 +112,9 @@ public class IceAndFireProxy implements ISteedProxy {
 
         String clazz = entity.getClass().getName();
 
-        if (DWMH.iceandfireClasses.contains(clazz)) return true;
+        if (DWMH.sets("iceandfire").contains(clazz)) return true;
 
-        DWMH.ignoreList.add(clazz);
+        DWMH.sets("ignore").add(clazz);
         return false;
     }
 

@@ -125,9 +125,9 @@ public class Atum2Proxy implements ISteedProxy {
 
         String clazz = entity.getClass().getName();
 
-        if (DWMH.atum2Classes.contains(clazz)) return true;
+        if (DWMH.sets("atum").contains(clazz)) return true;
 
-        DWMH.ignoreList.add(clazz);
+        DWMH.sets("ignore").add(clazz);
         return false;
     }
 

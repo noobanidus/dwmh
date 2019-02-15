@@ -182,7 +182,7 @@ public class SteedProxy implements ISteedProxy {
 
     // This may be sufficient to implement #5
     private boolean blacklisted(Entity entity) {
-        return DWMH.entityBlacklist.contains(entity.getClass().getName());
+        return DWMH.sets("blacklist").contains(entity.getClass().getName());
     }
 
     @Override

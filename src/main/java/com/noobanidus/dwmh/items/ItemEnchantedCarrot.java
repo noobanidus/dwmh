@@ -55,30 +55,32 @@ public class ItemEnchantedCarrot extends ItemDWMHRepairable {
         // TODO: handle if 5 is more than the breaking point of the item wiht the unbreakable carrot
 
         // A little bit of a hack to prioritise
-        if (DWMH.dragonProxy.isMyMod(entity) && DWMH.dragonProxy.isTameable(entity, player) && DWMHConfig.EnchantedCarrot.effects.taming) {
-            res = DWMH.dragonProxy.tame(entity, player);
+        if (DWMH.proxy("dragonmounts").isMyMod(entity) && DWMH.proxy("dragonmounts").isTameable(entity, player) && DWMHConfig.EnchantedCarrot.effects.taming) {
+            res = DWMH.proxy("dragonmounts").tame(entity, player);
             if (res > 0) tameHandler(entity, player);
             didStuff = true;
-        } else if (DWMH.steedProxy.isAgeable(entity, player) && DWMHConfig.EnchantedCarrot.effects.aging) {
-            if (entity.getEntityData().getBoolean("quark:poison_potato_applied")) {
-                temp = new TextComponentTranslation("dwmh.strings.quark_poisoned");
-                temp.getStyle().setColor(TextFormatting.GREEN);
-                player.sendMessage(temp);
-                return;
-            }
+        } else {
+            if (DWMH.steedProxy.isAgeable(entity, player) && DWMHConfig.EnchantedCarrot.effects.aging) {
+                if (entity.getEntityData().getBoolean("quark:poison_potato_applied")) {
+                    temp = new TextComponentTranslation("dwmh.strings.quark_poisoned");
+                    temp.getStyle().setColor(TextFormatting.GREEN);
+                    player.sendMessage(temp);
+                    return;
+                }
 
-            res = DWMH.steedProxy.age(entity, player);
-            didStuff = true;
-        } else if (DWMH.steedProxy.isTameable(entity, player) && DWMHConfig.EnchantedCarrot.effects.taming) {
-            res = DWMH.steedProxy.tame(entity, player);
-            if (res > 0) tameHandler(entity, player);
-            didStuff = true;
-        } else if (DWMH.steedProxy.isHealable(entity, player) && DWMHConfig.EnchantedCarrot.effects.healing) {
-            res = DWMH.steedProxy.heal(entity, player);
-            didStuff = true;
-        } else if (DWMH.steedProxy.isBreedable(entity, player) && DWMHConfig.EnchantedCarrot.effects.breeding) {
-            res = DWMH.steedProxy.breed(entity, player);
-            didStuff = true;
+                res = DWMH.steedProxy.age(entity, player);
+                didStuff = true;
+            } else if (DWMH.steedProxy.isTameable(entity, player) && DWMHConfig.EnchantedCarrot.effects.taming) {
+                res = DWMH.steedProxy.tame(entity, player);
+                if (res > 0) tameHandler(entity, player);
+                didStuff = true;
+            } else if (DWMH.steedProxy.isHealable(entity, player) && DWMHConfig.EnchantedCarrot.effects.healing) {
+                res = DWMH.steedProxy.heal(entity, player);
+                didStuff = true;
+            } else if (DWMH.steedProxy.isBreedable(entity, player) && DWMHConfig.EnchantedCarrot.effects.breeding) {
+                res = DWMH.steedProxy.breed(entity, player);
+                didStuff = true;
+            }
         }
 
         if (!player.capabilities.isCreativeMode && didStuff) {

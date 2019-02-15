@@ -1,18 +1,20 @@
 package com.noobanidus.dwmh;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
+import com.noobanidus.dwmh.config.ConfigHandler;
 import com.noobanidus.dwmh.config.CreativeTabDWMH;
 import com.noobanidus.dwmh.config.DWMHConfig;
-import com.noobanidus.dwmh.proxy.DataStore;
+import com.noobanidus.dwmh.config.DataStore;
 import com.noobanidus.dwmh.proxy.ISidedProxy;
 import com.noobanidus.dwmh.proxy.steeds.*;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -55,7 +57,6 @@ public class DWMH {
     public static DWMH instance;
 
     public static void resolveClasses() {
-        // All of these are string-based now hooray
         sets("animania").addAll(Arrays.asList(DWMHConfig.proxies.Animania.animaniaClasses));
         sets("zawa").addAll(Arrays.asList(DWMHConfig.proxies.ZAWA.zawaClasses));
         sets("blacklist").addAll(Arrays.asList(DWMHConfig.blacklist));
@@ -65,10 +66,14 @@ public class DWMH {
         sets("ignore").clear();
     }
 
+    public static void schedule (MessageContext ctx, Runnable func) {
+        FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(func);
+    }
+
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         proxy.preInit(event);
-        DWMHConfig.instance.serialize();
+        ConfigHandler.serialize();
     }
 
     @Mod.EventHandler
@@ -90,6 +95,8 @@ public class DWMH {
         proxyMap.put("vanilla_pig", new PigProxy());
 
         proxyList = Lists.newArrayList(proxyMap.values());
+
+        resolveClasses();
 
         proxy.postInit(event);
     }

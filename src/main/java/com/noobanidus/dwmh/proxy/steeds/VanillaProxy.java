@@ -6,6 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 
@@ -144,31 +145,21 @@ public class VanillaProxy implements ISteedProxy {
         if (!isMyMod(entity)) return null;
 
         AbstractHorse horse = (AbstractHorse) entity;
-        ITextComponent temp = null;
 
         if (horse.hasHome() && horse.world.getTileEntity(horse.getHomePosition()) != null) {
-            temp = new TextComponentTranslation("dwmh.strings.unsummonable.working");
-            temp.getStyle().setColor(TextFormatting.DARK_RED);
+            return new TextComponentTranslation("dwmh.strings.unsummonable.working").setStyle(new Style().setColor(TextFormatting.DARK_RED));
         } else if (horse.getLeashed()) {
-            temp = new TextComponentTranslation("dwmh.strings.unsummonable.leashed");
-            temp.getStyle().setColor(TextFormatting.DARK_RED);
+            return new TextComponentTranslation("dwmh.strings.unsummonable.leashed").setStyle(new Style().setColor(TextFormatting.DARK_RED));
         } else if (!horse.isHorseSaddled()) {
-            temp = new TextComponentTranslation("dwmh.strings.unsummonable.unsaddled");
-            temp.getStyle().setColor(TextFormatting.DARK_RED);
+            return new TextComponentTranslation("dwmh.strings.unsummonable.unsaddled").setStyle(new Style().setColor(TextFormatting.DARK_RED));
         } else if (horse.isBeingRidden() && horse.isRidingSameEntity(player)) {
-            temp = new TextComponentTranslation("dwmh.strings.unsummonable.ridden");
-            temp.getStyle().setColor(TextFormatting.DARK_RED);
+            return new TextComponentTranslation("dwmh.strings.unsummonable.ridden").setStyle(new Style().setColor(TextFormatting.DARK_RED));
         } else if (horse.isBeingRidden() && !DWMHConfig.Ocarina.otherRiders) {
-            temp = new TextComponentTranslation("dwmh.strings.unsummonable.ridden_other");
-            temp.getStyle().setColor(TextFormatting.DARK_RED);
+            return new TextComponentTranslation("dwmh.strings.unsummonable.ridden_other").setStyle(new Style().setColor(TextFormatting.DARK_RED));
         } else if (horse.isBeingRidden() && DWMHConfig.Ocarina.otherRiders) {
-            temp = new TextComponentTranslation("dwmh.strings.summonable.ridden_other");
-            temp.getStyle().setColor(TextFormatting.DARK_AQUA);
+            return new TextComponentTranslation("dwmh.strings.summonable.ridden_other").setStyle(new Style().setColor(TextFormatting.DARK_AQUA));
         } else {
-            temp = new TextComponentTranslation("dwmh.strings.summonable");
-            temp.getStyle().setColor(TextFormatting.AQUA);
+            return new TextComponentTranslation("dwmh.strings.summonable").setStyle(new Style().setColor(TextFormatting.AQUA));
         }
-
-        return temp;
     }
 }

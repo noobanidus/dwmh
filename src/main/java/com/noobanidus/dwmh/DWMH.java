@@ -87,12 +87,19 @@ public class DWMH {
         for (DataStore.Proxy proxy : DataStore.get()) {
             if (!proxy.isEnabled()) continue;
 
-            ISteedProxy instance = ((Optional<ISteedProxy>) event.buildSoftDependProxy(proxy.getModId(), proxy.getClassPath())).orElse(new DummySteedProxy());
-            proxyMap.put(proxy.getModId(), instance);
+            ISteedProxy instance = ((Optional<ISteedProxy>) event.buildSoftDependProxy(proxy.getModId(), proxy.getClassPath())).orElse(null);
+            if (instance != null) {
+                proxyMap.put(proxy.getModId(), instance);
+            }
         }
 
         proxyMap.put("vanilla", new VanillaProxy());
         proxyMap.put("vanilla_pig", new PigProxy());
+
+        StringJoiner joiner = new StringJoiner(", ", "[", "]");
+        proxyMap.values().forEach((proxy) -> joiner.add(proxy.proxyName()));
+
+        DWMH.LOG.info("Dude! Where's my Horse? loaded the following proxies: " + joiner.toString());
 
         proxyList = Lists.newArrayList(proxyMap.values());
 

@@ -137,7 +137,7 @@ public class VanillaProxy implements ISteedProxy {
 
     @Override
     public String proxyName() {
-        return "default";
+        return "vanilla";
     }
 
     @Override

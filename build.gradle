@@ -21,7 +21,7 @@ compileJava {
 }
 
 minecraft {
-    version = "1.12.2-14.23.5.2768"
+    version = "1.12.2-14.23.5.2815"
     runDir = "run"
     mappings = "stable_39"
     useDepAts = true
@@ -43,12 +43,14 @@ repositories {
         name = "CurseForge"
         url = "https://minecraft.curseforge.com/api/maven/"
     }
+    maven {
+        url "https://maven.mcmoddev.com/"
+    }
 }
 
 dependencies {
-    deobfCompile 'llibrary:llibrary:1.7.18:1.12.2'
+    deobfCompile "net.darkhax.bookshelf:Bookshelf-1.12.2:2.3.557"
     deobfCompile 'atum:Atum:1.12.2:2.0.0'
-    deobfCompile 'various-oddities:varodd:1.12.2:4.065'
 
     compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.11.1'
     compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.11.1'

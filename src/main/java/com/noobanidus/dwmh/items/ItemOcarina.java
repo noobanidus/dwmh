@@ -36,6 +36,8 @@ import java.util.function.BiFunction;
 public class ItemOcarina extends ItemDWMHRepairable {
     private List<TextComponentTranslation> directions = new ArrayList<>();
 
+
+
     private static boolean unuseableItem(ItemStack item) {
         if (DWMHConfig.Ocarina.functionality.getMaxUses() == 0) return false;
 
@@ -159,7 +161,6 @@ public class ItemOcarina extends ItemDWMHRepairable {
         return new ActionResult<>(EnumActionResult.SUCCESS, stack);
     }
 
-    // TODO
     public boolean doListing(World world, EntityPlayer player, @Nonnull EnumHand hand) {
         BlockPos pos = player.getPosition();
         boolean didStuff = false;
@@ -228,7 +229,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
         // Early breakpoints: if there is an item cost but we don't have enough
         if (amountPer != 0) {
             if (amountIn < amountPer) {
-                temp = new TextComponentTranslation("dwmh.strings.summon_item_missing", itemCost.getDisplayName());
+                temp = new TextComponentTranslation("dwmh.strings.summon_item_missing", itemCost.getDisplayName(), amountPer);
                 temp.getStyle().setColor(TextFormatting.DARK_RED);
                 SoundType.MINOR.playSound(player, stack);
                 player.sendMessage(temp);

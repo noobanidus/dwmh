@@ -1,8 +1,10 @@
 package com.noobanidus.dwmh.network;
 
 import com.noobanidus.dwmh.DWMH;
+import com.noobanidus.dwmh.events.ClientTickHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -14,18 +16,8 @@ import net.minecraftforge.fml.relauncher.Side;
 public class PacketHandler {
     private static SimpleNetworkWrapper instance = NetworkRegistry.INSTANCE.newSimpleChannel(DWMH.MODID);
 
-    private static int id = 0;
-
     public static void initPackets () {
-        registerMessage(PacketConfig.UpdateFromServer.Handler.class, PacketConfig.UpdateFromServer.class, Side.CLIENT);
-    }
-
-    public static <REQ extends IMessage, REPLY extends IMessage> void registerMessage(Class<? extends Handler<REQ>> messageHandler, Class<REQ> requestMessageType, Side side) {
-        instance.registerMessage(messageHandler, requestMessageType, id++, side);
-    }
-
-    public static void register () {
-        registerMessage(PacketConfig.UpdateFromServer.Handler.class, PacketConfig.UpdateFromServer.class, Side.CLIENT);
+        instance.registerMessage(PacketConfig.UpdateFromServer.Handler.class, PacketConfig.UpdateFromServer.class, 0, Side.CLIENT);
     }
 
     public static void sendToAll(IMessage message) {
@@ -57,13 +49,24 @@ public class PacketHandler {
     }
 
     public abstract static class Handler<T extends IMessage> implements IMessageHandler<T, IMessage> {
+        abstract void processMessage(T message, MessageContext ctx);
+    }
 
-        public IMessage onMessage(T message, MessageContext ctx) {
-            DWMH.schedule(ctx, () -> processMessage(message, ctx));
+    public abstract static class ServerHandler<T extends IMessage> extends Handler<T> {
+
+        @Override
+        public IMessage onMessage (T message, MessageContext ctx) {
+            FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(() -> processMessage(message, ctx));
+            return null;
+        }
+    }
+    public abstract static class ClientHandler<T extends IMessage> extends Handler<T> {
+
+        @Override
+        public IMessage onMessage (T message, MessageContext ctx) {
+            ClientTickHandler.addRunnable(() -> processMessage(message, ctx));
 
             return null;
         }
-
-        abstract void processMessage(T message, MessageContext ctx);
     }
 }

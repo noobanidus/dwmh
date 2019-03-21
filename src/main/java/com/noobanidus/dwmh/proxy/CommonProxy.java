@@ -5,6 +5,7 @@ import com.noobanidus.dwmh.capability.CapabilityOwnHandler;
 import com.noobanidus.dwmh.capability.CapabilityOwner;
 import com.noobanidus.dwmh.config.CreativeTabDWMH;
 import com.noobanidus.dwmh.config.Registrar;
+import com.noobanidus.dwmh.network.PacketHandler;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -17,6 +18,7 @@ public class CommonProxy implements ISidedProxy {
     public void preInit(FMLPreInitializationEvent event) {
         DWMH.TAB = new CreativeTabDWMH(CreativeTabs.getNextID(), DWMH.MODID);
         Registrar.preInit();
+        PacketHandler.initPackets();
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.noobanidus.dwmh.network;
 
 import com.noobanidus.dwmh.DWMH;
-import com.noobanidus.dwmh.config.ConfigHandler;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
@@ -30,7 +29,7 @@ public class PacketConfig {
             ByteBufUtils.writeTag(buf, this.compound);
         }
 
-        public static class Handler extends PacketHandler.Handler<UpdateFromServer> {
+        public static class Handler extends PacketHandler.ClientHandler<UpdateFromServer> {
             void processMessage(UpdateFromServer message, MessageContext ctx) {
                 DWMH.clientStorage.updateFromServer(message.compound);
             }

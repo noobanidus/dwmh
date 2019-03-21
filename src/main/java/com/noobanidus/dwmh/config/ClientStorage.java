@@ -3,20 +3,21 @@ package com.noobanidus.dwmh.config;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class ClientStorage {
-    private NBTTagCompound localConfig;
+    private NBTTagCompound localConfig = null;
     private NBTTagCompound serverConfig = null;
 
     public ClientStorage() {
-        this.localConfig = ConfigHandler.serialize();
     }
 
     public void updateFromServer(NBTTagCompound serverConfig) {
         this.serverConfig = serverConfig;
+        DWMHConfig.updateConfig();
     }
 
     private NBTTagCompound getTagCompound() {
         // Too soon to be initialising from the serverConfig as we haven't even
         // logged into a server yet.
+        if (localConfig == null) localConfig = ConfigHandler.serialize();
         if (serverConfig == null) return localConfig;
         return serverConfig;
     }

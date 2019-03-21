@@ -43,7 +43,7 @@ public class VaroddWrapper implements IWrapper {
 
     @Override
     public boolean isTame () {
-        return (pegasi != null) ? pegasi.isTame() : gryphon.isTamed();
+        return (pegasi != null) ? pegasi.isTame() : gryphon.isTame();
     }
 
     @Override
@@ -53,7 +53,7 @@ public class VaroddWrapper implements IWrapper {
 
     @Override
     public UUID getOwnerUniqueId () {
-        return (pegasi != null) ? pegasi.getOwnerUniqueId() : gryphon.getOwnerId();
+        return (pegasi != null) ? pegasi.getOwnerUniqueId() : gryphon.getOwnerUniqueId();
     }
 
     @Override

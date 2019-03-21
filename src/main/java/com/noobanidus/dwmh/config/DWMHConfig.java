@@ -182,18 +182,15 @@ public class DWMHConfig {
             @Comment("Specify a cooldown for each usage of the Ocarina, or specify 0 to disable")
             @Name("Ocarina Cooldown Duration")
             @RangeInt(min = 0)
-            // TODO Relevant to client
             public int cooldown = 0;
             @LangKey("config.ocarina.functionality.max_durability")
             @Comment("Specify the maximum durability of the Ocarina. One horse summoned costs one durability. Set to 0 to disable durability.")
             @Name("Maximum Ocarina Durability")
             @RangeInt(min = 0)
-            // TODO Relevant to client
             public int maxUses = 0;
             @LangKey("config.ocarina.functionality.repair_item")
             @Comment("Specify the item that can be used to repair the Ocarina in an anvil. Items with NBT are not supported. Format mod:item:metadata (use \"minecraft\" for vanilla items), use 0 for no meteadata.")
             @Name("Ocarina Repair Item")
-            // TODO Relevant to client
             public String repairItem = "minecraft:golden_carrot:0";
             @Ignore
             public ItemStack repairItemDefault = new ItemStack(Items.GOLDEN_CARROT);

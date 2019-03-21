@@ -65,14 +65,9 @@ public class DWMH {
         sets("ignore").clear();
     }
 
-    public static void schedule (MessageContext ctx, Runnable func) {
-        FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(func);
-    }
-
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         proxy.preInit(event);
-        ConfigHandler.serialize();
     }
 
     @Mod.EventHandler

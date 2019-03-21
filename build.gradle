@@ -9,7 +9,7 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "2.0.1"
+version = "2.1.0"
 group = "com.noobanidus.dwmh"
 archivesBaseName = "dwmh"
 
@@ -27,15 +27,6 @@ minecraft {
     useDepAts = true
 
     replace "GRADLE:VERSION", project.version
-}
-
-task deobfJar (type: Jar) {
-    from sourceSets.main.output
-    classifier = "deobf"
-}
-
-artifacts {
-    archives deobfJar
 }
 
 repositories {
@@ -56,8 +47,26 @@ dependencies {
     compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.11.1'
 }
 
-runClient {
-    args '--username', 'DWMH'
+processResources {
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
+    from(sourceSets.main.resources.srcDirs) {
+        include "mcmod.info"
+
+        expand "version": project.version, "mc_version": project.minecraft.version
+    }
+
+    from(sourceSets.main.resources.srcDirs) {
+        exclude "mcmod.info"
+    }
+
+    rename '(.+at\\.cfg)', 'META-INF/$1'
+}
+
+task deobfJar (type: Jar) {
+    from sourceSets.main.output
+    classifier = "deobf"
 }
 
 jar {
@@ -66,19 +75,7 @@ jar {
     }
 }
 
-processResources {
-    inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
-
-    from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
-
-        expand 'version': project.version, 'mc_version': project.minecraft.version
-    }
-
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
-    }
-
-    rename '(.+at\\.cfg)', 'META-INF/$1'
+artifacts {
+    archives deobfJar
 }
+

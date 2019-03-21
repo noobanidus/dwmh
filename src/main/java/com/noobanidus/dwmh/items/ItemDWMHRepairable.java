@@ -21,7 +21,7 @@ public class ItemDWMHRepairable extends Item {
 
     @SuppressWarnings("deprecation")
     public static boolean useableItem(ItemStack item) {
-        if (item.getItem() instanceof ItemEnchantedCarrot && DWMHConfig.EnchantedCarrot.durability.breakableCarrot) return true;
+        if (item.getItem() instanceof ItemEnchantedCarrot && DWMH.clientStorage.getBoolean("Carrot", "breakable")) return true;
 
         if (item.getItemDamage() > item.getMaxDamage()) {
             item.setItemDamage(item.getMaxDamage());
@@ -51,23 +51,20 @@ public class ItemDWMHRepairable extends Item {
     }
 
     public void registerPredicate(String predicate_name) {
-        addPropertyOverride(new ResourceLocation("dwmh", predicate_name), new IItemPropertyGetter() {
-            @Override
-            public float apply(@Nonnull ItemStack stack, @Nullable World worldIn, @Nullable EntityLivingBase entityIn) {
-                if (stack.getItem() instanceof ItemEnchantedCarrot) {
-                    if (DWMHConfig.EnchantedCarrot.durability.breakableCarrot)
-                        return 0;
-                    if (stack.getItemDamage() == DWMHConfig.EnchantedCarrot.durability.getMaxUses())
-                        return 1;
+        addPropertyOverride(new ResourceLocation("dwmh", predicate_name), (stack, worldIn, entityIn) -> {
+            if (stack.getItem() instanceof ItemEnchantedCarrot) {
+                if (DWMH.clientStorage.getBoolean("Carrot", "breakable"))
                     return 0;
-                } else if (stack.getItem() instanceof ItemOcarina) {
-                    if (DWMHConfig.Ocarina.functionality.getMaxUses() != 0 && stack.getItemDamage() == DWMHConfig.Ocarina.functionality.maxUses)
-                        return 1;
-                    return 0;
-                }
-
+                if (stack.getItemDamage() == DWMH.clientStorage.getInteger("Carrot", "maxUses"))
+                    return 1;
+                return 0;
+            } else if (stack.getItem() instanceof ItemOcarina) {
+                if (DWMHConfig.Ocarina.functionality.getMaxUses() != 0 && stack.getItemDamage() == DWMH.clientStorage.getInteger("Ocarina", "maxUses"))
+                    return 1;
                 return 0;
             }
+
+            return 0;
         });
     }
 
@@ -153,7 +150,7 @@ public class ItemDWMHRepairable extends Item {
 
         if (stack.getItemDamage() == 0) return false;
 
-        if (stack.getItem() instanceof ItemEnchantedCarrot && DWMHConfig.EnchantedCarrot.durability.breakableCarrot) return true;
+        if (stack.getItem() instanceof ItemEnchantedCarrot && DWMH.clientStorage.getBoolean("Carrot", "breakable")) return true;
 
         return super.showDurabilityBar(stack);
     }

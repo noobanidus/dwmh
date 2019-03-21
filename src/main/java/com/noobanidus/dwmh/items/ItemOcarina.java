@@ -109,7 +109,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
             setMaxDamage(DWMHConfig.Ocarina.functionality.getMaxUses());
         }
 
-        setInternalRepair(DWMHConfig.Ocarina.functionality.repairItem);
+        setInternalRepair(DWMH.clientStorage.getString("Ocarina", "repairItem"));
     }
 
     private boolean isValidHorse(Entity entity, EntityPlayer player) {
@@ -137,11 +137,11 @@ public class ItemOcarina extends ItemDWMHRepairable {
     }
 
     public ItemStack getCostItem() {
-        return parseItem(DWMHConfig.Ocarina.functionality.summonItem, DWMHConfig.Ocarina.functionality.summonItemStack);
+        return parseItem(DWMH.clientStorage.getString("Ocarina", "summonItem"), DWMHConfig.Ocarina.functionality.summonItemStack);
     }
 
     public void checkCostItem() {
-        parseItem(DWMHConfig.Ocarina.functionality.summonItem, DWMHConfig.Ocarina.functionality.summonItemStack, true);
+        parseItem(DWMH.clientStorage.getString("Ocarina", "summonItem"), DWMHConfig.Ocarina.functionality.summonItemStack, true);
     }
 
     @Nonnull

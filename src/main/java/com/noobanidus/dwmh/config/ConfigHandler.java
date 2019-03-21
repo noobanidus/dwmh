@@ -51,21 +51,17 @@ public class ConfigHandler {
         return PROXY_MAP.getOrDefault(proxy, false);
     }
 
-    public static void deserialize(NBTTagCompound compound) {
-
-    }
-
     public static NBTTagCompound serialize() {
         NBTTagCompound output = new NBTTagCompound();
 
         NBTTagCompound ocarina = new NBTTagCompound();
 
         ocarina.setDouble("maxDistance", DWMHConfig.Ocarina.maxDistance);
-        ocarina.setInteger("cooldown", DWMHConfig.Ocarina.functionality.getCooldown());
-        ocarina.setInteger("maxUses", DWMHConfig.Ocarina.functionality.getMaxUses());
+        ocarina.setInteger("cooldown", DWMHConfig.Ocarina.functionality.cooldown);
+        ocarina.setInteger("maxUses", DWMHConfig.Ocarina.functionality.maxUses);
         ocarina.setString("repairItem", DWMHConfig.Ocarina.functionality.repairItem);
         ocarina.setString("summonItem", DWMHConfig.Ocarina.functionality.summonItem);
-        ocarina.setInteger("summonCost", DWMHConfig.Ocarina.functionality.getSummonCost());
+        ocarina.setInteger("summonCost", DWMHConfig.Ocarina.functionality.summonCost);
 
         output.setTag("Ocarina", ocarina);
 
@@ -76,7 +72,7 @@ public class ConfigHandler {
         carrot.setBoolean("aging", DWMHConfig.EnchantedCarrot.effects.aging);
         carrot.setBoolean("breeding", DWMHConfig.EnchantedCarrot.effects.breeding);
 
-        carrot.setInteger("maxUses", DWMHConfig.EnchantedCarrot.durability.getMaxUses());
+        carrot.setInteger("maxUses", DWMHConfig.EnchantedCarrot.durability.maxUses);
         carrot.setString("repairItem", DWMHConfig.EnchantedCarrot.durability.repairItem);
         carrot.setBoolean("breakable", DWMHConfig.EnchantedCarrot.durability.breakableCarrot);
 

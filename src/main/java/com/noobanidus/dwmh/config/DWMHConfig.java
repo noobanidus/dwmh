@@ -4,8 +4,11 @@ import com.noobanidus.dwmh.DWMH;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.config.*;
+import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.common.config.Config;
+import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -44,23 +47,30 @@ public class DWMHConfig {
     @SubscribeEvent
     public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
         if (event.getModID().equals(DWMH.MODID)) {
-            ConfigManager.sync(DWMH.MODID, Config.Type.INSTANCE);
-            DWMH.resolveClasses();
-            Registrar.ocarina.updateConfig();
-            Registrar.carrot.updateConfig();
-            Registrar.ocarina.checkRepairItem();
-            Registrar.ocarina.checkCostItem();
-            Registrar.carrot.checkRepairItem();
-
-            if (Ocarina.functionality.getMaxUses() != Ocarina.functionality.maxUses)
-                DWMH.LOG.error(String.format("Invalid configuration value for Ocarina:maxUses: |%d|. Using default 0 instead.", Ocarina.functionality.maxUses));
-            if (Ocarina.functionality.getCooldown() != Ocarina.functionality.cooldown)
-                DWMH.LOG.error(String.format("Invalid configuration value for Ocarina:cooldown: |%d|. Using default 0 instead.", Ocarina.functionality.cooldown));
-            if (Ocarina.functionality.getSummonCost() != Ocarina.functionality.summonCost)
-                DWMH.LOG.error(String.format("Invalid configuration value for Ocarina:summonCost: |%d|. Using default 0 instead.", Ocarina.functionality.summonCost));
-            if (EnchantedCarrot.durability.getMaxUses() != EnchantedCarrot.durability.maxUses)
-                DWMH.LOG.error(String.format("Invalid configuration value for EnchantedCarrot:maxUses: |%d|. Using default 1 instead.", EnchantedCarrot.durability.maxUses));
+            updateConfig();
         }
+    }
+
+    public static void updateConfig() {
+        ConfigManager.sync(DWMH.MODID, Config.Type.INSTANCE);
+        DWMH.resolveClasses();
+        Registrar.ocarina.updateConfig();
+        Registrar.carrot.updateConfig();
+        Registrar.ocarina.checkRepairItem();
+        Registrar.ocarina.checkCostItem();
+        Registrar.carrot.checkRepairItem();
+
+        MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+        if (server == null || !server.isSinglePlayer()) return;
+
+        if (Ocarina.functionality.getMaxUses() != Ocarina.functionality.maxUses)
+            DWMH.LOG.error(String.format("Invalid configuration value for Ocarina:maxUses: |%d|. Using default 0 instead.", Ocarina.functionality.maxUses));
+        if (Ocarina.functionality.getCooldown() != Ocarina.functionality.cooldown)
+            DWMH.LOG.error(String.format("Invalid configuration value for Ocarina:cooldown: |%d|. Using default 0 instead.", Ocarina.functionality.cooldown));
+        if (Ocarina.functionality.getSummonCost() != Ocarina.functionality.summonCost)
+            DWMH.LOG.error(String.format("Invalid configuration value for Ocarina:summonCost: |%d|. Using default 0 instead.", Ocarina.functionality.summonCost));
+        if (EnchantedCarrot.durability.getMaxUses() != EnchantedCarrot.durability.maxUses)
+            DWMH.LOG.error(String.format("Invalid configuration value for EnchantedCarrot:maxUses: |%d|. Using default 1 instead.", EnchantedCarrot.durability.maxUses));
     }
 
     // Don't expose these
@@ -164,7 +174,7 @@ public class DWMHConfig {
         public Functionality functionality = new Functionality();
 
         public double getMaxDistance() {
-            return Math.max(maxDistance, 0.0d);
+            return Math.max(DWMH.clientStorage.getDouble("Ocarina", "maxDistance"), 0.0d);
         }
 
         public class Functionality {
@@ -202,15 +212,15 @@ public class DWMHConfig {
             public int summonCost = 0;
 
             public int getCooldown() {
-                return Math.max(cooldown, 0);
+                return Math.max(DWMH.clientStorage.getInteger("Ocarina", "cooldown"), 0);
             }
 
             public int getMaxUses() {
-                return Math.max(maxUses, 0);
+                return Math.max(DWMH.clientStorage.getInteger("Ocarina", "maxUses"), 0);
             }
 
             public int getSummonCost() {
-                return Math.max(summonCost, 0);
+                return Math.max(DWMH.clientStorage.getInteger("Ocarina", "summonCost"), 0);
             }
         }
     }
@@ -279,7 +289,7 @@ public class DWMHConfig {
             public boolean breakableCarrot = false;
 
             public int getMaxUses() {
-                return Math.max(maxUses, 1);
+                return Math.max(DWMH.clientStorage.getInteger("Carrot", "maxUses"), 1);
             }
         }
     }

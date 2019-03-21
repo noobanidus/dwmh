@@ -1,10 +1,7 @@
 package com.noobanidus.dwmh;
 
 import com.google.common.collect.Lists;
-import com.noobanidus.dwmh.config.ConfigHandler;
-import com.noobanidus.dwmh.config.CreativeTabDWMH;
-import com.noobanidus.dwmh.config.DWMHConfig;
-import com.noobanidus.dwmh.config.DataStore;
+import com.noobanidus.dwmh.config.*;
 import com.noobanidus.dwmh.proxy.ISidedProxy;
 import com.noobanidus.dwmh.proxy.steeds.*;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -35,6 +32,8 @@ public class DWMH {
     public static Map<String, ISteedProxy> proxyMap = new HashMap<>();
 
     private static ISteedProxy dummy = new DummySteedProxy();
+
+    public static ClientStorage clientStorage = new ClientStorage();
 
     public static ISteedProxy proxy (String proxyName) {
         if (proxyMap.containsKey(proxyName)) return proxyMap.get(proxyName);

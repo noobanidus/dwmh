@@ -16,6 +16,10 @@ public class PacketHandler {
 
     private static int id = 0;
 
+    public static void initPackets () {
+        registerMessage(PacketConfig.UpdateFromServer.Handler.class, PacketConfig.UpdateFromServer.class, Side.CLIENT);
+    }
+
     public static <REQ extends IMessage, REPLY extends IMessage> void registerMessage(Class<? extends Handler<REQ>> messageHandler, Class<REQ> requestMessageType, Side side) {
         instance.registerMessage(messageHandler, requestMessageType, id++, side);
     }

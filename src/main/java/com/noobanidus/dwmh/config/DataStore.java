@@ -19,7 +19,9 @@ public class DataStore {
                 "iceandfire", "com.noobanidus.dwmh.proxy.steeds.IceAndFireProxy",
                 "dragonmounts", "com.noobanidus.dwmh.proxy.steeds.DragonMountProxy",
                 "varodd", "com.noobanidus.dwmh.proxy.steeds.VaroddProxy",
-                "moolands", "com.noobanidus.dwmh.proxy.steeds.MoolandProxy");
+                "moolands", "com.noobanidus.dwmh.proxy.steeds.MoolandProxy",
+                "resourcehogs", "com.noobanidus.dwmh.proxy.steeds.HogProxy",
+                "merpig", "com.noobanidus.dwmh.proxy.steeds.MerpigProxy");
 
         DataStore.putAll(CONFIG_LIST,
                 "Animania", "animania",
@@ -30,7 +32,9 @@ public class DataStore {
                 "Ice & Fire", "iceandfire",
                 "Dragon Mounts 2", "dragonmounts",
                 "Various Oddities", "varodd",
-                "Moolands", "moolands");
+                "Moolands", "moolands",
+                "Resource Hogs", "resourechogs",
+                "Merpig", "merpig");
 
         CLASS_REFERENCE.put("zawa", new HashSet<>());
         CLASS_REFERENCE.put("animania", new HashSet<>());

@@ -4,9 +4,12 @@ import com.TheRPGAdventurer.ROTD.server.entity.EntityTameableDragon;
 import com.TheRPGAdventurer.ROTD.server.entity.helper.DragonLifeStageHelper;
 import com.TheRPGAdventurer.ROTD.server.entity.helper.EnumDragonLifeStage;
 import com.TheRPGAdventurer.ROTD.util.DMUtils;
+import com.noobanidus.dwmh.client.render.particle.ParticleSender;
 import com.noobanidus.dwmh.config.DWMHConfig;
+import com.noobanidus.dwmh.util.ParticleType;
 import com.noobanidus.dwmh.util.StopItDragons;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
@@ -49,6 +52,11 @@ public class DragonMountProxy implements ISteedProxy {
     public int tame(Entity entity, EntityPlayer player) {
         EntityTameableDragon dragon = (EntityTameableDragon) entity;
         dragon.tamedFor(player, true);
+        dragon.setTamed(true);
+        dragon.setAttackTarget(null);
+        dragon.setOwnerId(player.getUniqueID());
+        dragon.playTameEffect(true);
+        ParticleSender.generateParticles(dragon, ParticleType.TAMING);
 
         doGenericMessage(entity, player, Generic.TAMING);
 
@@ -77,6 +85,8 @@ public class DragonMountProxy implements ISteedProxy {
 
         helper.setLifeStage(next);
 
+        ParticleSender.generateParticles(entity, ParticleType.AGING);
+
         doGenericMessage(entity, player, "dwmh.strings.dragonmount.age");
 
         return 5;
@@ -96,7 +106,7 @@ public class DragonMountProxy implements ISteedProxy {
         EntityTameableDragon dragon = (EntityTameableDragon) entity;
 
         dragon.setInLove(player);
-        dragon.world.setEntityState(entity, (byte) 7);
+        ParticleSender.generateParticles(entity, ParticleType.BREEDING);
 
         doGenericMessage(entity, player, Generic.BREEDING);
 

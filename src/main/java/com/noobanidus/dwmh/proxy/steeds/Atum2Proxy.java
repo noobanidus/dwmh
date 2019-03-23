@@ -1,14 +1,20 @@
 package com.noobanidus.dwmh.proxy.steeds;
 
 import com.noobanidus.dwmh.DWMH;
+import com.noobanidus.dwmh.client.render.particle.ParticleSender;
 import com.noobanidus.dwmh.config.DWMHConfig;
+import com.noobanidus.dwmh.network.PacketHandler;
+import com.noobanidus.dwmh.network.PacketParticles;
 import com.noobanidus.dwmh.proxy.steeds.wrappers.Atum2Wrapper;
+import com.noobanidus.dwmh.util.ParticleType;
 import com.teammetallurgy.atum.entity.animal.EntityCamel;
 import com.teammetallurgy.atum.entity.animal.EntityDesertWolf;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
@@ -54,9 +60,17 @@ public class Atum2Proxy implements ISteedProxy {
     }
 
     @Override
-    public int tame(Entity entity, EntityPlayer player) { // TODO
+    public int tame(Entity entity, EntityPlayer player) {
         if (entity instanceof AbstractHorse) {
-            ((AbstractHorse) entity).setTamedBy(player);
+            EntityCamel camel = (EntityCamel) entity;
+            camel.setOwnerUniqueId(player.getUniqueID());
+            camel.setHorseTamed(true);
+
+            if (player instanceof EntityPlayerMP)
+            {
+                CriteriaTriggers.TAME_ANIMAL.trigger((EntityPlayerMP)player, camel);
+            }
+            ParticleSender.generateParticles(camel, ParticleType.TAMING);
         } else {
             EntityDesertWolf wolf = (EntityDesertWolf) entity;
 
@@ -69,7 +83,7 @@ public class Atum2Proxy implements ISteedProxy {
 
             wolf.setHealth(40.0F);
             wolf.playTameEffect(true);
-            wolf.world.setEntityState(wolf, (byte) 7);
+            ParticleSender.generateParticles(wolf, ParticleType.TAMING);
         }
 
         doGenericMessage(entity, player, Generic.TAMING);
@@ -89,7 +103,7 @@ public class Atum2Proxy implements ISteedProxy {
         Atum2Wrapper wrapper = new Atum2Wrapper(entity);
 
         wrapper.setGrowingAge(0);
-        wrapper.world.setEntityState(entity, (byte) 7);
+        ParticleSender.generateParticles(entity, ParticleType.AGING);
 
         doGenericMessage(entity, player, Generic.AGING);
 
@@ -113,6 +127,8 @@ public class Atum2Proxy implements ISteedProxy {
         EntityAnimal animal = (EntityAnimal) entity;
 
         animal.setInLove(player);
+
+        ParticleSender.generateParticles(entity, ParticleType.BREEDING);
 
         doGenericMessage(entity, player, Generic.BREEDING);
 

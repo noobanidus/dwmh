@@ -3,7 +3,9 @@ package com.noobanidus.dwmh.proxy.steeds;
 import com.noobanidus.dwmh.DWMH;
 import com.noobanidus.dwmh.capability.CapabilityOwnHandler;
 import com.noobanidus.dwmh.capability.CapabilityOwner;
+import com.noobanidus.dwmh.client.render.particle.ParticleSender;
 import com.noobanidus.dwmh.config.DWMHConfig;
+import com.noobanidus.dwmh.util.ParticleType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityList;
@@ -72,7 +74,7 @@ public interface ISteedProxy {
     default int heal(Entity entity, EntityPlayer player) {
         EntityLiving horse = (EntityLiving) entity;
         horse.heal(horse.getMaxHealth() - horse.getHealth());
-        horse.world.setEntityState(horse, (byte) 7);
+        ParticleSender.generateParticles(horse, ParticleType.HEALING);
 
         if (DWMHConfig.client.clientCarrot.healing) {
             doGenericMessage(entity, player, Generic.HEALING);

@@ -1,7 +1,9 @@
 package com.noobanidus.dwmh.proxy.steeds;
 
 import com.google.common.collect.Lists;
+import com.noobanidus.dwmh.client.render.particle.ParticleSender;
 import com.noobanidus.dwmh.config.DWMHConfig;
+import com.noobanidus.dwmh.util.ParticleType;
 import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.entity.MoCEntityTameableAnimal;
 import drzhark.mocreatures.entity.passive.MoCEntityElephant;
@@ -138,6 +140,7 @@ public class MOCProxy implements ISteedProxy {
         MoCEntityTameableAnimal animal = (MoCEntityTameableAnimal) entity;
         animal.setTamed(true);
         MoCTools.tameWithName(player, animal);
+        ParticleSender.generateParticles(entity, ParticleType.TAMING);
 
         doGenericMessage(entity, player, Generic.TAMING);
 
@@ -163,6 +166,8 @@ public class MOCProxy implements ISteedProxy {
         animal.setEdad(animal.getMaxEdad());
         animal.setType(0);
         animal.selectType();
+
+        ParticleSender.generateParticles(entity, ParticleType.AGING);
 
         doGenericMessage(entity, player, Generic.AGING);
 

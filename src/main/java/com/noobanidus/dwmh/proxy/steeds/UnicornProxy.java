@@ -7,6 +7,8 @@ import com.hackshop.ultimate_unicorn.mobs.unique.EntityAleaBringerOfDawn;
 import com.hackshop.ultimate_unicorn.mobs.unique.EntityAsmidiske;
 import com.hackshop.ultimate_unicorn.mobs.unique.EntityTyphonTheDestroyer;
 import com.hackshop.ultimate_unicorn.mobs.unique.EntityVelvetMysticalHealer;
+import com.noobanidus.dwmh.client.render.particle.ParticleSender;
+import com.noobanidus.dwmh.util.ParticleType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.passive.AbstractHorse;
@@ -33,7 +35,7 @@ public class UnicornProxy extends VanillaProxy {
                 Entity killer = event.getSource().getTrueSource();
                 if (killer instanceof EntityPlayer && horse != null) {
                     horse.setTamedBy((EntityPlayer) killer);
-                    horse.world.setEntityState(horse, (byte) 7);
+                    ParticleSender.generateParticles(horse, ParticleType.TAMING);
                 } else if (horse != null) {
                     // We don't care about the killer any more as it's not a player
                     horse.setHorseTamed(false);

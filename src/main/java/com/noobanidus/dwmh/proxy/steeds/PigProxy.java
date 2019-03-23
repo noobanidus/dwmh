@@ -1,7 +1,9 @@
 package com.noobanidus.dwmh.proxy.steeds;
 
 import com.noobanidus.dwmh.capability.CapabilityOwner;
+import com.noobanidus.dwmh.client.render.particle.ParticleSender;
 import com.noobanidus.dwmh.config.DWMHConfig;
+import com.noobanidus.dwmh.util.ParticleType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.player.EntityPlayer;
@@ -64,7 +66,7 @@ public class PigProxy extends VanillaProxy {
         EntityPig pig = (EntityPig) entity;
 
         pig.setGrowingAge(0);
-        pig.world.setEntityState(pig, (byte) 7);
+        ParticleSender.generateParticles(entity, ParticleType.AGING);
 
         doGenericMessage(entity, player, Generic.AGING);
 
@@ -76,6 +78,8 @@ public class PigProxy extends VanillaProxy {
         if (!isMyMod(entity)) return 0;
 
         ((EntityPig) entity).setInLove(player);
+
+        ParticleSender.generateParticles(entity, ParticleType.BREEDING);
 
         doGenericMessage(entity, player, Generic.BREEDING);
 

@@ -1,7 +1,7 @@
 package com.noobanidus.dwmh.network;
 
 import com.noobanidus.dwmh.DWMH;
-import com.noobanidus.dwmh.events.ClientTickHandler;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -18,6 +18,7 @@ public class PacketHandler {
 
     public static void initPackets() {
         instance.registerMessage(PacketConfig.UpdateFromServer.Handler.class, PacketConfig.UpdateFromServer.class, 0, Side.CLIENT);
+        instance.registerMessage(PacketParticles.GenerateParticles.Handler.class, PacketParticles.GenerateParticles.class, 1, Side.CLIENT);
     }
 
     public static void sendToAll(IMessage message) {
@@ -65,7 +66,7 @@ public class PacketHandler {
 
         @Override
         public IMessage onMessage(T message, MessageContext ctx) {
-            ClientTickHandler.addRunnable(() -> processMessage(message, ctx));
+            Minecraft.getMinecraft().addScheduledTask(() -> processMessage(message, ctx));
 
             return null;
         }

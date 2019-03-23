@@ -4,8 +4,10 @@ import com.github.alexthe666.iceandfire.entity.EntityDragonBase;
 import com.github.alexthe666.iceandfire.entity.EntityHippocampus;
 import com.github.alexthe666.iceandfire.entity.EntityHippogryph;
 import com.noobanidus.dwmh.DWMH;
+import com.noobanidus.dwmh.client.render.particle.ParticleSender;
 import com.noobanidus.dwmh.config.DWMHConfig;
 import com.noobanidus.dwmh.proxy.steeds.wrappers.IceAndFireWrapper;
+import com.noobanidus.dwmh.util.ParticleType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.ITextComponent;
@@ -55,7 +57,7 @@ public class IceAndFireProxy implements ISteedProxy {
         IceAndFireWrapper wrapper = new IceAndFireWrapper(entity);
 
         wrapper.setTamedBy(player);
-        wrapper.world.setEntityState(entity, (byte) 7);
+        ParticleSender.generateParticles(entity, ParticleType.TAMING);
 
         doGenericMessage(entity, player, Generic.TAMING);
 
@@ -76,7 +78,7 @@ public class IceAndFireProxy implements ISteedProxy {
         IceAndFireWrapper wrapper = new IceAndFireWrapper(entity);
 
         wrapper.setGrowingAge(0);
-        wrapper.world.setEntityState(entity, (byte) 7);
+        ParticleSender.generateParticles(entity, ParticleType.AGING);
 
         doGenericMessage(entity, player, Generic.AGING);
 
@@ -98,7 +100,7 @@ public class IceAndFireProxy implements ISteedProxy {
         IceAndFireWrapper wrapper = new IceAndFireWrapper(entity);
 
         wrapper.setInLove(player);
-        wrapper.world.setEntityState(entity, (byte) 7);
+        ParticleSender.generateParticles(entity, ParticleType.BREEDING);
 
         doGenericMessage(entity, player, Generic.BREEDING);
 

@@ -1,10 +1,15 @@
 package com.noobanidus.dwmh.proxy.steeds;
 
 import com.noobanidus.dwmh.DWMH;
+import com.noobanidus.dwmh.client.render.particle.ParticleSender;
 import com.noobanidus.dwmh.config.DWMHConfig;
+import com.noobanidus.dwmh.util.ParticleType;
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.client.particle.Particle;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.*;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -56,8 +61,16 @@ public class VanillaProxy implements ISteedProxy {
 
     @Override
     public int tame(Entity entity, EntityPlayer player) {
-        ((AbstractHorse) entity).setTamedBy(player);
+        AbstractHorse horse = (AbstractHorse) entity;
+        horse.setOwnerUniqueId(player.getUniqueID());
+        horse.setHorseTamed(true);
 
+        if (player instanceof EntityPlayerMP)
+        {
+            CriteriaTriggers.TAME_ANIMAL.trigger((EntityPlayerMP)player, horse);
+        }
+
+        ParticleSender.generateParticles(horse, ParticleType.TAMING);
         doGenericMessage(entity, player, Generic.TAMING);
 
         return 1;
@@ -79,7 +92,7 @@ public class VanillaProxy implements ISteedProxy {
         AbstractHorse horse = (AbstractHorse) entity;
 
         horse.setGrowingAge(0);
-        horse.world.setEntityState(horse, (byte) 7);
+        ParticleSender.generateParticles(entity, ParticleType.AGING);
 
         doGenericMessage(entity, player, Generic.AGING);
 
@@ -108,6 +121,8 @@ public class VanillaProxy implements ISteedProxy {
 
         AbstractHorse horse = (AbstractHorse) entity;
         horse.setInLove(player);
+
+        ParticleSender.generateParticles(horse, ParticleType.BREEDING);
 
         doGenericMessage(entity, player, Generic.BREEDING);
 

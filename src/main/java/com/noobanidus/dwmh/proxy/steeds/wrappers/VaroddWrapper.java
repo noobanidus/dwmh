@@ -2,6 +2,8 @@ package com.noobanidus.dwmh.proxy.steeds.wrappers;
 
 import com.lying.variousoddities.entity.mount.AbstractMount;
 import com.lying.variousoddities.entity.mount.EntityGryphon;
+import com.noobanidus.dwmh.client.render.particle.ParticleSender;
+import com.noobanidus.dwmh.util.ParticleType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.passive.AbstractHorse;
@@ -113,11 +115,11 @@ public class VaroddWrapper implements IWrapper {
     public void setTamedBy(EntityPlayer player) {
         if (pegasi == null) {
             gryphon.setTamedBy(player);
-            gryphon.world.setEntityState(gryphon, (byte) 7);
         } else {
             pegasi.setTamedBy(player);
-            pegasi.world.setEntityState(pegasi, (byte) 7);
         }
+        Entity entity = getEntity();
+        ParticleSender.generateParticles(entity, ParticleType.TAMING);
     }
 
     public boolean ageable() {

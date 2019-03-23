@@ -14,6 +14,11 @@ public class ClientStorage {
         DWMHConfig.updateConfig();
     }
 
+    public void reset () {
+        this.localConfig = null;
+        this.serverConfig = null;
+    }
+
     private NBTTagCompound getTagCompound() {
         // Too soon to be initialising from the serverConfig as we haven't even
         // logged into a server yet.

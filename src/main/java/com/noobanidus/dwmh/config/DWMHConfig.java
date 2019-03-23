@@ -47,6 +47,7 @@ public class DWMHConfig {
     @SubscribeEvent
     public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
         if (event.getModID().equals(DWMH.MODID)) {
+            DWMH.clientStorage.reset();
             updateConfig();
         }
     }

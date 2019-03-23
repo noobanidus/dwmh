@@ -56,6 +56,10 @@ public class EventHandler {
 
     @SubscribeEvent
     public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
+        if (event.player.world.isRemote) {
+            DWMH.clientStorage.reset();
+        }
+
         if (!event.player.world.isRemote) {
             PacketConfig.UpdateFromServer packet = new PacketConfig.UpdateFromServer(ConfigHandler.serialize());
             PacketHandler.sendTo(packet, (EntityPlayerMP) event.player);

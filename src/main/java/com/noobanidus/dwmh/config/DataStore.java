@@ -33,7 +33,7 @@ public class DataStore {
                 "Dragon Mounts 2", "dragonmounts",
                 "Various Oddities", "varodd",
                 "Moolands", "moolands",
-                "Resource Hogs", "resourechogs",
+                "Resource Hogs", "resourcehogs",
                 "Merpig", "merpig");
 
         CLASS_REFERENCE.put("zawa", new HashSet<>());

@@ -2,14 +2,14 @@ package com.noobanidus.dwmh.proxy.steeds;
 
 import com.noobanidus.dwmh.DWMH;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.event.entity.EntityMountEvent;
 
 public class SteedProxy implements ISteedProxy {
     // The current lowest common denominator class for supported mocClasses
-    public static Class<?> LOWEST_DENOMINATOR = EntityCreature.class;
+    public static Class<?> LOWEST_DENOMINATOR = EntityLiving.class;
 
     @Override
     public boolean hasCustomName(Entity entity) {

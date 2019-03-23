@@ -108,10 +108,8 @@ public interface ISteedProxy {
     }
 
     default boolean onDismount(EntityMountEvent event) {
-        if (event.isDismounting() && event.getEntityMounting() instanceof EntityPlayer && isMyMod(event.getEntityBeingMounted()) && DWMHConfig.Ocarina.home && !DWMHConfig.Ocarina.skipDismount) {
-            EntityCreature entity = (EntityCreature) event.getEntityBeingMounted();
-            entity.detachHome();
-            // DWMH.LOG.info("Removed home for " + entity.getDisplayName());
+        if (event.getEntityBeingMounted() instanceof EntityCreature && event.isDismounting() && event.getEntityMounting() instanceof EntityPlayer && isMyMod(event.getEntityBeingMounted()) && DWMHConfig.Ocarina.home && !DWMHConfig.Ocarina.skipDismount) {
+            ((EntityCreature) event.getEntityBeingMounted()).detachHome();
             return true;
         }
 

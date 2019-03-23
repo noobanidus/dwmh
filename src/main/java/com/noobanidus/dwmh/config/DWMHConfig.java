@@ -373,6 +373,18 @@ public class DWMHConfig {
             @Comment("Set to false to disable the Moolands proxy (even if it would normally load)")
             @Name("Moolands")
             public boolean moolands = true;
+
+            @RequiresMcRestart
+            @LangKey("config.proxies.disable.merpig") // TODO: FILL IN
+            @Comment("Set to false to disable the Merpig proxy (even if it would normally load)")
+            @Name("Merpig")
+            public boolean merpig = true;
+
+            @RequiresMcRestart
+            @LangKey("config.proxies.disable.resourcehogs") // TODO: FILL IN
+            @Comment("Set to false to disable the Resource Hogs proxy (even if it would normally load)")
+            @Name("Resource Hogs")
+            public boolean resourcehogs = true;
         }
 
         public class Animania {

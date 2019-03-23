@@ -10,6 +10,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -264,14 +265,14 @@ public class ItemOcarina extends ItemDWMHRepairable {
 
         List<Entity> nearbyHorses = world.getEntities(Entity.class, (entity) -> isValidHorse(entity, player));
         for (Entity entity : nearbyHorses) {
-            EntityCreature horse = (EntityCreature) entity;
+            EntityLiving horse = (EntityLiving) entity;
             double max = DWMHConfig.Ocarina.getMaxDistance();
             if (horse.getDistanceSq(player) < (max * max) || max == 0) {
                 if (amountPer != 0) {
                     // Early breakpoint: if the number consumed thus far taken from the initial total is less than the amount, break
                     if (amountIn - totalConsumed < amountPer) {
                         if (totalConsumed == 0) {
-                            temp = new TextComponentTranslation("dwmh.strings.summon_item_missing", itemCost.getDisplayName());
+                            temp = new TextComponentTranslation("dwmh.strings.summon_item_missing", itemCost.getDisplayName(), amountPer);
                         } else {
                             temp = new TextComponentTranslation("dwmh.strings.summon_item_missing_middle", itemCost.getDisplayName(), totalConsumed);
                         }
@@ -309,8 +310,8 @@ public class ItemOcarina extends ItemDWMHRepairable {
                 }
                 player.swingArm(hand);
                 horse.getNavigator().clearPath();
-                if (DWMHConfig.Ocarina.home) {
-                    horse.setHomePosAndDistance(pos, 5);
+                if (DWMHConfig.Ocarina.home && horse instanceof EntityCreature) {
+                    ((EntityCreature) horse).setHomePosAndDistance(pos, 5);
                 }
             }
         }

@@ -4,7 +4,8 @@ import com.noobanidus.dwmh.DWMH;
 import com.noobanidus.dwmh.capability.CapabilityOwnHandler;
 import com.noobanidus.dwmh.capability.CapabilityOwner;
 import com.noobanidus.dwmh.config.DWMHConfig;
-import com.noobanidus.dwmh.util.SoundType;
+import com.noobanidus.dwmh.util.MessageHandler;
+import com.noobanidus.dwmh.util.OcarinaSound;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -160,6 +161,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
         if (!world.isRemote) {
+            // TODO
             if (player.isSneaking() && !DWMHConfig.client.clientOcarina.swap || !player.isSneaking() && DWMHConfig.client.clientOcarina.swap) {
                 doListing(world, player, hand);
             } else {
@@ -194,16 +196,19 @@ public class ItemOcarina extends ItemDWMHRepairable {
 
             float dist = player.getDistance(horse);
 
-            ITextComponent result = new TextComponentTranslation("dwmh.strings.is_at", entityName, (DWMH.steedProxy.hasCustomName(horse)) ? new TextComponentTranslation("dwmh.strings.named", DWMH.steedProxy.getCustomNameTag(horse)) : "", DWMH.steedProxy.getResponseKey(horse, player), hpos.getX(), hpos.getY(), hpos.getZ());
+            ITextComponent result1 = new TextComponentTranslation("dwmh.strings.is_at",
+                    entityName,
+                    (DWMH.steedProxy.hasCustomName(horse)) ? new TextComponentTranslation("dwmh.strings.named", DWMH.steedProxy.getCustomNameTag(horse)) : "",
+                    DWMH.steedProxy.getResponseKey(horse, player),
+                    hpos.getX(),
+                    hpos.getY(),
+                    hpos.getZ());
 
-            // TODO
-            if (DWMHConfig.client.clientOcarina.distance) {
-                double angle = Math.atan2(hpos.getZ() - pos.getZ(), hpos.getX() - pos.getX());
-                int index = (int) Math.round(angle / Math.PI * 4 + 10) % 8;
-                result.appendSibling(new TextComponentTranslation("dwmh.strings.blocks", (int) dist, directions.get(index)));
-            }
 
-            player.sendMessage(result);
+            double angle = Math.atan2(hpos.getZ() - pos.getZ(), hpos.getX() - pos.getX());
+            int index = (int) Math.round(angle / Math.PI * 4 + 10) % 8;
+            ITextComponent result2 = new TextComponentTranslation("dwmh.strings.blocks", (int) dist, directions.get(index));
+            MessageHandler.sendListingMessage(player, result1, result2);
         }
         if (!didStuff) {
             temp = new TextComponentTranslation("dwmh.strings.no_eligible_to_list");
@@ -241,7 +246,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
             if (amountIn < amountPer) {
                 temp = new TextComponentTranslation("dwmh.strings.summon_item_missing", itemCost.getDisplayName(), amountPer);
                 temp.getStyle().setColor(TextFormatting.DARK_RED);
-                SoundType.MINOR.playSound(player, stack);
+                MessageHandler.sendOcarinaTune(stack, player, OcarinaSound.MINOR);
                 player.sendMessage(temp);
                 return false;
             }
@@ -253,8 +258,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
                 ITextComponent temp2 = new TextComponentTranslation(key); // );
                 temp2.getStyle().setColor(TextFormatting.BLUE);
                 player.sendMessage(temp2);
-                if (playSound)
-                    SoundType.BROKEN.playSound(player, stack);
+                MessageHandler.sendOcarinaTune(stack, player, OcarinaSound.BROKEN);
                 return false;
             }
 
@@ -278,7 +282,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
                         }
                         temp.getStyle().setColor(TextFormatting.DARK_RED);
                         player.sendMessage(temp);
-                        SoundType.MINOR.playSound(player, stack);
+                        MessageHandler.sendOcarinaTune(stack, player, OcarinaSound.MINOR);
                         return false;
                     } else {
                         int cleared = inv.clearMatchingItems(itemCost.getItem(), itemCost.getMetadata(), amountPer, null);
@@ -295,16 +299,16 @@ public class ItemOcarina extends ItemDWMHRepairable {
                     if (!durabilityCheck.apply("dwmh.strings.break_whistle", false)) return false;
                 }
                 // TODO
-                if (!DWMHConfig.client.clientOcarina.quiet && !DWMHConfig.client.clientOcarina.simple) {
-                    if (DWMH.steedProxy.hasCustomName(horse)) {
-                        temp = new TextComponentTranslation("dwmh.strings.teleport_with_name", DWMH.steedProxy.getCustomNameTag(horse));
-                        temp.getStyle().setColor(TextFormatting.GOLD);
-                    } else {
-                        temp = new TextComponentTranslation("dwmh.strings.teleport");
-                        temp.getStyle().setColor(TextFormatting.GOLD);
-                    }
-                    player.sendMessage(temp);
+                ITextComponent result;
+                if (DWMH.steedProxy.hasCustomName(horse)) {
+                    result = new TextComponentTranslation("dwmh.strings.teleport_with_name", DWMH.steedProxy.getCustomNameTag(horse));
+                    result.getStyle().setColor(TextFormatting.GOLD);
+                } else {
+                    result = new TextComponentTranslation("dwmh.strings.teleport");
+                    result.getStyle().setColor(TextFormatting.GOLD);
                 }
+                MessageHandler.sendSummonMessage(player, result);
+
                 if (DWMHConfig.Ocarina.functionality.getCooldown() > 0) {
                     player.getCooldownTracker().setCooldown(this, DWMHConfig.Ocarina.functionality.getCooldown());
                 }
@@ -316,7 +320,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
             }
         }
         if (didStuff) {
-            SoundType.NORMAL.playSound(player, stack);
+            MessageHandler.sendOcarinaTune(stack, player, OcarinaSound.NORMAL);
         }
         if (didStuff && totalConsumed != 0) {
             temp = new TextComponentTranslation("dwmh.strings.summon_item_success", itemCost.getDisplayName(), totalConsumed);
@@ -333,11 +337,9 @@ public class ItemOcarina extends ItemDWMHRepairable {
             }
             player.sendMessage(temp);
 
-            SoundType.MINOR.playSound(player, stack);
-        } else if (DWMHConfig.client.clientOcarina.simple) {
-            temp = new TextComponentTranslation("dwmh.strings.simplest_teleport");
-            temp.getStyle().setColor(TextFormatting.GOLD);
-            player.sendMessage(temp);
+            MessageHandler.sendOcarinaTune(stack, player, OcarinaSound.MINOR);
+        } else {
+            MessageHandler.sendGenericMessage(player, null, MessageHandler.Generic.SUMMONED, null, TextFormatting.GOLD);
         }
 
         return didStuff;

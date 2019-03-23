@@ -3,12 +3,19 @@ package com.noobanidus.dwmh.util;
 import com.noobanidus.dwmh.config.DWMHConfig;
 import com.noobanidus.dwmh.network.PacketHandler;
 import com.noobanidus.dwmh.network.PacketMessages;
+import com.noobanidus.dwmh.network.PacketSounds;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 import javax.annotation.Nullable;
 
@@ -28,33 +35,102 @@ public class MessageHandler {
                 break;
             case BREEDING:
                 if (!DWMHConfig.client.clientCarrot.breeding) return;
+            case SUMMONED:
+                if (!DWMHConfig.client.clientOcarina.simple) return;
                 break;
         }
 
-        Entity entity = message.getEntity(player.world);
+        player.sendMessage(message.getResult());
+    }
 
-        TextComponentTranslation key = new TextComponentTranslation(message.getLangKey(), entity.getDisplayName());
-        String format = message.getTextFormat();
-        if (!format.isEmpty()) {
-            TextFormatting tf = TextFormatting.getValueByName(format);
-            if (tf != null) {
-                key.setStyle(new Style().setColor(tf));
+    public static void sendGenericMessage (EntityPlayer player, @Nullable Entity entity, Generic generic, @Nullable String keyOverride, @Nullable TextFormatting format) {
+        String langKey;
+        if (keyOverride != null) {
+                langKey = keyOverride;
+            } else {
+                langKey = generic.getLanguageKey();
+            }
+        if (format == null) {
+            format = TextFormatting.YELLOW;
+        }
+
+        TextComponentTranslation key;
+
+        if (entity != null) {
+            key = new TextComponentTranslation(langKey, entity.getDisplayName());
+        } else {
+            key = new TextComponentTranslation(langKey);
+        }
+
+        key.setStyle(new Style().setColor(format));
+
+        PacketMessages.GenericMessage packet = new PacketMessages.GenericMessage(generic, key);
+        PacketHandler.sendTo(packet, (EntityPlayerMP) player);
+    }
+
+    public static void handleListingMessage (EntityPlayer player, PacketMessages.ListingMessage message) {
+        ITextComponent result = message.getResult1();
+
+        if (DWMHConfig.client.clientOcarina.distance) {
+            result.appendSibling(message.getResult2());
+        }
+
+        player.sendMessage(result);
+    }
+
+    public static void sendListingMessage (EntityPlayer player, ITextComponent result1, ITextComponent result2) {
+        PacketMessages.ListingMessage packet = new PacketMessages.ListingMessage(result1, result2);
+        PacketHandler.sendTo(packet, (EntityPlayerMP) player);
+    }
+
+    public static void handleSummonMessage (EntityPlayer player, PacketMessages.SummonMessage message) {
+        if (!DWMHConfig.client.clientOcarina.quiet && !DWMHConfig.client.clientOcarina.simple) {
+            player.sendMessage(message.getResult());
+        }
+    }
+
+    public static void sendSummonMessage (EntityPlayer player, ITextComponent result) {
+        PacketMessages.SummonMessage packet = new PacketMessages.SummonMessage(result);
+        PacketHandler.sendTo(packet, (EntityPlayerMP) player);
+    }
+
+    public static void handleOcarinaTune (EntityPlayer player, PacketSounds.OcarinaTune message) {
+        if (DWMHConfig.client.clientOcarina.sounds) {
+            SoundEvent sound = message.getType().getSoundEvent();
+            if (sound != null) {
+                player.playSound(sound, 1.5f, 1);
+            }
+        }
+    }
+
+    public static void sendOcarinaTune (ItemStack stack, EntityPlayer source, OcarinaSound sound) {
+        long cur = MinecraftServer.getCurrentTimeMillis();
+
+        NBTTagCompound tag = stack.getTagCompound();
+        if (tag == null) {
+            tag = new NBTTagCompound();
+            stack.setTagCompound(tag);
+        }
+
+        if (tag.hasKey("dwmh:last_played")) {
+            long lastPlayed = tag.getLong("dwmh:last_played");
+            if (cur - lastPlayed < DWMHConfig.Ocarina.soundDelay * 1000) {
+                return;
             }
         }
 
-        player.sendMessage(key);
-    }
+        tag.setLong("dwmh:last_played", cur);
 
-    public static void sendGenericMessage (EntityPlayer player, Entity entity, @Nullable Generic generic, @Nullable String keyOverride, @Nullable TextFormatting format) {
-        PacketMessages.GenericMessage packet = new PacketMessages.GenericMessage(entity, generic, keyOverride, format);
-        PacketHandler.sendTo(packet, (EntityPlayerMP) player);
+        PacketSounds.OcarinaTune packet = new PacketSounds.OcarinaTune(source, sound);
+        PacketHandler.sendToAllAround(packet, new NetworkRegistry.TargetPoint(source.dimension, source.posX, source.posY, source.posZ, 32));
     }
 
     public enum Generic {
         TAMING("dwmh.strings.generic.tamed"),
         HEALING("dwmh.strings.generic.healed"),
         AGING("dwmh.strings.generic.aged"),
-        BREEDING("dwhm.strings.generic.breed"),
+        BREEDING("dwmh.strings.generic.breed"),
+        SUMMONED("dwmh.strings.generic.summoned"),
         EMPTY("");
 
         String languageKey;

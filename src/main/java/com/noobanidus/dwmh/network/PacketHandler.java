@@ -20,6 +20,9 @@ public class PacketHandler {
         instance.registerMessage(PacketConfig.UpdateFromServer.Handler.class, PacketConfig.UpdateFromServer.class, 0, Side.CLIENT);
         instance.registerMessage(PacketParticles.GenerateParticles.Handler.class, PacketParticles.GenerateParticles.class, 1, Side.CLIENT);
         instance.registerMessage(PacketMessages.GenericMessage.Handler.class, PacketMessages.GenericMessage.class, 2, Side.CLIENT);
+        instance.registerMessage(PacketMessages.ListingMessage.Handler.class, PacketMessages.ListingMessage.class, 3, Side.CLIENT);
+        instance.registerMessage(PacketMessages.SummonMessage.Handler.class, PacketMessages.SummonMessage.class, 4, Side.CLIENT);
+        instance.registerMessage(PacketSounds.OcarinaTune.Handler.class, PacketSounds.OcarinaTune.class, 5, Side.CLIENT);
     }
 
     public static void sendToAll(IMessage message) {

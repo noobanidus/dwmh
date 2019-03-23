@@ -4,6 +4,7 @@ import com.noobanidus.dwmh.DWMH;
 import com.noobanidus.dwmh.client.render.particle.ParticleSender;
 import com.noobanidus.dwmh.config.DWMHConfig;
 import com.noobanidus.dwmh.items.ItemEnchantedCarrot;
+import com.noobanidus.dwmh.util.MessageHandler;
 import com.noobanidus.dwmh.util.ParticleType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
@@ -87,7 +88,7 @@ public class ZawaProxy implements ISteedProxy {
         animal.setEnrichment(animal.getMaxEnrichment());
         ParticleSender.generateParticles(animal, ParticleType.TAMING);
 
-        doGenericMessage(entity, player, Generic.TAMING, TextFormatting.GOLD);
+        doGenericMessage(entity, player, MessageHandler.Generic.TAMING, null, TextFormatting.GOLD);
 
         return 1;
     }
@@ -108,7 +109,7 @@ public class ZawaProxy implements ISteedProxy {
         animal.setGrowingAge(0);
         ParticleSender.generateParticles(animal, ParticleType.AGING);
 
-        doGenericMessage(entity, player, Generic.AGING);
+        doGenericMessage(entity, player, MessageHandler.Generic.AGING, null, null);
 
         return 1;
     }

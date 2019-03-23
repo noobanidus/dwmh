@@ -5,6 +5,7 @@ import com.noobanidus.dwmh.capability.CapabilityOwnHandler;
 import com.noobanidus.dwmh.capability.CapabilityOwner;
 import com.noobanidus.dwmh.client.render.particle.ParticleSender;
 import com.noobanidus.dwmh.config.DWMHConfig;
+import com.noobanidus.dwmh.util.MessageHandler;
 import com.noobanidus.dwmh.util.ParticleType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
@@ -77,7 +78,7 @@ public interface ISteedProxy {
         ParticleSender.generateParticles(horse, ParticleType.HEALING);
 
         if (DWMHConfig.client.clientCarrot.healing) {
-            doGenericMessage(entity, player, Generic.HEALING);
+            doGenericMessage(entity, player, MessageHandler.Generic.HEALING, null, null);
         }
 
         return 1;
@@ -118,24 +119,8 @@ public interface ISteedProxy {
         return false;
     }
 
-    default void doGenericMessage(Entity entity, EntityPlayer player, String keyOverride) {
-        doGenericMessage(entity, player, Generic.EMPTY, keyOverride, null);
-    }
-
-    default void doGenericMessage(Entity entity, EntityPlayer player, String keyOverride, TextFormatting format) {
-        doGenericMessage(entity, player, Generic.EMPTY, keyOverride, format);
-    }
-
-    default void doGenericMessage(Entity entity, EntityPlayer player, Generic generic, TextFormatting format) {
-        doGenericMessage(entity, player, generic, null, format);
-    }
-
-    default void doGenericMessage(Entity entity, EntityPlayer player, Generic generic) {
-        doGenericMessage(entity, player, generic, null, null);
-    }
-
     // This... probably shouldn't be here
-    default void doGenericMessage(Entity entity, EntityPlayer player, Generic generic, @Nullable String keyOverride, @Nullable TextFormatting format) {
+    default void doGenericMessage(Entity entity, EntityPlayer player, MessageHandler.Generic generic, @Nullable String keyOverride, @Nullable TextFormatting format) {
         String langKey;
 
         if (generic != null && !generic.isEmpty()) {
@@ -147,17 +132,7 @@ public interface ISteedProxy {
             return;
         }
 
-        TextFormatting formatKey;
-
-        if (format == null) {
-            formatKey = TextFormatting.YELLOW;
-        } else {
-            formatKey = format;
-        }
-
-        ITextComponent temp = new TextComponentTranslation(langKey, entity.getDisplayName());
-        temp.getStyle().setColor(formatKey);
-        player.sendMessage(temp);
+        MessageHandler.sendGenericMessage(player, entity, generic, keyOverride, format);
     }
 
     default CapabilityOwner capability(Entity entity) {
@@ -192,25 +167,4 @@ public interface ISteedProxy {
     default void stopIt() {
     }
 
-    enum Generic {
-        TAMING("dwmh.strings.generic.tamed"),
-        HEALING("dwmh.strings.generic.healed"),
-        AGING("dwmh.strings.generic.aged"),
-        BREEDING("dwhm.strings.generic.breed"),
-        EMPTY("");
-
-        String languageKey;
-
-        Generic(String langKey) {
-            this.languageKey = langKey;
-        }
-
-        public String getLanguageKey() {
-            return this.languageKey;
-        }
-
-        public boolean isEmpty() {
-            return this.equals(Generic.EMPTY);
-        }
-    }
 }

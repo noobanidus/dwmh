@@ -7,6 +7,7 @@ import com.noobanidus.dwmh.DWMH;
 import com.noobanidus.dwmh.client.render.particle.ParticleSender;
 import com.noobanidus.dwmh.config.DWMHConfig;
 import com.noobanidus.dwmh.proxy.steeds.wrappers.IceAndFireWrapper;
+import com.noobanidus.dwmh.util.MessageHandler;
 import com.noobanidus.dwmh.util.ParticleType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -59,7 +60,7 @@ public class IceAndFireProxy implements ISteedProxy {
         wrapper.setTamedBy(player);
         ParticleSender.generateParticles(entity, ParticleType.TAMING);
 
-        doGenericMessage(entity, player, Generic.TAMING);
+        doGenericMessage(entity, player, MessageHandler.Generic.TAMING, null, null);
 
         return 1;
     }
@@ -80,7 +81,7 @@ public class IceAndFireProxy implements ISteedProxy {
         wrapper.setGrowingAge(0);
         ParticleSender.generateParticles(entity, ParticleType.AGING);
 
-        doGenericMessage(entity, player, Generic.AGING);
+        doGenericMessage(entity, player, MessageHandler.Generic.AGING, null, null);
 
         return 1;
     }
@@ -102,7 +103,7 @@ public class IceAndFireProxy implements ISteedProxy {
         wrapper.setInLove(player);
         ParticleSender.generateParticles(entity, ParticleType.BREEDING);
 
-        doGenericMessage(entity, player, Generic.BREEDING);
+        doGenericMessage(entity, player, MessageHandler.Generic.BREEDING, null, null);
 
         return 1;
     }

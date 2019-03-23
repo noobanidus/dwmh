@@ -3,9 +3,8 @@ package com.noobanidus.dwmh.proxy.steeds;
 import com.noobanidus.dwmh.DWMH;
 import com.noobanidus.dwmh.client.render.particle.ParticleSender;
 import com.noobanidus.dwmh.config.DWMHConfig;
-import com.noobanidus.dwmh.network.PacketHandler;
-import com.noobanidus.dwmh.network.PacketParticles;
 import com.noobanidus.dwmh.proxy.steeds.wrappers.Atum2Wrapper;
+import com.noobanidus.dwmh.util.MessageHandler;
 import com.noobanidus.dwmh.util.ParticleType;
 import com.teammetallurgy.atum.entity.animal.EntityCamel;
 import com.teammetallurgy.atum.entity.animal.EntityDesertWolf;
@@ -86,7 +85,7 @@ public class Atum2Proxy implements ISteedProxy {
             ParticleSender.generateParticles(wolf, ParticleType.TAMING);
         }
 
-        doGenericMessage(entity, player, Generic.TAMING);
+        doGenericMessage(entity, player, MessageHandler.Generic.TAMING, null, null);
 
         return 1;
     }
@@ -105,7 +104,7 @@ public class Atum2Proxy implements ISteedProxy {
         wrapper.setGrowingAge(0);
         ParticleSender.generateParticles(entity, ParticleType.AGING);
 
-        doGenericMessage(entity, player, Generic.AGING);
+        doGenericMessage(entity, player, MessageHandler.Generic.AGING, null, null);
 
         return 1;
     }
@@ -130,7 +129,7 @@ public class Atum2Proxy implements ISteedProxy {
 
         ParticleSender.generateParticles(entity, ParticleType.BREEDING);
 
-        doGenericMessage(entity, player, Generic.BREEDING);
+        doGenericMessage(entity, player, MessageHandler.Generic.BREEDING, null, null);
 
         return 1;
     }

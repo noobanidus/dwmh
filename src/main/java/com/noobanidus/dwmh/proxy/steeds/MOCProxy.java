@@ -3,6 +3,7 @@ package com.noobanidus.dwmh.proxy.steeds;
 import com.google.common.collect.Lists;
 import com.noobanidus.dwmh.client.render.particle.ParticleSender;
 import com.noobanidus.dwmh.config.DWMHConfig;
+import com.noobanidus.dwmh.util.MessageHandler;
 import com.noobanidus.dwmh.util.ParticleType;
 import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.entity.MoCEntityTameableAnimal;
@@ -142,7 +143,7 @@ public class MOCProxy implements ISteedProxy {
         MoCTools.tameWithName(player, animal);
         ParticleSender.generateParticles(entity, ParticleType.TAMING);
 
-        doGenericMessage(entity, player, Generic.TAMING);
+        doGenericMessage(entity, player, MessageHandler.Generic.TAMING, null, null);
 
         return 1;
     }
@@ -169,7 +170,7 @@ public class MOCProxy implements ISteedProxy {
 
         ParticleSender.generateParticles(entity, ParticleType.AGING);
 
-        doGenericMessage(entity, player, Generic.AGING);
+        doGenericMessage(entity, player, MessageHandler.Generic.AGING, null, null);
 
         return 1;
     }

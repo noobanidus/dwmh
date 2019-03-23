@@ -5,6 +5,7 @@ import com.lying.variousoddities.entity.mount.EntityChestPegasus;
 import com.lying.variousoddities.entity.mount.EntityPegasus;
 import com.noobanidus.dwmh.config.DWMHConfig;
 import com.noobanidus.dwmh.proxy.steeds.wrappers.VaroddWrapper;
+import com.noobanidus.dwmh.util.MessageHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.ITextComponent;
@@ -71,7 +72,7 @@ public class VaroddProxy implements ISteedProxy {
 
         wrapper.setTamedBy(player);
 
-        doGenericMessage(entity, player, Generic.TAMING);
+        doGenericMessage(entity, player, MessageHandler.Generic.TAMING, null, null);
 
         return 1;
     }
@@ -92,7 +93,7 @@ public class VaroddProxy implements ISteedProxy {
         wrapper.setGrowingAge(0);
         wrapper.world.setEntityState(entity, (byte) 7);
 
-        doGenericMessage(entity, player, Generic.AGING);
+        doGenericMessage(entity, player, MessageHandler.Generic.AGING, null, null);
 
         return 1;
     }
@@ -115,7 +116,7 @@ public class VaroddProxy implements ISteedProxy {
         VaroddWrapper wrapper = new VaroddWrapper(entity);
         wrapper.setInLove(player);
 
-        doGenericMessage(entity, player, Generic.BREEDING);
+        doGenericMessage(entity, player, MessageHandler.Generic.BREEDING, null, null);
 
         return 1;
     }

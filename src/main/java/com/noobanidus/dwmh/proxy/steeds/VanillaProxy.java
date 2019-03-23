@@ -3,9 +3,9 @@ package com.noobanidus.dwmh.proxy.steeds;
 import com.noobanidus.dwmh.DWMH;
 import com.noobanidus.dwmh.client.render.particle.ParticleSender;
 import com.noobanidus.dwmh.config.DWMHConfig;
+import com.noobanidus.dwmh.util.MessageHandler;
 import com.noobanidus.dwmh.util.ParticleType;
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.client.particle.Particle;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.*;
 import net.minecraft.entity.player.EntityPlayer;
@@ -71,7 +71,7 @@ public class VanillaProxy implements ISteedProxy {
         }
 
         ParticleSender.generateParticles(horse, ParticleType.TAMING);
-        doGenericMessage(entity, player, Generic.TAMING);
+        doGenericMessage(entity, player, MessageHandler.Generic.TAMING, null, null);
 
         return 1;
     }
@@ -94,7 +94,7 @@ public class VanillaProxy implements ISteedProxy {
         horse.setGrowingAge(0);
         ParticleSender.generateParticles(entity, ParticleType.AGING);
 
-        doGenericMessage(entity, player, Generic.AGING);
+        doGenericMessage(entity, player, MessageHandler.Generic.AGING, null, null);
 
         return 1;
     }
@@ -124,7 +124,7 @@ public class VanillaProxy implements ISteedProxy {
 
         ParticleSender.generateParticles(horse, ParticleType.BREEDING);
 
-        doGenericMessage(entity, player, Generic.BREEDING);
+        doGenericMessage(entity, player, MessageHandler.Generic.BREEDING, null, null);
 
         return 1;
     }

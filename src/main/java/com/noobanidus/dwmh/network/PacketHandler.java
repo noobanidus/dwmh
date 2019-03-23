@@ -19,6 +19,7 @@ public class PacketHandler {
     public static void initPackets() {
         instance.registerMessage(PacketConfig.UpdateFromServer.Handler.class, PacketConfig.UpdateFromServer.class, 0, Side.CLIENT);
         instance.registerMessage(PacketParticles.GenerateParticles.Handler.class, PacketParticles.GenerateParticles.class, 1, Side.CLIENT);
+        instance.registerMessage(PacketMessages.GenericMessage.Handler.class, PacketMessages.GenericMessage.class, 2, Side.CLIENT);
     }
 
     public static void sendToAll(IMessage message) {

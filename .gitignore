@@ -64,3 +64,5 @@ sign.bat
 *.json
 
 CHANGELOG.md
+runClient
+runServer

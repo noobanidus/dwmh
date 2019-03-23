@@ -114,6 +114,16 @@ public class ItemOcarina extends ItemDWMHRepairable {
         setInternalRepair(DWMH.clientStorage.getString("Ocarina", "repairItem"));
     }
 
+    @Override
+    public boolean isEnchantable(ItemStack stack) {
+        return true;
+    }
+
+    @Override
+    public int getItemEnchantability() {
+        return 1;
+    }
+
     private boolean isValidHorse(Entity entity, EntityPlayer player) {
         return isValidHorse(entity, player, false);
     }

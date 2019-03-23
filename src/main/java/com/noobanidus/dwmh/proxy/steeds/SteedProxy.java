@@ -223,7 +223,7 @@ public class SteedProxy implements ISteedProxy {
     }
 
     @Override
-    public boolean pseudoTaming (Entity entity) {
+    public boolean pseudoTaming(Entity entity) {
         for (ISteedProxy proxy : DWMH.proxyList) {
             if (proxy.isMyMod(entity)) {
                 return proxy.pseudoTaming();
@@ -234,7 +234,7 @@ public class SteedProxy implements ISteedProxy {
     }
 
     @Override
-    public boolean pseudoTaming () {
+    public boolean pseudoTaming() {
         for (ISteedProxy proxy : DWMH.proxyList) {
             if (proxy.pseudoTaming()) {
                 return true;

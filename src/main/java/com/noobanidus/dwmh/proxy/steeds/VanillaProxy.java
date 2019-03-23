@@ -99,9 +99,7 @@ public class VanillaProxy implements ISteedProxy {
         // As are undead horses.
         if (horse instanceof EntitySkeletonHorse || horse instanceof EntityZombieHorse) return false;
 
-        if (horse.isChild() || horse.getGrowingAge() != 0 || horse.isInLove()) return false;
-
-        return true;
+        return !horse.isChild() && horse.getGrowingAge() == 0 && !horse.isInLove();
     }
 
     @Override

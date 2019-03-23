@@ -88,9 +88,7 @@ public class DragonMountProxy implements ISteedProxy {
 
         EntityTameableDragon dragon = (EntityTameableDragon) entity;
 
-        if (!dragon.isAdult() || dragon.isInLove()) return false;
-
-        return true;
+        return dragon.isAdult() && !dragon.isInLove();
     }
 
     @Override

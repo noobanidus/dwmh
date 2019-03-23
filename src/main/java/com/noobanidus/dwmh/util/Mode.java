@@ -33,13 +33,13 @@ public enum Mode {
         return type;
     }
 
-    public String getTranslationKey () {
+    public String getTranslationKey() {
         if (this == EMPTY) return null;
 
         return String.format("dwmh.string.mode.%s", getType());
     }
 
-    public TextFormatting getColour () {
+    public TextFormatting getColour() {
         return format;
     }
 }

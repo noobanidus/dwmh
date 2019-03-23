@@ -12,12 +12,11 @@ import net.minecraft.world.World;
 import java.util.UUID;
 
 public class VaroddWrapper implements IWrapper {
+    public int dimension;
+    public World world;
     private EntityGryphon gryphon;
     private AbstractHorse pegasi;
     private EntityCreature base;
-
-    public int dimension;
-    public World world;
 
     public VaroddWrapper(Entity entity) {
         assert entity instanceof EntityCreature;
@@ -37,73 +36,81 @@ public class VaroddWrapper implements IWrapper {
     }
 
     @Override
-    public boolean isHorseSaddled () {
+    public boolean isHorseSaddled() {
         return (pegasi == null) ? gryphon.isSaddled() : pegasi.isHorseSaddled();
     }
 
     @Override
-    public boolean isTame () {
+    public boolean isTame() {
         return (pegasi != null) ? pegasi.isTame() : gryphon.isTame();
     }
 
     @Override
-    public boolean isChild () {
+    public boolean isChild() {
         return (pegasi != null) && pegasi.isChild();
     }
 
     @Override
-    public UUID getOwnerUniqueId () {
+    public UUID getOwnerUniqueId() {
         return (pegasi != null) ? pegasi.getOwnerUniqueId() : gryphon.getOwnerUniqueId();
     }
 
     @Override
-    public void setGrowingAge (int age) {
+    public int getGrowingAge() {
+        return (pegasi != null) ? pegasi.getGrowingAge() : -1;
+    }
+
+    @Override
+    public void setGrowingAge(int age) {
         if (pegasi != null) pegasi.setGrowingAge(age);
         return;
     }
 
     @Override
-    public int getGrowingAge () {
-        return (pegasi != null) ? pegasi.getGrowingAge() : -1;
-    }
-
-    @Override
-    public EntityCreature getEntity () {
+    public EntityCreature getEntity() {
         return base;
     }
 
     @Override
-    public boolean isInLove () {
+    public boolean isInLove() {
         return (pegasi != null) && pegasi.isInLove();
     }
 
     @Override
-    public boolean hasHome () {
+    public void setInLove(EntityPlayer player) {
+        if (pegasi != null) {
+            pegasi.setInLove(player);
+            pegasi.world.setEntityState(pegasi, (byte) 7);
+        }
+    }
+
+    @Override
+    public boolean hasHome() {
         return (pegasi != null) ? pegasi.hasHome() : gryphon.hasHome();
     }
 
     @Override
-    public BlockPos getHomePosition () {
+    public BlockPos getHomePosition() {
         return (pegasi != null) ? pegasi.getHomePosition() : gryphon.getHomePosition();
     }
 
     @Override
-    public boolean getLeashed () {
+    public boolean getLeashed() {
         return (pegasi != null) ? pegasi.getLeashed() : gryphon.getLeashed();
     }
 
     @Override
-    public boolean isBeingRidden () {
+    public boolean isBeingRidden() {
         return (pegasi != null) ? pegasi.isBeingRidden() : gryphon.isBeingRidden();
     }
 
     @Override
-    public boolean isRidingSameEntity (Entity entity) {
+    public boolean isRidingSameEntity(Entity entity) {
         return (pegasi != null) ? pegasi.isRidingSameEntity(entity) : gryphon.isRidingSameEntity(entity);
     }
 
     @Override
-    public void setTamedBy (EntityPlayer player) {
+    public void setTamedBy(EntityPlayer player) {
         if (pegasi == null) {
             gryphon.setTamedBy(player);
             gryphon.world.setEntityState(gryphon, (byte) 7);
@@ -113,19 +120,11 @@ public class VaroddWrapper implements IWrapper {
         }
     }
 
-    @Override
-    public void setInLove (EntityPlayer player) {
-        if (pegasi != null) {
-            pegasi.setInLove(player);
-            pegasi.world.setEntityState(pegasi, (byte)7);
-        }
-    }
-
-    public boolean ageable () {
+    public boolean ageable() {
         return pegasi != null && isChild();
     }
 
-    public boolean isGryphon () {
+    public boolean isGryphon() {
         return gryphon != null;
     }
 }

@@ -35,11 +35,7 @@ public class ZawaProxy implements ISteedProxy {
         }
 
         ZAWABaseLand zawa = (ZAWABaseLand) entity;
-        if (zawa.getOwnerId() == null || !zawa.getOwnerId().equals(player.getUniqueID())) {
-            return false;
-        }
-
-        return true;
+        return zawa.getOwnerId() != null && zawa.getOwnerId().equals(player.getUniqueID());
     }
 
     private boolean isSaddled(ZAWABaseLand entity) {
@@ -89,7 +85,7 @@ public class ZawaProxy implements ISteedProxy {
         animal.setEnrichment(animal.getMaxEnrichment());
         animal.world.setEntityState(animal, (byte) 7);
 
-            doGenericMessage(entity, player, Generic.TAMING, TextFormatting.GOLD);
+        doGenericMessage(entity, player, Generic.TAMING, TextFormatting.GOLD);
 
         return 1;
     }
@@ -100,9 +96,8 @@ public class ZawaProxy implements ISteedProxy {
 
         ZAWABaseLand animal = (ZAWABaseLand) entity;
 
-        if (animal.isChild()) return true;
+        return animal.isChild();
 
-        return false;
     }
 
     @Override
@@ -111,7 +106,7 @@ public class ZawaProxy implements ISteedProxy {
         animal.setGrowingAge(0);
         animal.world.setEntityState(animal, (byte) 7);
 
-            doGenericMessage(entity, player, Generic.AGING);
+        doGenericMessage(entity, player, Generic.AGING);
 
         return 1;
     }

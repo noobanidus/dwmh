@@ -16,9 +16,8 @@ public class CapabilityOwner implements INBTSerializable<NBTTagString> {
         owner = newOwner;
     }
 
-    public boolean hasOwner () {
-        if (owner == null) return false;
-        return true;
+    public boolean hasOwner() {
+        return owner != null;
     }
 
     public boolean ownerMatches(UUID otherOwner) {

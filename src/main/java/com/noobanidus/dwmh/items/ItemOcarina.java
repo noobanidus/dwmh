@@ -1,8 +1,8 @@
 package com.noobanidus.dwmh.items;
 
 import com.noobanidus.dwmh.DWMH;
-import com.noobanidus.dwmh.capability.CapabilityOwner;
 import com.noobanidus.dwmh.capability.CapabilityOwnHandler;
+import com.noobanidus.dwmh.capability.CapabilityOwner;
 import com.noobanidus.dwmh.config.DWMHConfig;
 import com.noobanidus.dwmh.util.SoundType;
 import net.minecraft.client.gui.GuiScreen;
@@ -35,7 +35,6 @@ import java.util.function.BiFunction;
 
 public class ItemOcarina extends ItemDWMHRepairable {
     private List<TextComponentTranslation> directions = new ArrayList<>();
-
 
 
     private static boolean unuseableItem(ItemStack item) {

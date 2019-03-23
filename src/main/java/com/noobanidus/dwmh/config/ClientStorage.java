@@ -14,7 +14,7 @@ public class ClientStorage {
         DWMHConfig.updateConfig();
     }
 
-    public void reset () {
+    public void reset() {
         this.localConfig = null;
         this.serverConfig = null;
     }

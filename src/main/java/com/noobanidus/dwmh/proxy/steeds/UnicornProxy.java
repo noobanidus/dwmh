@@ -60,9 +60,7 @@ public class UnicornProxy extends VanillaProxy {
         if (entity instanceof EntityAleaBringerOfDawn && entity.getCustomNameTag().equals("Alea")) return false;
         if (entity instanceof EntityTyphonTheDestroyer && entity.getCustomNameTag().equals("Typhon")) return false;
         if (entity instanceof EntityVelvetMysticalHealer && entity.getCustomNameTag().equals("Velvet")) return false;
-        if (entity instanceof EntityAsmidiske && entity.getCustomNameTag().equals("Asmidiske")) return false;
-
-        return true;
+        return !(entity instanceof EntityAsmidiske) || !entity.getCustomNameTag().equals("Asmidiske");
     }
 
     @Override

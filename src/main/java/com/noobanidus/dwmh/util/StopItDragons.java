@@ -16,7 +16,7 @@ public class StopItDragons extends Logger {
         super(context, name, messageFactory);
     }
 
-    public static StopItDragons stopIt (org.apache.logging.log4j.Logger log) {
+    public static StopItDragons stopIt(org.apache.logging.log4j.Logger log) {
         return new StopItDragons(((Logger) log).getContext(), log.getName(), log.getMessageFactory());
     }
 

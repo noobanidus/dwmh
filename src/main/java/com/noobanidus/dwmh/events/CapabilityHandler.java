@@ -11,7 +11,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 @Mod.EventBusSubscriber
 public class CapabilityHandler {
     @SubscribeEvent
-    public static void onEntityCapabilitiesAttach (AttachCapabilitiesEvent<Entity> event) {
+    public static void onEntityCapabilitiesAttach(AttachCapabilitiesEvent<Entity> event) {
         Entity entity = event.getObject();
 
         if (SteedProxy.LOWEST_DENOMINATOR.isAssignableFrom(entity.getClass()) && DWMH.steedProxy.pseudoTaming(entity)) {

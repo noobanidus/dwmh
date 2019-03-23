@@ -2,17 +2,10 @@ package com.noobanidus.dwmh.items;
 
 import com.noobanidus.dwmh.DWMH;
 import com.noobanidus.dwmh.config.DWMHConfig;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.IJumpingMount;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 @SuppressWarnings("WeakerAccess")
 public class ItemDWMHRepairable extends Item {
@@ -21,16 +14,13 @@ public class ItemDWMHRepairable extends Item {
 
     @SuppressWarnings("deprecation")
     public static boolean useableItem(ItemStack item) {
-        if (item.getItem() instanceof ItemEnchantedCarrot && DWMH.clientStorage.getBoolean("Carrot", "breakable")) return true;
+        if (item.getItem() instanceof ItemEnchantedCarrot && DWMH.clientStorage.getBoolean("Carrot", "breakable"))
+            return true;
 
         if (item.getItemDamage() > item.getMaxDamage()) {
             item.setItemDamage(item.getMaxDamage());
             return false;
-        } else if (item.getItemDamage() == item.getMaxDamage()) {
-            return false;
-        } else {
-            return true;
-        }
+        } else return item.getItemDamage() != item.getMaxDamage();
     }
 
     public static void damageItem(ItemStack item, EntityPlayer player) {
@@ -150,7 +140,8 @@ public class ItemDWMHRepairable extends Item {
 
         if (stack.getItemDamage() == 0) return false;
 
-        if (stack.getItem() instanceof ItemEnchantedCarrot && DWMH.clientStorage.getBoolean("Carrot", "breakable")) return true;
+        if (stack.getItem() instanceof ItemEnchantedCarrot && DWMH.clientStorage.getBoolean("Carrot", "breakable"))
+            return true;
 
         return super.showDurabilityBar(stack);
     }

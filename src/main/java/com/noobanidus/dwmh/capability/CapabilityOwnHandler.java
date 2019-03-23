@@ -22,10 +22,6 @@ public class CapabilityOwnHandler implements ICapabilitySerializable<NBTTagStrin
     public static Capability<CapabilityOwner> INSTANCE = null;
     private final CapabilityOwner capability;
 
-    public static class NBT_Tags {
-        public final static String OWNER = "owner";
-    }
-
     public CapabilityOwnHandler() {
         this.capability = new CapabilityOwner();
     }
@@ -53,6 +49,10 @@ public class CapabilityOwnHandler implements ICapabilitySerializable<NBTTagStrin
     @Override
     public void deserializeNBT(NBTTagString nbt) {
         capability.deserializeNBT(nbt);
+    }
+
+    public static class NBT_Tags {
+        public final static String OWNER = "owner";
     }
 
     public static class CapabilityNameStorage implements Capability.IStorage<CapabilityOwner> {

@@ -66,7 +66,7 @@ public class DataStore {
         return null;
     }
 
-    public static String proxy (String configName) {
+    public static String proxy(String configName) {
         if (CONFIG_LIST.containsKey(configName)) return CONFIG_LIST.get(configName);
 
         return null;

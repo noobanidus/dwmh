@@ -4,7 +4,6 @@ import com.noobanidus.dwmh.DWMH;
 import com.noobanidus.dwmh.capability.CapabilityOwnHandler;
 import com.noobanidus.dwmh.capability.CapabilityOwner;
 import com.noobanidus.dwmh.config.DWMHConfig;
-import ibxm.Player;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityList;
@@ -14,7 +13,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.event.entity.EntityMountEvent;
 
 import javax.annotation.Nullable;
@@ -47,11 +45,7 @@ public interface ISteedProxy {
         }
 
         // Compatibility for Horse Power device-attached animals
-        if (animal.hasHome() && animal.world.getTileEntity(animal.getHomePosition()) != null) {
-            return false;
-        }
-
-        return true;
+        return !animal.hasHome() || animal.world.getTileEntity(animal.getHomePosition()) == null;
     }
 
     boolean isListable(Entity entity, EntityPlayer player);
@@ -68,9 +62,8 @@ public interface ISteedProxy {
     default boolean isHealable(Entity entity, EntityPlayer player) {
         if (isMyMod(entity)) {
             EntityLiving horse = (EntityLiving) entity;
-            if (horse.getHealth() < horse.getMaxHealth()) return true;
+            return horse.getHealth() < horse.getMaxHealth();
 
-            return false;
         }
 
         return false;
@@ -167,13 +160,13 @@ public interface ISteedProxy {
         player.sendMessage(temp);
     }
 
-    default CapabilityOwner capability (Entity entity) {
+    default CapabilityOwner capability(Entity entity) {
         if (!entity.hasCapability(CapabilityOwnHandler.INSTANCE, null)) return null;
 
         return entity.getCapability(CapabilityOwnHandler.INSTANCE, null);
     }
 
-    default boolean ownedBy (Entity entity, EntityPlayer player) {
+    default boolean ownedBy(Entity entity, EntityPlayer player) {
         CapabilityOwner cap = capability(entity);
         if (cap == null) return false;
 
@@ -188,15 +181,15 @@ public interface ISteedProxy {
         return cap.hasOwner();
     }
 
-    default boolean pseudoTaming (Entity entity) {
+    default boolean pseudoTaming(Entity entity) {
         return false;
     }
 
-    default boolean pseudoTaming () {
+    default boolean pseudoTaming() {
         return false;
     }
 
-    default void stopIt () {
+    default void stopIt() {
     }
 
     enum Generic {

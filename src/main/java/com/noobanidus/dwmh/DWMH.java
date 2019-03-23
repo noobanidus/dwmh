@@ -1,17 +1,18 @@
 package com.noobanidus.dwmh;
 
 import com.google.common.collect.Lists;
-import com.noobanidus.dwmh.config.*;
+import com.noobanidus.dwmh.config.ClientStorage;
+import com.noobanidus.dwmh.config.CreativeTabDWMH;
+import com.noobanidus.dwmh.config.DWMHConfig;
+import com.noobanidus.dwmh.config.DataStore;
 import com.noobanidus.dwmh.proxy.ISidedProxy;
 import com.noobanidus.dwmh.proxy.steeds.*;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,30 +31,25 @@ public class DWMH {
     public static CreativeTabDWMH TAB;
 
     public static Map<String, ISteedProxy> proxyMap = new HashMap<>();
-
-    private static ISteedProxy dummy = new DummySteedProxy();
-
     public static ClientStorage clientStorage = new ClientStorage();
-
-    public static ISteedProxy proxy (String proxyName) {
-        if (proxyMap.containsKey(proxyName)) return proxyMap.get(proxyName);
-
-        return DWMH.dummy;
-    }
-
-    public static Set<String> sets (String refId) {
-        return DataStore.set(refId);
-    }
-
     public static ISteedProxy steedProxy = new SteedProxy();
-
     public static List<ISteedProxy> proxyList;
-
     @SidedProxy(clientSide = "com.noobanidus.dwmh.proxy.ClientProxy", serverSide = "com.noobanidus.dwmh.proxy.CommonProxy")
     public static ISidedProxy proxy;
     @SuppressWarnings("unused")
     @Mod.Instance(DWMH.MODID)
     public static DWMH instance;
+    private static ISteedProxy dummy = new DummySteedProxy();
+
+    public static ISteedProxy proxy(String proxyName) {
+        if (proxyMap.containsKey(proxyName)) return proxyMap.get(proxyName);
+
+        return DWMH.dummy;
+    }
+
+    public static Set<String> sets(String refId) {
+        return DataStore.set(refId);
+    }
 
     public static void resolveClasses() {
         sets("animania").addAll(Arrays.asList(DWMHConfig.proxies.Animania.animaniaClasses));

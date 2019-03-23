@@ -25,7 +25,7 @@ import javax.annotation.Nonnull;
 import java.util.List;
 
 public class ItemEnchantedCarrot extends ItemDWMHRepairable {
-    private static void tameHandler (Entity entity, EntityPlayer player) {
+    private static void tameHandler(Entity entity, EntityPlayer player) {
         if (!(entity instanceof EntityAnimal)) return;
 
         AnimalTameEvent ate = new AnimalTameEvent((EntityAnimal) entity, player);

@@ -48,11 +48,7 @@ public class VaroddProxy implements ISteedProxy {
         }
 
         // Compatibility for Horse Power device-attached wrappers
-        if (wrapper.hasHome() && wrapper.world.getTileEntity(wrapper.getHomePosition()) != null) {
-            return false;
-        }
-
-        return true;
+        return !wrapper.hasHome() || wrapper.world.getTileEntity(wrapper.getHomePosition()) == null;
     }
 
     // Carrot

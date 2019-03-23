@@ -16,7 +16,7 @@ import net.minecraftforge.fml.relauncher.Side;
 public class PacketHandler {
     private static SimpleNetworkWrapper instance = NetworkRegistry.INSTANCE.newSimpleChannel(DWMH.MODID);
 
-    public static void initPackets () {
+    public static void initPackets() {
         instance.registerMessage(PacketConfig.UpdateFromServer.Handler.class, PacketConfig.UpdateFromServer.class, 0, Side.CLIENT);
     }
 
@@ -55,15 +55,16 @@ public class PacketHandler {
     public abstract static class ServerHandler<T extends IMessage> extends Handler<T> {
 
         @Override
-        public IMessage onMessage (T message, MessageContext ctx) {
+        public IMessage onMessage(T message, MessageContext ctx) {
             FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(() -> processMessage(message, ctx));
             return null;
         }
     }
+
     public abstract static class ClientHandler<T extends IMessage> extends Handler<T> {
 
         @Override
-        public IMessage onMessage (T message, MessageContext ctx) {
+        public IMessage onMessage(T message, MessageContext ctx) {
             ClientTickHandler.addRunnable(() -> processMessage(message, ctx));
 
             return null;

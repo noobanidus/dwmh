@@ -7,6 +7,7 @@ import com.noobanidus.dwmh.capability.CapabilityOwnHandler;
 import com.noobanidus.dwmh.capability.CapabilityOwner;
 import com.noobanidus.dwmh.client.keybinds.OcarinaKeybind;
 import com.noobanidus.dwmh.config.DWMHConfig;
+import com.noobanidus.dwmh.events.CapabilityHandler;
 import com.noobanidus.dwmh.network.PacketHandler;
 import com.noobanidus.dwmh.network.PacketOcarina;
 import com.noobanidus.dwmh.util.MessageHandler;
@@ -56,7 +57,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
             return;
         }
 
-        if (!entity.hasCapability(CapabilityOcarinaHandler.INSTANCE, null)) return;
+        if (!entity.hasCapability(CapabilityOwnHandler.INSTANCE, null)) return;
 
         if (!DWMH.steedProxy.pseudoTaming(entity)) return;
 

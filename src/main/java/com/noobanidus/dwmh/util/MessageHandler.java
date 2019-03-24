@@ -35,6 +35,7 @@ public class MessageHandler {
                 break;
             case BREEDING:
                 if (!DWMHConfig.client.clientCarrot.breeding) return;
+                break;
             case SUMMONED:
                 if (!DWMHConfig.client.clientOcarina.simple) return;
                 break;

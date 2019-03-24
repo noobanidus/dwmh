@@ -425,6 +425,9 @@ public class ItemOcarina extends ItemDWMHRepairable {
             if (horse.isBeingRidden() && !horse.isRidingSameEntity(player)) {
                 for (Entity entity : horse.getPassengers()) {
                     entity.dismountRidingEntity();
+                    if (entity instanceof EntityPlayer) {
+                        entity.sendMessage(new TextComponentTranslation("dwmh.strings.dismount").setStyle(new Style().setColor(TextFormatting.DARK_RED).setBold(true)));
+                    }
                     dismountCount++;
                 }
             }

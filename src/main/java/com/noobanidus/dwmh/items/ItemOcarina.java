@@ -371,10 +371,18 @@ public class ItemOcarina extends ItemDWMHRepairable {
                 // TODO
                 ITextComponent result;
                 if (DWMH.steedProxy.hasCustomName(horse)) {
-                    result = new TextComponentTranslation("dwmh.strings.teleport_with_name", DWMH.steedProxy.getCustomNameTag(horse));
+                    if (packAnimals) {
+                        result = new TextComponentTranslation("dwmh.strings.teleport_with_name.pack", DWMH.steedProxy.getCustomNameTag(horse));
+                    } else {
+                        result = new TextComponentTranslation("dwmh.strings.teleport_with_name", DWMH.steedProxy.getCustomNameTag(horse));
+                    }
                     result.getStyle().setColor(TextFormatting.GOLD);
                 } else {
-                    result = new TextComponentTranslation("dwmh.strings.teleport");
+                    if (packAnimals) {
+                        result = new TextComponentTranslation("dwmh.strings.teleport.pack");
+                    } else {
+                        result = new TextComponentTranslation("dwmh.strings.teleport");
+                    }
                     result.getStyle().setColor(TextFormatting.GOLD);
                 }
                 MessageHandler.sendSummonMessage(player, result);
@@ -399,17 +407,17 @@ public class ItemOcarina extends ItemDWMHRepairable {
         }
         if (!didStuff) {
             if (player.isRiding()) {
-                temp = new TextComponentTranslation("dwmh.strings.no_eligible_to_teleport_riding");
+                temp = new TextComponentTranslation("dwmh.strings.no_eligible_to_teleport_riding" + (packAnimals ? ".pack" : ""));
                 temp.getStyle().setColor(TextFormatting.RED);
             } else {
-                temp = new TextComponentTranslation("dwmh.strings.no_eligible_to_teleport");
+                temp = new TextComponentTranslation("dwmh.strings.no_eligible_to_teleport" + (packAnimals ? ".pack" : ""));
                 temp.getStyle().setColor(TextFormatting.RED);
             }
             player.sendMessage(temp);
 
             MessageHandler.sendOcarinaTune(stack, player, OcarinaSound.MINOR);
         } else {
-            MessageHandler.sendGenericMessage(player, null, MessageHandler.Generic.SUMMONED, null, TextFormatting.GOLD);
+            MessageHandler.sendGenericMessage(player, null, (packAnimals) ? MessageHandler.Generic.SUMMONED_PACK : MessageHandler.Generic.SUMMONED, null, TextFormatting.GOLD);
         }
 
         return didStuff;

@@ -39,6 +39,9 @@ public class MessageHandler {
             case SUMMONED:
                 if (!DWMHConfig.client.clientOcarina.simple) return;
                 break;
+            case SUMMONED_PACK:
+                if (!DWMHConfig.client.clientOcarina.simple) return;
+                break;
         }
 
         player.sendMessage(message.getResult());
@@ -132,6 +135,7 @@ public class MessageHandler {
         AGING("dwmh.strings.generic.aged"),
         BREEDING("dwmh.strings.generic.breed"),
         SUMMONED("dwmh.strings.generic.summoned"),
+        SUMMONED_PACK("dwmh.strings.generic.summoned.pack"),
         EMPTY("");
 
         String languageKey;

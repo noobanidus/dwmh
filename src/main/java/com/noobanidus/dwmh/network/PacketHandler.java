@@ -23,6 +23,8 @@ public class PacketHandler {
         instance.registerMessage(PacketMessages.ListingMessage.Handler.class, PacketMessages.ListingMessage.class, 3, Side.CLIENT);
         instance.registerMessage(PacketMessages.SummonMessage.Handler.class, PacketMessages.SummonMessage.class, 4, Side.CLIENT);
         instance.registerMessage(PacketSounds.OcarinaTune.Handler.class, PacketSounds.OcarinaTune.class, 5, Side.CLIENT);
+        instance.registerMessage(PacketOcarina.Mode.Handler.class, PacketOcarina.Mode.class, 6, Side.SERVER);
+        instance.registerMessage(PacketOcarina.Trigger.Handler.class, PacketOcarina.Trigger.class, 7, Side.SERVER);
     }
 
     public static void sendToAll(IMessage message) {

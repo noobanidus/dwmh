@@ -1,5 +1,6 @@
 package com.noobanidus.dwmh.proxy;
 
+import com.noobanidus.dwmh.client.keybinds.OcarinaKeybind;
 import com.noobanidus.dwmh.client.render.particle.Particles;
 import com.noobanidus.dwmh.commands.ClientEntityCommand;
 import com.noobanidus.dwmh.util.ParticleType;
@@ -8,8 +9,16 @@ import net.minecraft.client.particle.ParticleManager;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 public class ClientProxy extends CommonProxy {
+    @Override
+    public void preInit(FMLPreInitializationEvent event) {
+        super.preInit(event);
+
+        OcarinaKeybind.initKeybinds();
+    }
+
     @Override
     public void init(FMLInitializationEvent e) {
         super.init(e);

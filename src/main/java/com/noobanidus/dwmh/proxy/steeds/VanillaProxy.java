@@ -25,6 +25,8 @@ public class VanillaProxy implements ISteedProxy {
 
         AbstractHorse horse = (AbstractHorse) entity;
 
+        if (isPackAnimal(horse, player) && globalTeleportCheck(entity, player)) return true;
+
         return horse.isHorseSaddled() && globalTeleportCheck(entity, player);
     }
 
@@ -33,8 +35,6 @@ public class VanillaProxy implements ISteedProxy {
         if (!isMyMod(entity)) return false;
 
         AbstractHorse horse = (AbstractHorse) entity;
-
-        if (DWMHConfig.client.clientOcarina.noLlamas && entity instanceof EntityLlama) return false;
 
         if (horse.isChild() || !horse.isTame() || horse.dimension != player.dimension) {
             return false;
@@ -146,6 +146,19 @@ public class VanillaProxy implements ISteedProxy {
         }
 
         return entity instanceof AbstractHorse;
+    }
+
+    @Override
+    public boolean isPackAnimal(Entity entity, EntityPlayer player) {
+        if (!(entity instanceof AbstractChestHorse)) return false;
+
+        AbstractChestHorse horse = (AbstractChestHorse) entity;
+
+        if (horse instanceof EntityLlama || horse.hasChest() || !horse.isHorseSaddled()) {
+            return true;
+        }
+
+        return false;
     }
 
     @Override

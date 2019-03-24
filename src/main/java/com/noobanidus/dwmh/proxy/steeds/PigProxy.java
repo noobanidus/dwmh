@@ -24,14 +24,16 @@ public class PigProxy extends VanillaProxy {
 
         if (!globalTeleportCheck(entity, player)) return false;
 
-        return ownedBy(entity, player);
+        EntityPig pig = (EntityPig) entity;
+
+        return pig.getSaddled() && ownedBy(entity, player);
     }
 
     @Override
     public boolean isListable(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return false;
 
-        return hasOwner(entity);
+        return ownedBy(entity, player);
     }
 
     @Override

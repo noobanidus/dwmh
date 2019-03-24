@@ -145,6 +145,8 @@ public interface ISteedProxy {
         CapabilityOwner cap = capability(entity);
         if (cap == null) return false;
 
+        if (cap.getOwner() == null) return false;
+
         return cap.getOwner().equals(player.getUniqueID());
     }
 
@@ -161,6 +163,10 @@ public interface ISteedProxy {
     }
 
     default boolean pseudoTaming() {
+        return false;
+    }
+
+    default boolean isPackAnimal (Entity entity, EntityPlayer player) {
         return false;
     }
 

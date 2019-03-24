@@ -245,6 +245,17 @@ public class SteedProxy implements ISteedProxy {
     }
 
     @Override
+    public boolean isPackAnimal(Entity entity, EntityPlayer player) {
+        for (ISteedProxy proxy : DWMH.proxyList) {
+            if (proxy.isMyMod(entity)) {
+                return proxy.isPackAnimal(entity, player);
+            }
+        }
+
+        return false;
+    }
+
+    @Override
     public String proxyName() {
         return "main";
     }

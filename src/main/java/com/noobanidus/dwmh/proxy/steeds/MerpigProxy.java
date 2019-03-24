@@ -37,7 +37,7 @@ public class MerpigProxy implements ISteedProxy {
     public boolean isListable(Entity entity, EntityPlayer player) {
         if (!isMyMod(entity)) return false;
 
-        return hasOwner(entity);
+        return hasOwner(entity) && ownedBy(entity, player);
     }
 
     @Override

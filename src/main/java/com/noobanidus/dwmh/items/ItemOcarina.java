@@ -4,8 +4,11 @@ import com.noobanidus.dwmh.DWMH;
 import com.noobanidus.dwmh.capability.CapabilityOwnHandler;
 import com.noobanidus.dwmh.capability.CapabilityOwner;
 import com.noobanidus.dwmh.config.DWMHConfig;
+import com.noobanidus.dwmh.network.PacketHandler;
+import com.noobanidus.dwmh.network.PacketOcarina;
 import com.noobanidus.dwmh.util.MessageHandler;
 import com.noobanidus.dwmh.util.OcarinaSound;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -21,23 +24,19 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.function.BiFunction;
 
 public class ItemOcarina extends ItemDWMHRepairable {
+    private Map<UUID, PlayerMode> modeMap = new HashMap<>();
     private List<TextComponentTranslation> directions = new ArrayList<>();
-
 
     private static boolean unuseableItem(ItemStack item) {
         if (DWMHConfig.Ocarina.functionality.getMaxUses() == 0) return false;
@@ -87,6 +86,24 @@ public class ItemOcarina extends ItemDWMHRepairable {
             temp = new TextComponentTranslation("dwmh.strings.animania_claimed");
             temp.getStyle().setColor(TextFormatting.RED);
             player.sendMessage(temp);
+        }
+    }
+
+    public PlayerMode getPlayerMode (EntityPlayer player) {
+        return modeMap.computeIfAbsent(player.getUniqueID(), (uuid) -> new PlayerMode());
+    }
+
+    public void setMode (EntityPlayer player, Mode main, Mode sneak) {
+        PlayerMode mode = getPlayerMode(player);
+        mode.setModes(main, sneak);
+    }
+
+    public void cycleMode (EntityPlayer player, boolean isSneaking) {
+        PlayerMode mode = getPlayerMode(player);
+        if (isSneaking) {
+            mode.cycleSneak();
+        } else {
+            mode.cycleMain();
         }
     }
 
@@ -160,20 +177,38 @@ public class ItemOcarina extends ItemDWMHRepairable {
     @Nonnull
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
-        if (!world.isRemote) {
-            // TODO
-            if (player.isSneaking() && !DWMHConfig.client.clientOcarina.swap || !player.isSneaking() && DWMHConfig.client.clientOcarina.swap) {
-                doListing(world, player, hand);
-            } else {
-                doSummoning(world, player, hand);
-            }
+        if (world.isRemote) {
+            PacketOcarina.Trigger packet = new PacketOcarina.Trigger(player, hand);
+            PacketHandler.sendToServer(packet);
         }
 
         ItemStack stack = player.getHeldItem(hand);
         return new ActionResult<>(EnumActionResult.SUCCESS, stack);
     }
 
-    public boolean doListing(World world, EntityPlayer player, @Nonnull EnumHand hand) {
+    public void trigger (EntityPlayer player, EnumHand hand, boolean isSneaking) {
+        assert !player.world.isRemote;
+
+        switch (getPlayerMode(player).getMode(isSneaking)) {
+            case LIST:
+                doListing(player.world, player, hand, false);
+                break;
+            case LIST_PACK:
+                doListing(player.world, player, hand, true);
+                break;
+            case SUMMON:
+                doSummoning(player.world, player, hand, false);
+                break;
+            case SUMMON_PACK:
+                doSummoning(player.world, player, hand, true);
+                break;
+            case EJECT:
+                doEjecting(player.world, player, hand);
+                break;
+        }
+    }
+
+    public boolean doListing(World world, EntityPlayer player, @Nonnull EnumHand hand, boolean packAnimals) {
         BlockPos pos = player.getPosition();
         boolean didStuff = false;
 
@@ -184,6 +219,9 @@ public class ItemOcarina extends ItemDWMHRepairable {
         List<Entity> nearbyHorses = world.getEntities(Entity.class, (entity) -> isValidHorse(entity, player, true));
         for (Entity horse : nearbyHorses) {
             didStuff = true;
+
+            if (packAnimals && !DWMH.steedProxy.isPackAnimal(horse, player)) continue;
+            if (!packAnimals && DWMH.steedProxy.isPackAnimal(horse, player)) continue;
 
             BlockPos hpos = horse.getPosition();
 
@@ -220,7 +258,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
         return didStuff;
     }
 
-    public boolean doSummoning(World world, EntityPlayer player, @Nonnull EnumHand hand) {
+    public boolean doSummoning(World world, EntityPlayer player, @Nonnull EnumHand hand, boolean packAnimals) {
         ItemStack stack = player.getHeldItem(hand);
         InventoryPlayer inv = player.inventory;
 
@@ -270,6 +308,10 @@ public class ItemOcarina extends ItemDWMHRepairable {
         List<Entity> nearbyHorses = world.getEntities(Entity.class, (entity) -> isValidHorse(entity, player));
         for (Entity entity : nearbyHorses) {
             EntityLiving horse = (EntityLiving) entity;
+
+            if (packAnimals && !DWMH.steedProxy.isPackAnimal(horse, player)) continue;
+            if (!packAnimals && DWMH.steedProxy.isPackAnimal(horse, player)) continue;
+
             double max = DWMHConfig.Ocarina.getMaxDistance();
             if (horse.getDistanceSq(player) < (max * max) || max == 0) {
                 if (amountPer != 0) {
@@ -345,6 +387,38 @@ public class ItemOcarina extends ItemDWMHRepairable {
         return didStuff;
     }
 
+    public boolean doEjecting (World world, EntityPlayer player, EnumHand hand) {
+        boolean didStuff = false;
+        int dismountCount = 0;
+
+        List<Entity> nearbyHorses = world.getEntities(Entity.class, (entity) -> isValidHorse(entity, player, true));
+        for (Entity horse : nearbyHorses) {
+            didStuff = true;
+
+            if (horse.isBeingRidden() && !horse.isRidingSameEntity(player)) {
+                for (Entity entity : horse.getPassengers()) {
+                    entity.dismountRidingEntity();
+                    dismountCount++;
+                }
+            }
+        }
+
+        ITextComponent result;
+
+        if (!didStuff || dismountCount == 0) {
+            result = new TextComponentTranslation("dwmh.strings.dismount.failure");
+            result.setStyle(new Style().setColor(TextFormatting.DARK_RED));
+        } else {
+            result = new TextComponentTranslation("dwmh.strings.dismount.success", dismountCount);
+            result.setStyle(new Style().setColor(TextFormatting.GOLD));
+        }
+
+        player.sendMessage(result);
+        player.swingArm(hand);
+
+        return didStuff;
+    }
+
     @Override
     public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack ist) {
         if (!(entityLiving instanceof EntityPlayer)) return false;
@@ -362,23 +436,16 @@ public class ItemOcarina extends ItemDWMHRepairable {
     @Override
     public void addInformation(ItemStack par1ItemStack, World world, List<String> stacks, ITooltipFlag flags) {
         if (GuiScreen.isShiftKeyDown()) {
+            Minecraft mc = Minecraft.getMinecraft();
+
             if (unuseableItem(par1ItemStack) && DWMHConfig.Ocarina.functionality.getMaxUses() != 0) {
                 stacks.add(TextFormatting.DARK_RED + I18n.format("dwmh.strings.carrot.tooltip.broken"));
             }
 
-            String right_click;
-            String sneak_right_click;
+            PlayerMode mode = getPlayerMode(mc.player);
 
-            if (DWMHConfig.client.clientOcarina.swap) {
-                right_click = TextFormatting.GOLD + I18n.format("dwmh.strings.right_click") + " " + TextFormatting.WHITE + I18n.format("dwmh.strings.whistle.tooltip.list_horses");
-                sneak_right_click = TextFormatting.GOLD + I18n.format("dwmh.strings.shift_right_click") + " " + TextFormatting.WHITE + I18n.format("dwmh.strings.whistle.tooltip.teleport_horses");
-            } else {
-                right_click = TextFormatting.GOLD + I18n.format("dwmh.strings.right_click") + " " + TextFormatting.WHITE + I18n.format("dwmh.strings.whistle.tooltip.teleport_horses");
-                sneak_right_click = TextFormatting.GOLD + I18n.format("dwmh.strings.shift_right_click") + " " + TextFormatting.WHITE + I18n.format("dwmh.strings.whistle.tooltip.list_horses");
-            }
-
-            stacks.add(right_click);
-            stacks.add(sneak_right_click);
+            stacks.add(TextFormatting.GOLD + I18n.format("dwmh.strings.right_click") + " " + TextFormatting.WHITE + I18n.format(mode.getMain().getLanguageKey()));
+            stacks.add(TextFormatting.GOLD + I18n.format("dwmh.strings.shift_right_click") + " " + TextFormatting.WHITE + I18n.format(mode.getSneak().getLanguageKey()));
 
             if (DWMH.steedProxy.pseudoTaming()) {
                 stacks.add(TextFormatting.GOLD + I18n.format("dwmh.strings.shift_right_click") + " " + TextFormatting.WHITE + I18n.format("dwmh.strings.animania_naming"));
@@ -396,4 +463,82 @@ public class ItemOcarina extends ItemDWMHRepairable {
         }
     }
 
+    public enum Mode {
+        LIST("dwmh.strings.whistle.tooltip.list_horses"),
+        LIST_PACK("dwmh.strings.whistle.tooltip.list_horses_pack"),
+        SUMMON("dwmh.strings.whistle.tooltip.teleport_horses"),
+        SUMMON_PACK("dwmh.strings.whistle.tooltip.teleport_horses_pack"),
+        EJECT("dwmh.strings.whistle.tooltip.eject");
+
+        private String languageKey;
+
+        Mode (String languageKey) {
+            this.languageKey = languageKey;
+        }
+
+        public String getLanguageKey() {
+            return languageKey;
+        }
+
+        public static Mode fromOrdinal (int index) {
+            int i = 0;
+            for (Mode mode : Mode.values()) {
+                if (index == i++) return mode;
+            }
+
+            return null;
+        }
+
+        public Mode next () {
+            int ord = this.ordinal();
+            if (ord == 4) ord = 0;
+            else ord++;
+            return fromOrdinal(ord);
+        }
+    }
+
+    public static class PlayerMode {
+        private Mode main = Mode.SUMMON;
+        private Mode sneak = Mode.LIST;
+
+        public PlayerMode () {
+        }
+
+        public Mode getMain() {
+            return main;
+        }
+
+        public Mode getSneak() {
+            return sneak;
+        }
+
+        public Mode getMode (boolean isSneaking) {
+            if (isSneaking) {
+                return getSneak();
+            }
+
+            return getMain();
+        }
+
+        public void cycleMain () {
+            this.main = main.next();
+        }
+
+        public void cycleSneak () {
+            this.sneak = sneak.next();
+        }
+
+        public void setMain(Mode main) {
+            this.main = main;
+        }
+
+        public void setSneak(Mode sneak) {
+            this.sneak = sneak;
+        }
+
+        public void setModes (Mode main, Mode sneak) {
+            this.main = main;
+            this.sneak = sneak;
+        }
+    }
 }

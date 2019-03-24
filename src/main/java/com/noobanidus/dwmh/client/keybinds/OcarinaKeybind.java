@@ -11,6 +11,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -51,16 +55,30 @@ public class OcarinaKeybind {
 
         if (ocarinaKey.isKeyDown() && hand != null) {
             Ocarina.cycleMode(mc.player, mc.player.isSneaking());
+            ItemOcarina.PlayerMode mode = Ocarina.getPlayerMode(mc.player);
 
             CapabilityOcarina cap = mc.player.getCapability(CapabilityOcarinaHandler.INSTANCE, null);
             if (cap != null) {
-                ItemOcarina.PlayerMode mode = Ocarina.getPlayerMode(mc.player);
                 cap.setMain(mode.getMain());
                 cap.setSneak(mode.getSneak());
             }
 
             PacketOcarina.Mode packet = new PacketOcarina.Mode(Ocarina.getPlayerMode(mc.player));
             PacketHandler.sendToServer(packet);
+
+            String key1;
+            String key2;
+            if (mc.player.isSneaking()) {
+                key1 = mode.getSneak().getLanguageKey();
+                key2 = "dwmh.strings.shift_right_click";
+            } else {
+                key1 = mode.getMain().getLanguageKey();
+                key2 = "dwmh.strings.right_click";
+            }
+
+            ITextComponent message = new TextComponentTranslation("dwmh.strings.mode_changed",
+                    new TextComponentTranslation("dwmh.strings.mode_changed2", new TextComponentTranslation(key2).setStyle(new Style().setColor(TextFormatting.GOLD).setBold(false)), new TextComponentTranslation(key1).setStyle(new Style().setColor(TextFormatting.GOLD).setBold(false))).setStyle(new Style().setColor(TextFormatting.WHITE).setBold(false))).setStyle(new Style().setColor(TextFormatting.RED).setBold(true));
+            mc.player.sendMessage(message);
         }
     }
 }

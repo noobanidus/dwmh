@@ -5,6 +5,7 @@ import com.noobanidus.dwmh.capability.CapabilityOcarinaHandler;
 import com.noobanidus.dwmh.capability.CapabilityOcarina;
 import com.noobanidus.dwmh.capability.CapabilityOwnHandler;
 import com.noobanidus.dwmh.capability.CapabilityOwner;
+import com.noobanidus.dwmh.client.keybinds.OcarinaKeybind;
 import com.noobanidus.dwmh.config.DWMHConfig;
 import com.noobanidus.dwmh.network.PacketHandler;
 import com.noobanidus.dwmh.network.PacketOcarina;
@@ -484,6 +485,8 @@ public class ItemOcarina extends ItemDWMHRepairable {
             if (DWMHConfig.Ocarina.functionality.getSummonCost() != 0) {
                 stacks.add(TextFormatting.RED + I18n.format("dwmh.strings.summon_tooltip", getCostItem().getDisplayName(), DWMHConfig.Ocarina.functionality.getSummonCost()));
             }
+
+            stacks.add(TextFormatting.RED + I18n.format("dwmh.strings.whistle.tooltip.mode", OcarinaKeybind.ocarinaKey.getDisplayName(), OcarinaKeybind.ocarinaKey.getDisplayName()));
         } else {
             stacks.add(TextFormatting.DARK_GRAY + I18n.format("dwmh.strings.hold_shift"));
         }

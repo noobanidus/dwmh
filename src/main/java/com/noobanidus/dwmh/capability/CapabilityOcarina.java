@@ -27,8 +27,8 @@ public class CapabilityOcarina implements INBTSerializable<NBTTagCompound> {
     @Override
     public NBTTagCompound serializeNBT() {
         NBTTagCompound result = new NBTTagCompound();
-        if (this.main == null) this.main = ItemOcarina.Mode.LIST;
-        if (this.sneak == null) this.sneak = ItemOcarina.Mode.SUMMON;
+        if (this.main == null) this.main = ItemOcarina.Mode.SUMMON;
+        if (this.sneak == null) this.sneak = ItemOcarina.Mode.LIST;
 
         result.setShort("main", (short) this.main.ordinal());
         result.setShort("sneak", (short) this.sneak.ordinal());

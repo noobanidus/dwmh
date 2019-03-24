@@ -187,3 +187,5 @@ dwmh.strings.zawa.tamed=Successfully tamed %s!
 item.dwmh.carrot.name=Enchanted Carrot
 item.dwmh.whistle.name=Ocarina
 itemGroup.dwmh=Dude! Where's my Horse?
+dwmh.gui.keybind.ocarina=Cycle Ocarina Mode
+dwmh.gui.keygroup=Dude! Where's my Hourse?

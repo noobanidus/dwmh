@@ -1,6 +1,8 @@
 package com.noobanidus.dwmh.proxy;
 
 import com.noobanidus.dwmh.DWMH;
+import com.noobanidus.dwmh.capability.CapabilityOcarinaHandler;
+import com.noobanidus.dwmh.capability.CapabilityOcarina;
 import com.noobanidus.dwmh.capability.CapabilityOwnHandler;
 import com.noobanidus.dwmh.capability.CapabilityOwner;
 import com.noobanidus.dwmh.config.CreativeTabDWMH;
@@ -24,6 +26,7 @@ public class CommonProxy implements ISidedProxy {
     @Override
     public void init(FMLInitializationEvent e) {
         CapabilityManager.INSTANCE.register(CapabilityOwner.class, new CapabilityOwnHandler.CapabilityNameStorage(), CapabilityOwner::new);
+        CapabilityManager.INSTANCE.register(CapabilityOcarina.class, new CapabilityOcarinaHandler.CapabilityNameStorage(), CapabilityOcarina::new);
     }
 
     @Override

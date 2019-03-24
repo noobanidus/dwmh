@@ -1,5 +1,6 @@
 package com.noobanidus.dwmh.proxy.steeds;
 
+import com.noobanidus.dwmh.capability.CapabilityOcarina;
 import com.noobanidus.dwmh.capability.CapabilityOwner;
 import com.noobanidus.dwmh.client.render.particle.ParticleSender;
 import com.noobanidus.dwmh.config.DWMHConfig;

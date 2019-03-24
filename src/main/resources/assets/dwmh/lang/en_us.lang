@@ -150,6 +150,7 @@ dwmh.strings.summon_item_success=Consumed (%sx%d) to summon steeds.
 dwmh.strings.summon_tooltip=Consumes (%sx%d) per steed summoned.
 dwmh.strings.summonable.ridden_other=summonable (but ridden by someone else)
 dwmh.strings.summonable=summonable
+dwmh.strings.dismount=The owner of this steed has forcibly dismounted you!
 dwmh.strings.teleport=Teleported your steed to you!
 dwmh.strings.teleport_with_name=Teleported your steed, %s, to you!
 dwmh.strings.unnamed=Unnamed this steed!

@@ -1,6 +1,8 @@
 package com.noobanidus.dwmh.client.keybinds;
 
 import com.noobanidus.dwmh.DWMH;
+import com.noobanidus.dwmh.capability.CapabilityOcarina;
+import com.noobanidus.dwmh.capability.CapabilityOcarinaHandler;
 import com.noobanidus.dwmh.config.Registrar;
 import com.noobanidus.dwmh.items.ItemOcarina;
 import com.noobanidus.dwmh.network.PacketHandler;
@@ -49,6 +51,13 @@ public class OcarinaKeybind {
 
         if (ocarinaKey.isKeyDown() && hand != null) {
             Ocarina.cycleMode(mc.player, mc.player.isSneaking());
+
+            CapabilityOcarina cap = mc.player.getCapability(CapabilityOcarinaHandler.INSTANCE, null);
+            if (cap != null) {
+                ItemOcarina.PlayerMode mode = Ocarina.getPlayerMode(mc.player);
+                cap.setMain(mode.getMain());
+                cap.setSneak(mode.getSneak());
+            }
 
             PacketOcarina.Mode packet = new PacketOcarina.Mode(Ocarina.getPlayerMode(mc.player));
             PacketHandler.sendToServer(packet);

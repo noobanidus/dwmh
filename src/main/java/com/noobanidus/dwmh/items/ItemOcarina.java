@@ -1,6 +1,8 @@
 package com.noobanidus.dwmh.items;
 
 import com.noobanidus.dwmh.DWMH;
+import com.noobanidus.dwmh.capability.CapabilityOcarinaHandler;
+import com.noobanidus.dwmh.capability.CapabilityOcarina;
 import com.noobanidus.dwmh.capability.CapabilityOwnHandler;
 import com.noobanidus.dwmh.capability.CapabilityOwner;
 import com.noobanidus.dwmh.config.DWMHConfig;
@@ -53,7 +55,7 @@ public class ItemOcarina extends ItemDWMHRepairable {
             return;
         }
 
-        if (!entity.hasCapability(CapabilityOwnHandler.INSTANCE, null)) return;
+        if (!entity.hasCapability(CapabilityOcarinaHandler.INSTANCE, null)) return;
 
         if (!DWMH.steedProxy.pseudoTaming(entity)) return;
 
@@ -90,10 +92,34 @@ public class ItemOcarina extends ItemDWMHRepairable {
     }
 
     public PlayerMode getPlayerMode (EntityPlayer player) {
-        return modeMap.computeIfAbsent(player.getUniqueID(), (uuid) -> new PlayerMode());
+        UUID uuid = player.getUniqueID();
+        if (modeMap.containsKey(uuid)) {
+            return modeMap.get(uuid);
+        }
+        PlayerMode mode = new PlayerMode();
+
+        CapabilityOcarina cap = player.getCapability(CapabilityOcarinaHandler.INSTANCE, null);
+        if (cap != null) {
+            Mode main = cap.getMain();
+            Mode sneak = cap.getSneak();
+            if (main != null) {
+                mode.setMain(main);
+            }
+            if (sneak != null) {
+                mode.setSneak(sneak);
+            }
+        }
+
+        modeMap.put(uuid, mode);
+        return mode;
     }
 
     public void setMode (EntityPlayer player, Mode main, Mode sneak) {
+        CapabilityOcarina cap = player.getCapability(CapabilityOcarinaHandler.INSTANCE, null);
+        if (cap != null) {
+            cap.setMain(main);
+            cap.setSneak(sneak);
+        }
         PlayerMode mode = getPlayerMode(player);
         mode.setModes(main, sneak);
     }

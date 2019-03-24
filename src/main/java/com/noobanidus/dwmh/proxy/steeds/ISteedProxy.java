@@ -1,10 +1,13 @@
 package com.noobanidus.dwmh.proxy.steeds;
 
 import com.noobanidus.dwmh.DWMH;
+import com.noobanidus.dwmh.capability.CapabilityOcarinaHandler;
+import com.noobanidus.dwmh.capability.CapabilityOcarina;
 import com.noobanidus.dwmh.capability.CapabilityOwnHandler;
 import com.noobanidus.dwmh.capability.CapabilityOwner;
 import com.noobanidus.dwmh.client.render.particle.ParticleSender;
 import com.noobanidus.dwmh.config.DWMHConfig;
+import com.noobanidus.dwmh.events.CapabilityHandler;
 import com.noobanidus.dwmh.util.MessageHandler;
 import com.noobanidus.dwmh.util.ParticleType;
 import net.minecraft.entity.Entity;

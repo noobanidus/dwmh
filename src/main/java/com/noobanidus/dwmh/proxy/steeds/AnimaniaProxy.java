@@ -2,6 +2,7 @@ package com.noobanidus.dwmh.proxy.steeds;
 
 import com.animania.common.entities.horses.EntityAnimaniaHorse;
 import com.noobanidus.dwmh.DWMH;
+import com.noobanidus.dwmh.capability.CapabilityOcarina;
 import com.noobanidus.dwmh.capability.CapabilityOwner;
 import com.noobanidus.dwmh.config.DWMHConfig;
 import net.minecraft.entity.Entity;

@@ -1,11 +1,10 @@
 package com.noobanidus.dwmh.proxy.steeds;
 
 import com.builtbroken.merpig.entity.EntityMerpig;
+import com.noobanidus.dwmh.capability.CapabilityOcarina;
 import com.noobanidus.dwmh.capability.CapabilityOwner;
 import com.noobanidus.dwmh.config.DWMHConfig;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.passive.EntityAnimal;
-import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;

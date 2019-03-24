@@ -1,6 +1,7 @@
 package com.noobanidus.dwmh.proxy.steeds;
 
 import com.legacy.moolands.entities.cow.EntityAwfulCow;
+import com.noobanidus.dwmh.capability.CapabilityOcarina;
 import com.noobanidus.dwmh.capability.CapabilityOwner;
 import com.noobanidus.dwmh.config.DWMHConfig;
 import net.minecraft.entity.Entity;

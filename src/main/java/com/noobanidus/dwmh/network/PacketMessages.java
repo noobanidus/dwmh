@@ -8,6 +8,8 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.io.IOException;
 
@@ -55,7 +57,8 @@ public class PacketMessages {
 
         public static class Handler extends PacketHandler.ClientHandler<GenericMessage> {
             @Override
-            void processMessage(GenericMessage message, MessageContext ctx) {
+            @SideOnly(Side.CLIENT)
+            public void processMessage(GenericMessage message, MessageContext ctx) {
                 Minecraft mc = Minecraft.getMinecraft();
 
                 MessageHandler.handleGenericMessage(mc.player, message);
@@ -114,7 +117,8 @@ public class PacketMessages {
         public static class Handler extends PacketHandler.ClientHandler<ListingMessage> {
 
             @Override
-            void processMessage(ListingMessage message, MessageContext ctx) {
+            @SideOnly(Side.CLIENT)
+            public void processMessage(ListingMessage message, MessageContext ctx) {
                 Minecraft mc = Minecraft.getMinecraft();
 
                 MessageHandler.handleListingMessage(mc.player, message);
@@ -155,7 +159,8 @@ public class PacketMessages {
 
         public static class Handler extends PacketHandler.ClientHandler<SummonMessage> {
             @Override
-            void processMessage(SummonMessage message, MessageContext ctx) {
+            @SideOnly(Side.CLIENT)
+            public void processMessage(SummonMessage message, MessageContext ctx) {
                 Minecraft mc = Minecraft.getMinecraft();
 
                 MessageHandler.handleSummonMessage(mc.player, message);

@@ -48,7 +48,8 @@ public class PacketParticles {
 
         public static class Handler extends PacketHandler.ClientHandler<GenerateParticles> {
             @Override
-            void processMessage(GenerateParticles message, MessageContext ctx) {
+            @SideOnly(Side.CLIENT)
+            public void processMessage(GenerateParticles message, MessageContext ctx) {
                 Minecraft mc = Minecraft.getMinecraft();
                 Entity entity = message.getEntity(mc.world);
                 if (entity != null) {

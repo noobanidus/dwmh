@@ -30,7 +30,7 @@ public class PacketConfig {
         }
 
         public static class Handler extends PacketHandler.ClientHandler<UpdateFromServer> {
-            void processMessage(UpdateFromServer message, MessageContext ctx) {
+            public void processMessage(UpdateFromServer message, MessageContext ctx) {
                 DWMH.clientStorage.updateFromServer(message.compound);
             }
         }

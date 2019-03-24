@@ -43,7 +43,7 @@ public class PacketSounds {
         public static class Handler extends PacketHandler.ClientHandler<OcarinaTune> {
 
             @Override
-            void processMessage(OcarinaTune message, MessageContext ctx) {
+            public void processMessage(OcarinaTune message, MessageContext ctx) {
                 Minecraft mc = Minecraft.getMinecraft();
 
                 EntityPlayer source = mc.world.getPlayerEntityByUUID(message.source);

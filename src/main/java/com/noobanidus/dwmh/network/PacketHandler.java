@@ -11,6 +11,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SuppressWarnings("unused")
 public class PacketHandler {
@@ -75,6 +76,10 @@ public class PacketHandler {
             Minecraft.getMinecraft().addScheduledTask(() -> processMessage(message, ctx));
 
             return null;
+        }
+
+        @Override
+        public void processMessage(T message, MessageContext ctx) {
         }
     }
 }

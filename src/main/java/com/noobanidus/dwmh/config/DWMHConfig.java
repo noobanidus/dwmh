@@ -114,11 +114,6 @@ public class DWMHConfig {
         }
 
         public class ClientOcarina {
-            @LangKey("config.ocarina.swap_sneak")
-            @Comment("Set to true to swap the effect of sneaking. Thus, right-clicking will list mocClasses, while sneak-right-clicking will summon them.")
-            @Name("Swap Sneak Functionality")
-            public boolean swap = false;
-
             @LangKey("config.ocarina.responses.disable_summon_message")
             @Comment("Set to true to disable messages when teleporting a horse to you.")
             @Name("Disable Summoned Messages")
@@ -138,11 +133,6 @@ public class DWMHConfig {
             @Comment("Set to false to disable sounds being played when the Ocarina is use. These sounds are played on the PLAYERS channel.")
             @Name("Enable Ocarina Tunes")
             public boolean sounds = true;
-
-            @LangKey("config.ocarina.responses.disable_llamas")
-            @Comment("Set to true to prevent llamas from being listed with the Ocarina.")
-            @Name("Disable Listing Llama")
-            public boolean noLlamas = false;
         }
     }
 

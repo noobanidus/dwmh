@@ -246,10 +246,10 @@ public class ItemOcarina extends ItemDWMHRepairable {
 
         List<Entity> nearbyHorses = world.getEntities(Entity.class, (entity) -> isValidHorse(entity, player, true));
         for (Entity horse : nearbyHorses) {
-            didStuff = true;
-
             if (packAnimals && !DWMH.steedProxy.isPackAnimal(horse, player)) continue;
             if (!packAnimals && DWMH.steedProxy.isPackAnimal(horse, player)) continue;
+
+            didStuff = true;
 
             BlockPos hpos = horse.getPosition();
 

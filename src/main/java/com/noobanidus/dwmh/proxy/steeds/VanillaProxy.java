@@ -3,6 +3,8 @@ package com.noobanidus.dwmh.proxy.steeds;
 import com.noobanidus.dwmh.DWMH;
 import com.noobanidus.dwmh.client.render.particle.ParticleSender;
 import com.noobanidus.dwmh.config.DWMHConfig;
+import com.noobanidus.dwmh.config.Registrar;
+import com.noobanidus.dwmh.items.ItemOcarina;
 import com.noobanidus.dwmh.util.MessageHandler;
 import com.noobanidus.dwmh.util.ParticleType;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -172,7 +174,14 @@ public class VanillaProxy implements ISteedProxy {
 
         AbstractHorse horse = (AbstractHorse) entity;
 
-        if (horse.hasHome() && horse.world.getTileEntity(horse.getHomePosition()) != null) {
+        ItemOcarina.PlayerMode mode = Registrar.ocarina.getPlayerMode(player);
+        boolean packListing = false;
+        if (mode.getMain() == ItemOcarina.Mode.LIST_PACK || mode.getSneak() == ItemOcarina.Mode.LIST_PACK) {
+            packListing = true;
+        }
+        if (packListing && isPackAnimal(horse, player)) {
+            return new TextComponentTranslation("dwmh.strings.summonable.pack").setStyle(new Style().setColor(TextFormatting.AQUA));
+        } else if (horse.hasHome() && horse.world.getTileEntity(horse.getHomePosition()) != null) {
             return new TextComponentTranslation("dwmh.strings.unsummonable.working").setStyle(new Style().setColor(TextFormatting.DARK_RED));
         } else if (horse.getLeashed()) {
             return new TextComponentTranslation("dwmh.strings.unsummonable.leashed").setStyle(new Style().setColor(TextFormatting.DARK_RED));

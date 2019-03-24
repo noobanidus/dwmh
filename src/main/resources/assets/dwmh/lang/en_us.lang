@@ -150,6 +150,7 @@ dwmh.strings.summon_item_missing=You've run out of (%s) to summon steeds! You ne
 dwmh.strings.summon_item_missing_middle=You've run out of (%s) to summon more steeds (%d consumed).
 dwmh.strings.summon_item_success=Consumed (%sx%d) to summon steeds.
 dwmh.strings.summon_tooltip=Consumes (%sx%d) per steed summoned.
+dwmh.strings.summonable.pack=summonable (pack animal)
 dwmh.strings.summonable.ridden_other=summonable (but ridden by someone else)
 dwmh.strings.summonable=summonable
 dwmh.strings.dismount=The owner of this steed has forcibly dismounted you!

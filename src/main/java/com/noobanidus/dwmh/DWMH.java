@@ -33,7 +33,7 @@ public class DWMH {
     public static Map<String, ISteedProxy> proxyMap = new HashMap<>();
     public static ClientStorage clientStorage = new ClientStorage();
     public static ISteedProxy steedProxy = new SteedProxy();
-    public static List<ISteedProxy> proxyList;
+    public static List<ISteedProxy> proxyList = new ArrayList<>();
     @SidedProxy(clientSide = "com.noobanidus.dwmh.proxy.ClientProxy", serverSide = "com.noobanidus.dwmh.proxy.CommonProxy")
     public static ISidedProxy proxy;
     @SuppressWarnings("unused")

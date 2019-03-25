@@ -9,7 +9,7 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "2.1.0"
+version = "2.1.1"
 group = "com.noobanidus.dwmh"
 archivesBaseName = "dwmh"
 

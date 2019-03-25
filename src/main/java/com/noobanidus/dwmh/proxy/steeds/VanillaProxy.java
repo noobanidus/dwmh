@@ -156,7 +156,7 @@ public class VanillaProxy implements ISteedProxy {
 
         AbstractChestHorse horse = (AbstractChestHorse) entity;
 
-        if (horse instanceof EntityLlama || horse.hasChest() || !horse.isHorseSaddled()) {
+        if (horse instanceof EntityLlama || (horse.hasChest() && !horse.isHorseSaddled())) {
             return true;
         }
 

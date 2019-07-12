@@ -1,166 +1,45 @@
 package com.noobanidus.dwmh.items;
 
 import com.noobanidus.dwmh.DWMH;
-import com.noobanidus.dwmh.config.DWMHConfig;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.passive.EntityAnimal;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.AnimalTameEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import java.util.List;
 
-public class ItemEnchantedCarrot extends ItemDWMHRepairable {
-    private static void tameHandler(Entity entity, EntityPlayer player) {
-        if (!(entity instanceof EntityAnimal)) return;
+public class ItemEnchantedCarrot extends Item {
+  public ItemEnchantedCarrot() {
+    setMaxStackSize(1);
+    setCreativeTab(DWMH.TAB);
+    setRegistryName("dwmh:carrot");
+    setTranslationKey("dwmh.carrot");
+  }
 
-        AnimalTameEvent ate = new AnimalTameEvent((EntityAnimal) entity, player);
-        MinecraftForge.EVENT_BUS.post(ate);
-    }
+  @Override
+  public boolean isEnchantable(@Nonnull ItemStack stack) {
+    return false;
+  }
 
-    public static void onInteractCarrot(PlayerInteractEvent.EntityInteract event) {
-        ITextComponent temp;
+  @Nonnull
+  @Override
+  public EnumRarity getRarity(ItemStack stack) {
+    return EnumRarity.EPIC;
+  }
 
-        EntityPlayer player = event.getEntityPlayer();
-        Entity entity = event.getTarget();
-        ItemStack item = event.getItemStack();
+  @SideOnly(Side.CLIENT)
+  @Override
+  public boolean hasEffect(ItemStack stack) {
+    return false;
+  }
 
-        if (item.isEmpty() || player.isSneaking() || !(item.getItem() instanceof ItemEnchantedCarrot) || !DWMH.steedProxy.isMyMod(entity)) {
-            return;
-        }
-
-        event.setCanceled(true);
-        event.setCancellationResult(EnumActionResult.SUCCESS);
-
-        if (!useableItem(item) || event.getWorld().isRemote) return;
-
-        boolean didStuff = false;
-
-        int res = -1;
-
-        // TODO: handle if 5 is more than the breaking point of the item wiht the unbreakable carrot
-
-        // A little bit of a hack to prioritise
-        if (DWMH.proxy("dragonmounts").isMyMod(entity) && DWMH.proxy("dragonmounts").isTameable(entity, player) && DWMHConfig.EnchantedCarrot.effects.taming) {
-            res = DWMH.proxy("dragonmounts").tame(entity, player);
-            if (res > 0) tameHandler(entity, player);
-            didStuff = true;
-        } else {
-            if (DWMH.steedProxy.isAgeable(entity, player) && DWMHConfig.EnchantedCarrot.effects.aging) {
-                if (entity.getEntityData().getBoolean("quark:poison_potato_applied")) {
-                    temp = new TextComponentTranslation("dwmh.strings.quark_poisoned");
-                    temp.getStyle().setColor(TextFormatting.GREEN);
-                    player.sendMessage(temp);
-                    return;
-                }
-
-                res = DWMH.steedProxy.age(entity, player);
-                didStuff = true;
-            } else if (DWMH.steedProxy.isTameable(entity, player) && DWMHConfig.EnchantedCarrot.effects.taming) {
-                res = DWMH.steedProxy.tame(entity, player);
-                if (res > 0) tameHandler(entity, player);
-                didStuff = true;
-            } else if (DWMH.steedProxy.isHealable(entity, player) && DWMHConfig.EnchantedCarrot.effects.healing) {
-                res = DWMH.steedProxy.heal(entity, player);
-                didStuff = true;
-            } else if (DWMH.steedProxy.isBreedable(entity, player) && DWMHConfig.EnchantedCarrot.effects.breeding) {
-                res = DWMH.steedProxy.breed(entity, player);
-                didStuff = true;
-            }
-        }
-
-        if (!player.capabilities.isCreativeMode && didStuff) {
-            damageItem(item, player, res);
-        }
-
-        if (didStuff) {
-            event.setCanceled(true);
-        }
-    }
-
-    public void init() {
-        setMaxStackSize(1);
-        setCreativeTab(DWMH.TAB);
-        setRegistryName("dwmh:carrot");
-        setTranslationKey("dwmh.carrot");
-        updateConfig();
-        registerPredicate("carrot_damage");
-        setInternalDefault(DWMHConfig.EnchantedCarrot.durability.repairItemDefault);
-
-    }
-
-    @Override
-    public void updateConfig() {
-        setMaxDamage(DWMHConfig.EnchantedCarrot.durability.getMaxUses());
-        setInternalRepair(DWMH.clientStorage.getString("Carrot", "repairItem"));
-    }
-
-    @Override
-    public boolean isEnchantable(@Nonnull ItemStack stack) {
-        return false;
-    }
-
-    @Nonnull
-    @Override
-    public EnumRarity getRarity(ItemStack stack) {
-        return EnumRarity.EPIC;
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public boolean hasEffect(ItemStack stack) {
-        if (!useableItem(stack)) {
-            return false;
-        }
-
-        return DWMHConfig.client.clientCarrot.glint;
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void addInformation(ItemStack par1ItemStack, World world, List<String> stacks, ITooltipFlag flags) {
-        if (GuiScreen.isShiftKeyDown()) {
-            boolean noEffect = true;
-            if (!useableItem(par1ItemStack)) {
-                stacks.add(TextFormatting.DARK_RED + I18n.format("dwmh.strings.carrot.tooltip.broken"));
-            }
-            if (DWMH.clientStorage.getBoolean("Carrot", "taming")) {
-                noEffect = false;
-                stacks.add(TextFormatting.GOLD + I18n.format("dwmh.strings.right_click") + " " + TextFormatting.WHITE + I18n.format("dwmh.strings.carrot.tooltip.taming"));
-            }
-            if (DWMH.clientStorage.getBoolean("Carrot", "healing")) {
-                noEffect = false;
-                stacks.add(TextFormatting.GOLD + I18n.format("dwmh.strings.right_click") + " " + TextFormatting.WHITE + I18n.format("dwmh.strings.carrot.tooltip.healing"));
-            }
-            if (DWMH.clientStorage.getBoolean("Carrot", "aging")) {
-                noEffect = false;
-                stacks.add(TextFormatting.GOLD + I18n.format("dwmh.strings.right_click") + " " + TextFormatting.WHITE + I18n.format("dwmh.strings.carrot.tooltip.ageing"));
-            }
-            if (DWMH.clientStorage.getBoolean("Carrot", "breeding")) {
-                noEffect = false;
-                stacks.add(TextFormatting.GOLD + I18n.format("dwmh.strings.right_click") + " " + TextFormatting.WHITE + I18n.format("dwmh.strings.carrot.tooltip.breeding"));
-            }
-            if (noEffect) {
-                stacks.add(TextFormatting.DARK_PURPLE + I18n.format("dwmh.strings.carrot.nothing"));
-            }
-            stacks.add(TextFormatting.AQUA + I18n.format("dwmh.strings.repair_carrot", getRepairItem().getDisplayName()));
-        } else {
-            stacks.add(TextFormatting.DARK_GRAY + I18n.format("dwmh.strings.hold_shift"));
-        }
-    }
+  @SideOnly(Side.CLIENT)
+  @Override
+  public void addInformation(ItemStack par1ItemStack, World world, List<String> stacks, ITooltipFlag flags) {
+  }
 
 }

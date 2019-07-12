@@ -1,8 +1,6 @@
 package com.noobanidus.dwmh.items;
 
-import com.noobanidus.dwmh.DWMH;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
@@ -11,36 +9,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ItemOcarina extends Item {
-  private List<TextComponentTranslation> directions = new ArrayList<>();
-
-  public static void onInteractOcarina(PlayerInteractEvent.EntityInteract event) {
-    Entity entity = event.getTarget();
-    EntityPlayer player = event.getEntityPlayer();
-    ItemStack item = event.getItemStack();
-
-    if (item.isEmpty() || !(item.getItem() instanceof ItemOcarina)) {
-      return;
-    }
-  }
-
-  public void init() {
+  public ItemOcarina() {
     setMaxStackSize(1);
-    setCreativeTab(DWMH.TAB);
-
-    for (int i = 0; i < 8; i++) {
-      directions.add(new TextComponentTranslation(String.format("dwmh.strings.dir.%d", i)));
-    }
   }
 
   @Override
@@ -50,7 +28,7 @@ public class ItemOcarina extends Item {
 
   @Override
   public int getItemEnchantability() {
-    return 20;
+    return 10;
   }
 
   @Nonnull

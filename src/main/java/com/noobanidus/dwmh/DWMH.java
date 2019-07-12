@@ -17,7 +17,7 @@ import org.apache.logging.log4j.Logger;
 @SuppressWarnings("WeakerAccess")
 public class DWMH {
   public static final String MODID = "dwmh";
-  public static final String MODNAME = "Dude! Where's my Horse?";
+  public static final String MODNAME = "Dude! Where's My Horse?";
   public static final String VERSION = "GRADLE:VERSION";
 
   public static Logger LOG;

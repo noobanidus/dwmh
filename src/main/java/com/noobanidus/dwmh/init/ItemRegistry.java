@@ -20,14 +20,15 @@ import java.util.Objects;
 
 @Mod.EventBusSubscriber(modid = DWMH.MODID)
 public class ItemRegistry {
-  public static ItemOcarina OCARINA = (ItemOcarina) new ItemOcarina().setTranslationKey("dwmh.ocarina").setRegistryName(new ResourceLocation(DWMH.MODID, "ocarina"));
-  public static ItemEnchantedCarrot CARROT = (ItemEnchantedCarrot) new ItemEnchantedCarrot().setTranslationKey("dwmh.carrot").setRegistryName(new ResourceLocation(DWMH.MODID, "carrot"));
-  public static ItemPipes PIPES = (ItemPipes) new ItemPipes().setTranslationKey("dwmh.whistle").setRegistryName(new ResourceLocation(DWMH.MODID, "pipes"));
+  public static ItemOcarina OCARINA = (ItemOcarina) new ItemOcarina().setTranslationKey("dwmh.ocarina").setRegistryName(new ResourceLocation(DWMH.MODID, "ocarina")).setCreativeTab(DWMH.TAB);
+  public static ItemEnchantedCarrot CARROT = (ItemEnchantedCarrot) new ItemEnchantedCarrot().setTranslationKey("dwmh.carrot").setRegistryName(new ResourceLocation(DWMH.MODID, "carrot")).setCreativeTab(DWMH.TAB);
+  public static ItemPipes PIPES = (ItemPipes) new ItemPipes().setTranslationKey("dwmh.pipes").setRegistryName(new ResourceLocation(DWMH.MODID, "pipes")).setCreativeTab(DWMH.TAB);
+  public static Item REED = new Item().setTranslationKey("dwmh.reed").setRegistryName(new ResourceLocation(DWMH.MODID, "reed")).setCreativeTab(DWMH.TAB);
 
   @SubscribeEvent
   public static void onItemRegister(RegistryEvent.Register<Item> event) {
     IForgeRegistry<Item> registry = event.getRegistry();
-    registry.registerAll(OCARINA, CARROT, PIPES);
+    registry.registerAll(OCARINA, CARROT, PIPES, REED);
   }
 
   @SubscribeEvent
@@ -36,5 +37,6 @@ public class ItemRegistry {
     ModelLoader.setCustomModelResourceLocation(OCARINA, 0, new ModelResourceLocation(Objects.requireNonNull(OCARINA.getRegistryName()), "inventory"));
     ModelLoader.setCustomModelResourceLocation(CARROT, 0, new ModelResourceLocation(Objects.requireNonNull(CARROT.getRegistryName()), "inventory"));
     ModelLoader.setCustomModelResourceLocation(PIPES, 0, new ModelResourceLocation(Objects.requireNonNull(PIPES.getRegistryName()), "inventory"));
+    ModelLoader.setCustomModelResourceLocation(REED, 0, new ModelResourceLocation(Objects.requireNonNull(REED.getRegistryName()), "inventory"));
   }
 }

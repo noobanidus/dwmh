@@ -5,6 +5,7 @@ import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
+@SuppressWarnings("unused")
 public class CommonProxy implements ISidedProxy {
   @Override
   public void preInit(FMLPreInitializationEvent event) {

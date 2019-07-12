@@ -16,13 +16,16 @@ public class ItemEnchantedCarrot extends Item {
   public ItemEnchantedCarrot() {
     setMaxStackSize(1);
     setCreativeTab(DWMH.TAB);
-    setRegistryName("dwmh:carrot");
-    setTranslationKey("dwmh.carrot");
   }
 
   @Override
   public boolean isEnchantable(@Nonnull ItemStack stack) {
-    return false;
+    return true;
+  }
+
+  @Override
+  public int getItemEnchantability() {
+    return 10;
   }
 
   @Nonnull
@@ -41,5 +44,4 @@ public class ItemEnchantedCarrot extends Item {
   @Override
   public void addInformation(ItemStack par1ItemStack, World world, List<String> stacks, ITooltipFlag flags) {
   }
-
 }

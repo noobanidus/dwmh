@@ -18,6 +18,12 @@ public class ConditionalRecipeFactory implements IConditionFactory {
       return () -> false;
     } else if (key.toLowerCase().equals("saddle")) {
       return () -> false;
+    } else if (key.toLowerCase().equals("ocarina")) {
+      return () -> false;
+    } else if (key.toLowerCase().equals("reed")) {
+      return () -> false;
+    } else if (key.toLowerCase().equals("pipes")) {
+      return () -> false;
     }
 
     throw new JsonParseException("recipeDisable not found!");

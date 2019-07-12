@@ -48,7 +48,6 @@ public class DWMH {
   }
 
   @Mod.EventHandler
-  @SuppressWarnings("unchecked")
   public void postInit(FMLPostInitializationEvent event) {
     proxy.postInit(event);
   }

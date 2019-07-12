@@ -38,9 +38,6 @@ public class ItemOcarina extends Item {
     setMaxStackSize(1);
     setCreativeTab(DWMH.TAB);
 
-    setRegistryName("dwmh:whistle");
-    setTranslationKey("dwmh.whistle");
-
     for (int i = 0; i < 8; i++) {
       directions.add(new TextComponentTranslation(String.format("dwmh.strings.dir.%d", i)));
     }

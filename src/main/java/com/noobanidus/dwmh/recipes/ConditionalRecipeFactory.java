@@ -2,6 +2,7 @@ package com.noobanidus.dwmh.recipes;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.noobanidus.dwmh.init.ConfigHandler;
 import net.minecraft.util.JsonUtils;
 import net.minecraftforge.common.crafting.IConditionFactory;
 import net.minecraftforge.common.crafting.JsonContext;
@@ -15,15 +16,15 @@ public class ConditionalRecipeFactory implements IConditionFactory {
     String key = JsonUtils.getString(json, "recipe");
 
     if (key.toLowerCase().equals("carrot")) {
-      return () -> false;
+      return () -> ConfigHandler.Recipes.enableCarrot;
     } else if (key.toLowerCase().equals("saddle")) {
-      return () -> false;
+      return () -> ConfigHandler.Recipes.enableSaddle;
     } else if (key.toLowerCase().equals("ocarina")) {
-      return () -> false;
+      return () -> ConfigHandler.Recipes.enableOcarina;
     } else if (key.toLowerCase().equals("reed")) {
-      return () -> false;
+      return () -> ConfigHandler.Recipes.enableReed;
     } else if (key.toLowerCase().equals("pipes")) {
-      return () -> false;
+      return () -> ConfigHandler.Recipes.enablePipes;
     }
 
     throw new JsonParseException("recipeDisable not found!");

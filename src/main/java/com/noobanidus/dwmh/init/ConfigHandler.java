@@ -11,21 +11,9 @@ public class ConfigHandler {
   public static Recipes Recipes = new Recipes();
 
   public static class Recipes {
-    @Config.Comment("Set to false to disable the enchanted carrot recipe")
-    @Config.Name("Enable carrot recipe")
-    public boolean enableCarrot = true;
-
     @Config.Comment("Set to false to disable the Ocarina recipe")
     @Config.Name("Encable Ocarina recipe")
     public boolean enableOcarina = true;
-
-    @Config.Comment("Set to false to disable the Pipes recipe")
-    @Config.Name("Enable Pipes recipe")
-    public boolean enablePipes = true;
-
-    @Config.Comment("Set to false to disable the Reed recipe")
-    @Config.Name("Enable Reed recipe")
-    public boolean enableReed = true;
 
     @Config.Comment("Set to false to disable the Saddle recipe")
     @Config.Name("Enable Saddle recipe")

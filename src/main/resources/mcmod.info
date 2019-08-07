@@ -2,7 +2,7 @@
   {
     "modid": "dwmh",
     "name": "Dude! Where's my Horse?",
-    "description": "Swiftly return your missing steed, no matter how far(*) it wanders! (*) Configurable range!",
+    "description": "Find and teleport your missing steed to you!",
     "version": "${version}",
     "credits": "Noobanidus",
     "logoFile": "assets/dwmh/textures/logo.png",

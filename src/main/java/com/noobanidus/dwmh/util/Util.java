@@ -1,14 +1,14 @@
 package com.noobanidus.dwmh.util;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 public class Util {
-  public static NBTTagCompound getOrCreateTagCompound(ItemStack stack) {
-    NBTTagCompound tagCompound = stack.getTagCompound();
+  public static CompoundNBT getOrCreateTagCompound(ItemStack stack) {
+    CompoundNBT tagCompound = stack.getTag();
     if (tagCompound == null) {
-      tagCompound = new NBTTagCompound();
-      stack.setTagCompound(tagCompound);
+      tagCompound = new CompoundNBT();
+      stack.setTag(tagCompound);
     }
     return tagCompound;
   }

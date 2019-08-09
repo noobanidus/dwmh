@@ -1,16 +1,9 @@
 package com.noobanidus.dwmh.world;
 
-import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 public class DataHelper {
-  public static EntityData getTrackingData(World world) {
-    EntityData saveData = (EntityData) world.getMapStorage().getOrLoadData(EntityData.class, EntityData.id);
-
-    if (saveData == null) {
-      saveData = new EntityData();
-      world.getMapStorage().setData(EntityData.id, saveData);
-    }
-
-    return saveData;
+  public static EntityData getTrackingData(ServerWorld world) {
+    return world.getSavedData().getOrCreate(EntityData::new, EntityData.id);
   }
 }

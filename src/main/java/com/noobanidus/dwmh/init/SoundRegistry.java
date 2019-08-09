@@ -1,17 +1,18 @@
 package com.noobanidus.dwmh.init;
 
+import com.noobanidus.dwmh.DWMH;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.registries.IForgeRegistry;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-@Mod.EventBusSubscriber
+@Mod.EventBusSubscriber(modid= DWMH.MODID, bus= Mod.EventBusSubscriber.Bus.MOD)
 public class SoundRegistry {
   public static SoundEvent WHISTLE1 = createSoundEvent("whistle.1");
   public static SoundEvent WHISTLE2 = createSoundEvent("whistle.2");
@@ -48,6 +49,7 @@ public class SoundRegistry {
   }
 
   @SubscribeEvent
+  @SuppressWarnings("unused")
   public static void registerSounds(RegistryEvent.Register<SoundEvent> event) {
     IForgeRegistry<SoundEvent> registry = event.getRegistry();
     registry.register(WHISTLE_SPECIAL);

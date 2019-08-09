@@ -1,50 +1,32 @@
 package com.noobanidus.dwmh;
 
 import com.noobanidus.dwmh.init.ItemRegistry;
-import net.minecraft.creativetab.CreativeTabs;
+import com.noobanidus.dwmh.setup.ModSetup;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@Mod.EventBusSubscriber
-@Mod(modid = DWMH.MODID, name = DWMH.MODNAME, version = DWMH.VERSION)
-@SuppressWarnings("WeakerAccess")
+@Mod("dwmh")
 public class DWMH {
-	public static final String MODID = "dwmh";
-	public static final String MODNAME = "Dude! Where's My Horse?";
-	public static final String VERSION = "GRADLE:VERSION";
+  public static final String MODID = "dwmh";
+  public static final String MODNAME = "Dude! Where's My Horse?";
+  public static final String VERSION = "GRADLE:VERSION";
 
-	public static Logger LOG;
+  public static Logger LOG = LogManager.getLogger();
 
-	public final static CreativeTabs TAB = new CreativeTabs("dwmh") {
-		@Override
-		public ItemStack createIcon () {
-			return new ItemStack(ItemRegistry.OCARINA);
-		}
-	};
+  public final static ItemGroup ITEM_GROUP = new ItemGroup("dwmh") {
+    @Override
+    public ItemStack createIcon() {
+      return new ItemStack(ItemRegistry.OCARINA);
+    }
+  };
 
-	@SuppressWarnings("unused")
-	@Mod.Instance(DWMH.MODID)
-	public static DWMH instance;
+  public static ModSetup setup = new ModSetup();
 
-	@Mod.EventHandler
-	public void preInit (FMLPreInitializationEvent event) {
-		LOG = event.getModLog();
-	}
-
-	@Mod.EventHandler
-	public void init (FMLInitializationEvent event) {
-	}
-
-	@Mod.EventHandler
-	public void postInit (FMLPostInitializationEvent event) {
-	}
-
-	@Mod.EventHandler
-	public void loadComplete (FMLLoadCompleteEvent event) {
-	}
+  public DWMH() {
+    FMLJavaModLoadingContext.get().getModEventBus().addListener(setup::init);
+  }
 }

@@ -4,30 +4,17 @@ import com.noobanidus.dwmh.DWMH;
 import com.noobanidus.dwmh.init.ItemRegistry;
 import com.noobanidus.dwmh.util.EntityTracking;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumActionResult;
-import net.minecraftforge.event.RegistryEvent;
+import net.minecraft.util.ActionResultType;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-@Mod.EventBusSubscriber
+@Mod.EventBusSubscriber(modid = DWMH.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 @SuppressWarnings("unused")
 public class EventHandler {
-  @SubscribeEvent
-  public static void onItemMappingsEvent (RegistryEvent.MissingMappings<Item> event) {
-    for (RegistryEvent.MissingMappings.Mapping<Item> m : event.getAllMappings()) {
-      if (m.key.getNamespace().equals(DWMH.MODID)) {
-        if (m.key.getPath().equals("whistle")) {
-          m.remap(ItemRegistry.OCARINA);
-        }
-      }
-    }
-  }
-
   @SubscribeEvent
   public static void handleEntityEvent(LivingEvent.LivingUpdateEvent event) {
     Entity entity = event.getEntity();
@@ -38,8 +25,8 @@ public class EventHandler {
   }
 
   @SubscribeEvent
-  public static void onRightClickEntity (PlayerInteractEvent.EntityInteract event) {
-    EntityPlayer player = event.getEntityPlayer();
+  public static void onRightClickEntity(PlayerInteractEvent.EntityInteract event) {
+    PlayerEntity player = event.getPlayer();
     ItemStack stack = player.getHeldItem(event.getHand());
     if (stack.isEmpty()) return;
 
@@ -47,7 +34,7 @@ public class EventHandler {
       if (!player.world.isRemote) {
         ItemRegistry.OCARINA.rightClickEntity(player, event.getTarget(), stack);
       }
-      event.setCancellationResult(EnumActionResult.SUCCESS);
+      event.setCancellationResult(ActionResultType.SUCCESS);
       event.setCanceled(true);
     }
   }

@@ -1,8 +1,8 @@
 package com.noobanidus.dwmh.world;
 
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.common.util.Constants;
 
@@ -24,58 +24,58 @@ public class EntityData extends WorldSavedData {
   }
 
   @Override
-  public void readFromNBT(NBTTagCompound nbt) {
+  public void read(CompoundNBT nbt) {
     entityToOwner.clear();
     entityToId.clear();
     trackedEntities.clear();
-    NBTTagList owners = nbt.getTagList("owners", Constants.NBT.TAG_COMPOUND);
-    for (int i = 0; i < owners.tagCount(); i++) {
-      NBTTagCompound thisEntry = owners.getCompoundTagAt(i);
+    ListNBT owners = nbt.getList("owners", Constants.NBT.TAG_COMPOUND);
+    for (int i = 0; i < owners.size(); i++) {
+      CompoundNBT thisEntry = owners.getCompound(i);
       UUID owner = thisEntry.getUniqueId("owner");
       UUID entity = thisEntry.getUniqueId("entity");
       entityToOwner.put(entity, owner);
     }
-    NBTTagList ids = nbt.getTagList("ids", Constants.NBT.TAG_COMPOUND);
-    for (int i = 0; i < ids.tagCount(); i++) {
-      NBTTagCompound thisEntry = ids.getCompoundTagAt(i);
+    ListNBT ids = nbt.getList("ids", Constants.NBT.TAG_COMPOUND);
+    for (int i = 0; i < ids.size(); i++) {
+      CompoundNBT thisEntry = ids.getCompound(i);
       UUID entity = thisEntry.getUniqueId("entity");
-      int id = thisEntry.getInteger("id");
+      int id = thisEntry.getInt("id");
       entityToId.put(entity, id);
     }
-    NBTTagList tracked = nbt.getTagList("tracked", Constants.NBT.TAG_COMPOUND);
-    for (int i = 0; i < tracked.tagCount(); i++) {
-      NBTTagCompound thisEntry = tracked.getCompoundTagAt(i);
+    ListNBT tracked = nbt.getList("tracked", Constants.NBT.TAG_COMPOUND);
+    for (int i = 0; i < tracked.size(); i++) {
+      CompoundNBT thisEntry = tracked.getCompound(i);
       UUID entity = thisEntry.getUniqueId("entity");
       trackedEntities.add(entity);
     }
   }
 
   @Override
-  public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-    NBTTagList owners = new NBTTagList();
+  public CompoundNBT write(CompoundNBT compound) {
+    ListNBT owners = new ListNBT();
     for (Map.Entry<UUID, UUID> entry : entityToOwner.entrySet()) {
-      NBTTagCompound thisEntry = new NBTTagCompound();
-      thisEntry.setUniqueId("entity", entry.getKey());
-      thisEntry.setUniqueId("owner", entry.getValue());
-      owners.appendTag(thisEntry);
+      CompoundNBT thisEntry = new CompoundNBT();
+      thisEntry.putUniqueId("entity", entry.getKey());
+      thisEntry.putUniqueId("owner", entry.getValue());
+      owners.add(thisEntry);
     }
-    NBTTagList ids = new NBTTagList();
+    ListNBT ids = new ListNBT();
     for (Map.Entry<UUID, Integer> entry : entityToId.entrySet()) {
-      NBTTagCompound thisEntry = new NBTTagCompound();
-      thisEntry.setUniqueId("entity", entry.getKey());
-      thisEntry.setInteger("id", entry.getValue());
-      ids.appendTag(thisEntry);
+      CompoundNBT thisEntry = new CompoundNBT();
+      thisEntry.putUniqueId("entity", entry.getKey());
+      thisEntry.putInt("id", entry.getValue());
+      ids.add(thisEntry);
     }
-    NBTTagList tracked = new NBTTagList();
+    ListNBT tracked = new ListNBT();
     for (UUID entity : trackedEntities) {
-      NBTTagCompound thisEntry = new NBTTagCompound();
-      thisEntry.setUniqueId("entity", entity);
-      tracked.appendTag(thisEntry);
+      CompoundNBT thisEntry = new CompoundNBT();
+      thisEntry.putUniqueId("entity", entity);
+      tracked.add(thisEntry);
     }
-    NBTTagCompound result = new NBTTagCompound();
-    result.setTag("owners", owners);
-    result.setTag("ids", ids);
-    result.setTag("tracked", tracked);
+    CompoundNBT result = new CompoundNBT();
+    result.put("owners", owners);
+    result.put("ids", ids);
+    result.put("tracked", tracked);
     return result;
   }
 }

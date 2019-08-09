@@ -3,35 +3,29 @@ package com.noobanidus.dwmh.util;
 import com.noobanidus.dwmh.world.DataHelper;
 import com.noobanidus.dwmh.world.EntityData;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import javax.annotation.Nullable;
-import java.util.Objects;
 import java.util.UUID;
 
 public class EntityTracking {
   @Nullable
-  private static World getWorld() {
-    Side side = FMLCommonHandler.instance().getEffectiveSide();
-    if (side == Side.CLIENT) {
-      return null;
-    } else {
-      return getServerWorld();
-    }
+  private static ServerWorld getWorld() {
+    return getServerWorld();
   }
 
-  private static World getServerWorld() {
-    MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-    return server.getEntityWorld();
+  private static ServerWorld getServerWorld() {
+    MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+    return server.getWorld(DimensionType.OVERWORLD);
   }
 
   @Nullable
   private static EntityData getData() {
-    World world = getWorld();
+    ServerWorld world = getWorld();
     if (world == null) return null;
     return DataHelper.getTrackingData(world);
   }
@@ -43,7 +37,7 @@ public class EntityTracking {
     return data.entityToId.getOrDefault(uuid, -1);
   }
 
-  public static void setOwnerForEntity(EntityPlayer player, Entity entity) {
+  public static void setOwnerForEntity(PlayerEntity player, Entity entity) {
     EntityData data = getData();
     if (data == null) return;
     UUID playerId = player.getUniqueID();
@@ -55,13 +49,13 @@ public class EntityTracking {
     save();
   }
 
-   public static void save() {
+  public static void save() {
     EntityData data = getData();
     if (data == null) return;
     data.markDirty();
-    World world = getWorld();
+    ServerWorld world = getWorld();
     if (world == null) return;
-    Objects.requireNonNull(world.getMapStorage()).saveAllData();
+    world.getSavedData().save();
   }
 
   @Nullable

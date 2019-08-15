@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "dwmh:ocarina",
+    "count": 1
+  },
+  "pattern": [
+    "i  ",
+    "iii",
+    "iii"
+  ],
+  "key": {
+    "i": {
+      "item": "minecraft:blue_glazed_terracotta"
+    }
+  }
+}

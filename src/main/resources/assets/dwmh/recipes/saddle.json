@@ -1,31 +1,23 @@
 {
   "result": {
-    "item": "minecraft:saddle"
+    "item": "minecraft:saddle",
+    "count": 1,
+    "data": 0
   },
   "pattern": [
     "lll",
-    "lll",
-    "iBi"
+    "lil",
+    "i i"
   ],
-  "type": "forge:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "key": {
     "l": {
       "item": "minecraft:leather",
       "data": 0
     },
     "i": {
-      "item": "minecraft:iron_ingot",
-      "data": 0
-    },
-    "B": {
-      "item": "minecraft:iron_block",
-      "data": 0
+      "type": "forge:ore_dict",
+      "ore": "ingotIron"
     }
-  },
-  "conditions": [
-    {
-      "type": "dwmh:recipes",
-      "recipe": "saddle"
-    }
-  ]
+  }
 }

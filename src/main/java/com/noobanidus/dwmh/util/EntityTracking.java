@@ -10,8 +10,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 
 import javax.annotation.Nullable;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 public class EntityTracking {
   @Nullable
@@ -30,7 +29,7 @@ public class EntityTracking {
   }
 
   @Nullable
-  private static EntityData getData() {
+  public static EntityData getData() {
     World world = getWorld();
     if (world == null) return null;
     return DataHelper.getTrackingData(world);
@@ -52,7 +51,24 @@ public class EntityTracking {
     data.entityToOwner.put(entityId, playerId);
     data.entityToId.put(entityId, entityIntId);
     data.trackedEntities.add(entityId);
+    data.ownerToEntities.computeIfAbsent(playerId, o -> new HashSet<>()).add(entityId);
     save();
+  }
+
+  public static void unsetOwnerForEntity (EntityPlayer player, Entity entity) {
+    EntityData data = getData();
+    if (data == null) return;
+    UUID playerId = player.getUniqueID();
+    UUID entityId = entity.getUniqueID();
+    data.entityToOwner.remove(entityId);
+    data.trackedEntities.remove(entityId);
+    Set<UUID> owned = data.ownerToEntities.get(playerId);
+    if (owned != null) {
+      owned.remove(entityId);
+    }
+    data.savedEntities.remove(entityId);
+    data.storedEntities.remove(entityId);
+    data.restoredEntities.remove(entityId);
   }
 
    public static void save() {

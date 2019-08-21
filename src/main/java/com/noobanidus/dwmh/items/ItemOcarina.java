@@ -60,11 +60,19 @@ public class ItemOcarina extends Item {
   }
 
   public void rightClickEntity (EntityPlayer playerIn, Entity target, ItemStack stack) {
+    // TODO: Make this a toggle
     if (Eligibility.eligibleToBeTagged(playerIn, target)) {
-      EntityTracking.setOwnerForEntity(playerIn, target);
+      UUID owner = EntityTracking.getOwnerForEntity(target);
       NBTTagCompound tag = Util.getOrCreateTagCompound(stack);
-      tag.setUniqueId("target", target.getUniqueID());
-      playSound(playerIn);
+      if (owner == null) {
+        EntityTracking.setOwnerForEntity(playerIn, target);
+        tag.setUniqueId("target", target.getUniqueID());
+        playSound(playerIn);
+      } else {
+        EntityTracking.unsetOwnerForEntity(playerIn, target);
+        tag.removeTag("targetMost");
+        tag.removeTag("targetLeast");
+      }
     }
   }
 
@@ -74,15 +82,19 @@ public class ItemOcarina extends Item {
     ItemStack stack = player.getHeldItem(hand);
     NBTTagCompound tag = Util.getOrCreateTagCompound(stack);
     if (!world.isRemote) {
-      if (tag.hasKey("targetLeast")) {
-        UUID entityId = tag.getUniqueId("target");
-        int id = EntityTracking.getEntityId(entityId);
-        Entity entity = world.getEntityByID(id);
-        if (entity != null && entity.getUniqueID().equals(entityId) && !entity.isDead) {
-          // Update the stack
-          entity.setPosition(player.posX, player.posY, player.posZ);
-          playSound(player);
+      if (!player.isSneaking()) {
+        if (tag.hasKey("targetLeast")) {
+          UUID entityId = tag.getUniqueId("target");
+          int id = EntityTracking.getEntityId(entityId);
+          Entity entity = world.getEntityByID(id);
+          if (entity != null && entity.getUniqueID().equals(entityId) && !entity.isDead) {
+            // Update the stack
+            entity.setPosition(player.posX, player.posY, player.posZ);
+            playSound(player);
+          }
         }
+      } else {
+        // Player is sneaking, handle toggle.
       }
     }
     return new ActionResult<>(EnumActionResult.SUCCESS, stack);

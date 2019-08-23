@@ -14,6 +14,8 @@ import java.util.UUID;
 
 public class Eligibility {
   public static boolean eligibleToBeTagged(EntityPlayer player, Entity entity) {
+    if (entity instanceof EntityPlayer) return false;
+
     UUID playerId = player.getUniqueID();
     UUID ownedBy = EntityTracking.getOwnerForEntity(entity);
     if (ownedBy != null && !ownedBy.equals(playerId)) return false;

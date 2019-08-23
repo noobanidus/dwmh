@@ -1,5 +1,6 @@
 package com.noobanidus.dwmh.world;
 
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
@@ -8,6 +9,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagLong;
 import net.minecraft.util.ClassInheritanceMultiMap;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.storage.WorldSavedData;
@@ -21,14 +23,16 @@ public class EntityData extends WorldSavedData {
   public Set<UUID> trackedEntities = new HashSet<>();
   public Map<UUID, UUID> entityToOwner = new HashMap<>();
   // Dynamically reconstructed but also modified
-  public Map<UUID, Set<UUID>> ownerToEntities = new HashMap<>();
-  public Object2IntOpenHashMap<UUID> entityToId = new Object2IntOpenHashMap<>();
+  public Map<UUID, List<UUID>> ownerToEntities = new HashMap<>();
 
-  public Map<UUID, NBTTagCompound> savedEntities = new HashMap<>();
   // List of entities that have been unloaded and saved
   public Set<UUID> storedEntities = new HashSet<>();
   // List of entities that have been recreated from saved data
   public Set<UUID> restoredEntities = new HashSet<>();
+
+  public Map<UUID, NBTTagCompound> savedEntities = new HashMap<>();
+  public Map<UUID, String> entityToName = new HashMap<>();
+  public Map<UUID, ResourceLocation> entityToResourceLocation = new HashMap<>();
 
   public EntityData() {
     super(id);
@@ -41,26 +45,20 @@ public class EntityData extends WorldSavedData {
   @Override
   public void readFromNBT(NBTTagCompound nbt) {
     entityToOwner.clear();
-    entityToId.clear();
     trackedEntities.clear();
     ownerToEntities.clear();
     savedEntities.clear();
     storedEntities.clear();
     restoredEntities.clear();
+    entityToName.clear();
+    entityToResourceLocation.clear();
     NBTTagList owners = nbt.getTagList("owners", Constants.NBT.TAG_COMPOUND);
     for (int i = 0; i < owners.tagCount(); i++) {
       NBTTagCompound thisEntry = owners.getCompoundTagAt(i);
       UUID owner = thisEntry.getUniqueId("owner");
       UUID entity = thisEntry.getUniqueId("entity");
       entityToOwner.put(entity, owner);
-      ownerToEntities.computeIfAbsent(owner, o -> new HashSet<>()).add(entity);
-    }
-    NBTTagList ids = nbt.getTagList("ids", Constants.NBT.TAG_COMPOUND);
-    for (int i = 0; i < ids.tagCount(); i++) {
-      NBTTagCompound thisEntry = ids.getCompoundTagAt(i);
-      UUID entity = thisEntry.getUniqueId("entity");
-      int id = thisEntry.getInteger("id");
-      entityToId.put(entity, id);
+      ownerToEntities.computeIfAbsent(owner, o -> new ArrayList<>()).add(entity);
     }
     NBTTagList tracked = nbt.getTagList("tracked", Constants.NBT.TAG_COMPOUND);
     for (int i = 0; i < tracked.tagCount(); i++) {
@@ -93,6 +91,24 @@ public class EntityData extends WorldSavedData {
         restoredEntities.add(entity);
       }
     }
+    if (nbt.hasKey("names")) {
+      NBTTagList names = nbt.getTagList("names", Constants.NBT.TAG_COMPOUND);
+      for (int i = 0; i < names.tagCount(); i++) {
+        NBTTagCompound thisEntry = names.getCompoundTagAt(i);
+        UUID entity = thisEntry.getUniqueId("entity");
+        String name = thisEntry.getString("name");
+        entityToName.put(entity, name);
+      }
+    }
+    if (nbt.hasKey("resources")) {
+      NBTTagList resources = nbt.getTagList("resources", Constants.NBT.TAG_COMPOUND);
+      for (int i = 0; i < resources.tagCount(); i++) {
+        NBTTagCompound thisEntry = resources.getCompoundTagAt(i);
+        UUID entity = thisEntry.getUniqueId("entity");
+        ResourceLocation rl = new ResourceLocation(thisEntry.getString("resource"));
+        entityToResourceLocation.put(entity, rl);
+      }
+    }
   }
 
   @Override
@@ -103,13 +119,6 @@ public class EntityData extends WorldSavedData {
       thisEntry.setUniqueId("entity", entry.getKey());
       thisEntry.setUniqueId("owner", entry.getValue());
       owners.appendTag(thisEntry);
-    }
-    NBTTagList ids = new NBTTagList();
-    for (Map.Entry<UUID, Integer> entry : entityToId.entrySet()) {
-      NBTTagCompound thisEntry = new NBTTagCompound();
-      thisEntry.setUniqueId("entity", entry.getKey());
-      thisEntry.setInteger("id", entry.getValue());
-      ids.appendTag(thisEntry);
     }
     NBTTagList tracked = new NBTTagList();
     for (UUID entity : trackedEntities) {
@@ -139,14 +148,28 @@ public class EntityData extends WorldSavedData {
       thisEntry.setUniqueId("entity", entity);
       restored.appendTag(thisEntry);
     }
-
+    NBTTagList names = new NBTTagList();
+    for (Map.Entry<UUID, String> name : entityToName.entrySet()) {
+      NBTTagCompound thisEntry = new NBTTagCompound();
+      thisEntry.setUniqueId("entity", name.getKey());
+      thisEntry.setString("name", name.getValue());
+      names.appendTag(thisEntry);
+    }
+    NBTTagList rls = new NBTTagList();
+    for (Map.Entry<UUID, ResourceLocation> entry : entityToResourceLocation.entrySet()) {
+      NBTTagCompound thisEntry = new NBTTagCompound();
+      thisEntry.setUniqueId("entity", entry.getKey());
+      thisEntry.setString("resource", entry.getValue().toString());
+      rls.appendTag(thisEntry);
+    }
     NBTTagCompound result = new NBTTagCompound();
     result.setTag("owners", owners);
-    result.setTag("ids", ids);
     result.setTag("tracked", tracked);
     result.setTag("savedData", entityData);
     result.setTag("stored", stored);
     result.setTag("restored", restored);
+    result.setTag("names", names);
+    result.setTag("resources", rls);
     return result;
   }
 }

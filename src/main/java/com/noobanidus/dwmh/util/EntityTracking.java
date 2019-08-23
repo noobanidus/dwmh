@@ -1,103 +1,218 @@
 package com.noobanidus.dwmh.util;
 
+import com.noobanidus.dwmh.DWMH;
+import com.noobanidus.dwmh.events.EventHandler;
+import com.noobanidus.dwmh.init.ConfigHandler;
 import com.noobanidus.dwmh.world.DataHelper;
 import com.noobanidus.dwmh.world.EntityData;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 public class EntityTracking {
-  @Nullable
-  private static World getWorld() {
-    Side side = FMLCommonHandler.instance().getEffectiveSide();
-    if (side == Side.CLIENT) {
-      return null;
-    } else {
-      return getServerWorld();
+  public static class WrongSideException extends RuntimeException {
+    public WrongSideException(String message) {
+      super(message);
     }
   }
 
-  private static World getServerWorld() {
-    MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-    return server.getEntityWorld();
+  public static WorldServer getWorld() {
+    if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
+      throw new WrongSideException("Attempted to access server data on the client side!");
+    }
+    return getWorld(0);
   }
 
-  @Nullable
+  public static WorldServer getWorld(int id) {
+    MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+    return server.getWorld(id);
+  }
+
   public static EntityData getData() {
     World world = getWorld();
-    if (world == null) return null;
     return DataHelper.getTrackingData(world);
   }
 
-  public static int getEntityId(UUID uuid) {
+  public static boolean setOwnerForEntity(EntityPlayer player, Entity entity) {
     EntityData data = getData();
-    if (data == null) return -1;
-
-    return data.entityToId.getOrDefault(uuid, -1);
-  }
-
-  public static void setOwnerForEntity(EntityPlayer player, Entity entity) {
-    EntityData data = getData();
-    if (data == null) return;
     UUID playerId = player.getUniqueID();
     UUID entityId = entity.getUniqueID();
-    int entityIntId = entity.getEntityId();
-    data.entityToOwner.put(entityId, playerId);
-    data.entityToId.put(entityId, entityIntId);
-    data.trackedEntities.add(entityId);
-    data.ownerToEntities.computeIfAbsent(playerId, o -> new HashSet<>()).add(entityId);
-    save();
+
+    List<UUID> ownedEntities = data.ownerToEntities.computeIfAbsent(playerId, o -> new ArrayList<>());
+    if (ownedEntities.size() < ConfigHandler.entityMaximum) {
+      data.entityToOwner.put(entityId, playerId);
+      data.trackedEntities.add(entityId);
+      data.entityToResourceLocation.put(entityId, EntityList.getKey(entity));
+      ownedEntities.add(entityId);
+      save();
+      return true;
+    } else {
+      return false;
+    }
   }
 
-  public static void unsetOwnerForEntity (EntityPlayer player, Entity entity) {
+  public static int entityCount(EntityPlayer player) {
     EntityData data = getData();
-    if (data == null) return;
+    List<UUID> ownedEntities = data.ownerToEntities.computeIfAbsent(player.getUniqueID(), o -> new ArrayList<>());
+    return ownedEntities.size();
+  }
+
+  @Nullable
+  public static Entity fetchEntity (UUID entityId, WorldServer world) {
+    for (int dim : DimensionManager.getIDs()) {
+      WorldServer w = getWorld(dim);
+      Entity entity = w.getEntityFromUuid(entityId);
+      if (entity != null) {
+        return entity;
+      }
+    }
+
+    EntityData data = getData();
+    NBTTagCompound entityTag = data.savedEntities.get(entityId);
+    if (entityTag == null) {
+      DWMH.LOG.info("entityTag was null");
+      return null;
+    }
+
+    ResourceLocation resource = data.entityToResourceLocation.get(entityId);
+    if (resource == null) {
+      DWMH.LOG.info("ResourceLocation was null");
+      return null;
+    }
+
+    Entity result = EntityList.createEntityByIDFromName(resource, world);
+    if (result == null) {
+      DWMH.LOG.info("Couldn't create entity");
+      return null;
+    }
+
+    result.readFromNBT(entityTag);
+    result.isDead = false;
+    result.extinguish();
+    result.world = world;
+    result.dimension = world.provider.getDimension();
+    result.hurtResistantTime = 0;
+    result.timeUntilPortal = 0;
+
+    if (result instanceof EntityLivingBase) {
+      ((EntityLivingBase) result).setHealth(((EntityLivingBase) result).getMaxHealth());
+    }
+
+    return result;
+  }
+
+  @Nullable
+  public static UUID nextEntity(EntityPlayer player, @Nullable UUID currentlyTracked) {
+    EntityData data = getData();
+    List<UUID> ownedEntities = data.ownerToEntities.computeIfAbsent(player.getUniqueID(), o -> new ArrayList<>());
+    if (ownedEntities.isEmpty()) {
+      return null;
+    }
+    if (currentlyTracked == null) {
+      return ownedEntities.get(0);
+    }
+    int index = ownedEntities.indexOf(currentlyTracked);
+    if (index == -1) {
+      return null;
+    }
+    if (index < (ownedEntities.size() - 1)) {
+      return ownedEntities.get(index + 1);
+    } else {
+      return ownedEntities.get(0);
+    }
+  }
+
+  public static boolean unsetOwnerForEntity(EntityPlayer player, Entity entity) {
+    EntityData data = getData();
     UUID playerId = player.getUniqueID();
     UUID entityId = entity.getUniqueID();
     data.entityToOwner.remove(entityId);
     data.trackedEntities.remove(entityId);
-    Set<UUID> owned = data.ownerToEntities.get(playerId);
+    List<UUID> owned = data.ownerToEntities.get(playerId);
     if (owned != null) {
       owned.remove(entityId);
     }
     data.savedEntities.remove(entityId);
     data.storedEntities.remove(entityId);
     data.restoredEntities.remove(entityId);
+    return true;
   }
 
-   public static void save() {
+  public static void save() {
     EntityData data = getData();
-    if (data == null) return;
     data.markDirty();
     World world = getWorld();
-    if (world == null) return;
     Objects.requireNonNull(world.getMapStorage()).saveAllData();
   }
 
   @Nullable
   public static UUID getOwnerForEntity(Entity entity) {
     EntityData data = getData();
-    if (data == null) return null;
     return data.entityToOwner.getOrDefault(entity.getUniqueID(), null);
   }
 
   public static boolean isTrackingEntity(UUID uuid) {
     EntityData data = getData();
-    if (data == null) return false;
     return data.trackedEntities.contains(uuid);
   }
 
-  public static void updateEntityId(Entity entity) {
-    int id = entity.getEntityId();
+  public static String getName(UUID entityId) {
     EntityData data = getData();
-    if (data == null) return;
-
-    data.entityToId.put(entity.getUniqueID(), id);
+    return data.entityToName.get(entityId);
   }
+
+  public static NBTTagList getTrackedDataNBT(EntityPlayer player) {
+    NBTTagList tag = new NBTTagList();
+    EntityData data = getData();
+    List<UUID> ownedEntities = data.ownerToEntities.get(player.getUniqueID());
+    if (ownedEntities == null || ownedEntities.isEmpty()) {
+      return tag;
+    }
+
+    for (UUID uuid : ownedEntities) {
+      NBTTagCompound thisEntry = new NBTTagCompound();
+      thisEntry.setUniqueId("entity", uuid);
+      String name = data.entityToName.get(uuid);
+      if (name == null) {
+        thisEntry.setString("name", "");
+      } else {
+        thisEntry.setString("name", name);
+      }
+      tag.appendTag(thisEntry);
+    }
+
+    return tag;
+  }
+
+  private static String translationKey(Entity entity) {
+    if (entity.hasCustomName()) {
+      return entity.getCustomNameTag();
+    } else {
+      String s = EntityList.getEntityString(entity);
+
+      if (s == null) {
+        s = "generic";
+      }
+
+      return "entity." + s + ".name";
+    }
+  }
+
 }

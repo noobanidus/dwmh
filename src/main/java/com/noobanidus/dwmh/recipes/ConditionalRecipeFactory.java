@@ -15,18 +15,9 @@ public class ConditionalRecipeFactory implements IConditionFactory {
   public BooleanSupplier parse(JsonContext context, JsonObject json) {
     String key = JsonUtils.getString(json, "recipe");
 
-    /*if (key.toLowerCase().equals("carrot")) {
-      return () -> ConfigHandler.Recipes.enableCarrot;
-    } else*/
     if (key.toLowerCase().equals("saddle")) {
-      return () -> ConfigHandler.Recipes.enableSaddle;
-    } else if (key.toLowerCase().equals("ocarina")) {
-      return () -> ConfigHandler.Recipes.enableOcarina;
-    } /*else if (key.toLowerCase().equals("reed")) {
-      return () -> ConfigHandler.Recipes.enableReed;
-    } else if (key.toLowerCase().equals("pipes")) {
-      return () -> ConfigHandler.Recipes.enablePipes;
-    }*/
+      return () -> ConfigHandler.enableSaddle;
+    }
 
     throw new JsonParseException("recipeDisable not found!");
   }

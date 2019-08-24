@@ -35,16 +35,4 @@ public class DWMH {
 	public void preInit (FMLPreInitializationEvent event) {
 		LOG = event.getModLog();
 	}
-
-	@Mod.EventHandler
-	public void init (FMLInitializationEvent event) {
-	}
-
-	@Mod.EventHandler
-	public void postInit (FMLPostInitializationEvent event) {
-	}
-
-	@Mod.EventHandler
-	public void loadComplete (FMLLoadCompleteEvent event) {
-	}
 }

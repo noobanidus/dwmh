@@ -21,6 +21,8 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.entity.living.LivingExperienceDropEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -71,6 +73,7 @@ public class EventHandler {
         for (Entity entity : entityList) {
           if (data.trackedEntities.contains(entity.getUniqueID())) {
             // Save it!
+            entity.removePassengers();
             data.storedEntities.add(entity.getUniqueID());
             NBTTagCompound savedEntity = entity.writeToNBT(new NBTTagCompound());
             data.savedEntities.put(entity.getUniqueID(), savedEntity);
@@ -79,7 +82,7 @@ public class EventHandler {
             if (owner != null) {
               EntityPlayer player = Util.resolvePlayer(owner);
               if (player != null) {
-                player.sendStatusMessage(new TextComponentTranslation("dwmh.status.saved", Util.resolveName(entity.getUniqueID())), true);
+                player.sendStatusMessage(new TextComponentTranslation("dwmh.status.saved", Util.resolveName(entity.getUniqueID())).setStyle(Util.DEFAULT_STYLE), true);
               }
             }
           }
@@ -102,7 +105,15 @@ public class EventHandler {
       if (data.restoredEntities.isEmpty() && data.storedEntities.isEmpty()) {
         return;
       }
+      if (data.savedEntities.isEmpty()) {
+        return;
+      }
+
       Entity entity = event.getEntity();
+
+      if (!data.savedEntities.containsKey(entity.getUniqueID())) {
+        return;
+      }
 
       if (data.restoredEntities.contains(entity.getUniqueID()) && !isSpawning) {
         event.setCanceled(true);
@@ -125,6 +136,7 @@ public class EventHandler {
       }
       if (data.trackedEntities.contains(entity.getUniqueID())) {
         // Save it!
+        entity.removePassengers();
         NBTTagCompound savedEntity = entity.writeToNBT(new NBTTagCompound());
         data.savedEntities.put(entity.getUniqueID(), savedEntity);
         data.entityToResourceLocation.put(entity.getUniqueID(), EntityList.getKey(entity));
@@ -132,7 +144,7 @@ public class EventHandler {
         if (owner != null) {
           EntityPlayer player = Util.resolvePlayer(owner);
           if (player != null) {
-            player.sendStatusMessage(new TextComponentTranslation("dwmh.status.saved", Util.resolveName(entity.getUniqueID())), true);
+            player.sendStatusMessage(new TextComponentTranslation("dwmh.status.saved", Util.resolveName(entity.getUniqueID())).setStyle(Util.DEFAULT_STYLE), true);
           }
         }
       }
@@ -141,6 +153,15 @@ public class EventHandler {
 
   @SubscribeEvent
   public static void handleEntityDrops(LivingDropsEvent event) {
+    handleDrops(event);
+  }
+
+  @SubscribeEvent
+  public static void handleEntityXP(LivingExperienceDropEvent event) {
+    handleDrops(event);
+  }
+
+  private static void handleDrops(LivingEvent event) {
     EntityLivingBase entity = event.getEntityLiving();
     World world = entity.world;
     if (!world.isRemote) {

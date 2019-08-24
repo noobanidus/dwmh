@@ -1,7 +1,6 @@
 package com.noobanidus.dwmh.items;
 
-import com.noobanidus.dwmh.events.EventHandler;
-import com.noobanidus.dwmh.init.ConfigHandler;
+import com.noobanidus.dwmh.ConfigHandler;
 import com.noobanidus.dwmh.init.SoundRegistry;
 import com.noobanidus.dwmh.util.Eligibility;
 import com.noobanidus.dwmh.util.EntityTracking;
@@ -10,7 +9,7 @@ import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
@@ -77,14 +76,14 @@ public class ItemOcarina extends Item {
         boolean result = EntityTracking.setOwnerForEntity(playerIn, target);
         if (result) {
           tag.setUniqueId("target", target.getUniqueID());
-          playerIn.sendStatusMessage(new TextComponentTranslation("dwmh.status.success_setting_owner").setStyle(new Style().setColor(TextFormatting.BLUE)), true);
+          playerIn.sendStatusMessage(new TextComponentTranslation("dwmh.status.success_setting_owner").setStyle(Util.DEFAULT_STYLE), true);
           playSound(playerIn);
         } else {
           int count = EntityTracking.entityCount(playerIn);
           if (count != ConfigHandler.entityMaximum) {
-            playerIn.sendStatusMessage(new TextComponentTranslation("dwmh.status.data_error").setStyle(new Style().setColor(TextFormatting.BLUE)), true);
+            playerIn.sendStatusMessage(new TextComponentTranslation("dwmh.status.data_error").setStyle(Util.DEFAULT_STYLE), true);
           } else {
-            playerIn.sendStatusMessage(new TextComponentTranslation("dwmh.status.maximum_owned", count, ConfigHandler.entityMaximum).setStyle(new Style().setColor(TextFormatting.BLUE)), true);
+            playerIn.sendStatusMessage(new TextComponentTranslation("dwmh.status.maximum_owned", count, ConfigHandler.entityMaximum).setStyle(Util.DEFAULT_STYLE), true);
           }
           playSound(playerIn, true);
         }
@@ -98,9 +97,9 @@ public class ItemOcarina extends Item {
           } else {
             tag.setUniqueId("target", nextEntity);
           }
-          playerIn.sendStatusMessage(new TextComponentTranslation("dwmh.status.success_unsetting_owner").setStyle(new Style().setColor(TextFormatting.BLUE)), true);
+          playerIn.sendStatusMessage(new TextComponentTranslation("dwmh.status.success_unsetting_owner").setStyle(Util.DEFAULT_STYLE), true);
         } else {
-          playerIn.sendStatusMessage(new TextComponentTranslation("dwmh.status.data_error").setStyle(new Style().setColor(TextFormatting.BLUE)), true);
+          playerIn.sendStatusMessage(new TextComponentTranslation("dwmh.status.data_error").setStyle(Util.DEFAULT_STYLE), true);
         }
         playSound(playerIn, true);
       }
@@ -133,23 +132,27 @@ public class ItemOcarina extends Item {
           tag.setUniqueId("target", newId);
           // THIS IS OVER COMPLICATING THINGS
           stack.setTagCompound(tag);
-          player.sendStatusMessage(new TextComponentTranslation("dwmh.status.now_tracking", nameComp), true);
+          player.sendStatusMessage(new TextComponentTranslation("dwmh.status.now_tracking", nameComp).setStyle(Util.DEFAULT_STYLE), true);
           playSound(player);
         } else {
-          player.sendStatusMessage(new TextComponentTranslation("dwmh.status.no_entities"), true);
+          player.sendStatusMessage(new TextComponentTranslation("dwmh.status.no_entities").setStyle(Util.DEFAULT_STYLE), true);
           playSound(player, true);
         }
       } else if (entityId != null) {
-        Entity entity = EntityTracking.fetchEntity(entityId, world);
+        Entity entity = EntityTracking.fetchEntity(entityId, world, player);
         if (entity != null) {
           entity.setPosition(player.posX, player.posY, player.posZ);
-          EventHandler.isSpawning = true;
-          player.world.spawnEntity(entity);
-          EventHandler.isSpawning = false;
+          if (entity instanceof EntityLiving) {
+            EntityLiving el = (EntityLiving) entity;
+            el.getNavigator().clearPath();
+          }
           playSound(player);
+        } else {
+          player.sendStatusMessage(new TextComponentTranslation("dwmh.status.cant_find").setStyle(Util.DEFAULT_STYLE), true);
+          playSound(player, true);
         }
       } else {
-        player.sendStatusMessage(new TextComponentTranslation("dwmh.status.no_entities"), true);
+        player.sendStatusMessage(new TextComponentTranslation("dwmh.status.no_entities").setStyle(Util.DEFAULT_STYLE), true);
       }
     }
     return new ActionResult<>(EnumActionResult.SUCCESS, stack);
@@ -170,6 +173,11 @@ public class ItemOcarina extends Item {
     }
 
     tooltip.add("");
+    tooltip.add(I18n.format("dwmh.tooltip.info1"));
+    tooltip.add(I18n.format("dwmh.tooltip.info2"));
+    tooltip.add(I18n.format("dwmh.tooltip.info3"));
+    tooltip.add("");
+
     NBTTagList info = null;
 
     if (tag.hasKey("info")) {

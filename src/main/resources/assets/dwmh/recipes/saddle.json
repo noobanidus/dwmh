@@ -19,5 +19,11 @@
       "type": "forge:ore_dict",
       "ore": "ingotIron"
     }
-  }
+  },
+  "conditions": [
+    {
+      "type": "dwmh:config",
+      "config": "saddle"
+    }
+  ]
 }

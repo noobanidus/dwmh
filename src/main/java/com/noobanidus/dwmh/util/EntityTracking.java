@@ -1,8 +1,7 @@
 package com.noobanidus.dwmh.util;
 
-import com.noobanidus.dwmh.DWMH;
 import com.noobanidus.dwmh.events.EventHandler;
-import com.noobanidus.dwmh.init.ConfigHandler;
+import com.noobanidus.dwmh.ConfigHandler;
 import com.noobanidus.dwmh.world.DataHelper;
 import com.noobanidus.dwmh.world.EntityData;
 import net.minecraft.entity.Entity;
@@ -60,6 +59,7 @@ public class EntityTracking {
       data.entityToOwner.put(entityId, playerId);
       data.trackedEntities.add(entityId);
       data.entityToResourceLocation.put(entityId, EntityList.getKey(entity));
+      data.entityToName.put(entityId, translationKey(entity));
       ownedEntities.add(entityId);
       save();
       return true;
@@ -75,7 +75,7 @@ public class EntityTracking {
   }
 
   @Nullable
-  public static Entity fetchEntity (UUID entityId, WorldServer world) {
+  public static Entity fetchEntity(UUID entityId, WorldServer world, EntityPlayer player) {
     for (int dim : DimensionManager.getIDs()) {
       WorldServer w = getWorld(dim);
       Entity entity = w.getEntityFromUuid(entityId);
@@ -87,33 +87,38 @@ public class EntityTracking {
     EntityData data = getData();
     NBTTagCompound entityTag = data.savedEntities.get(entityId);
     if (entityTag == null) {
-      DWMH.LOG.info("entityTag was null");
       return null;
     }
 
     ResourceLocation resource = data.entityToResourceLocation.get(entityId);
     if (resource == null) {
-      DWMH.LOG.info("ResourceLocation was null");
       return null;
     }
 
     Entity result = EntityList.createEntityByIDFromName(resource, world);
     if (result == null) {
-      DWMH.LOG.info("Couldn't create entity");
       return null;
     }
 
     result.readFromNBT(entityTag);
     result.isDead = false;
     result.extinguish();
-    result.world = world;
     result.dimension = world.provider.getDimension();
     result.hurtResistantTime = 0;
-    result.timeUntilPortal = 0;
 
     if (result instanceof EntityLivingBase) {
       ((EntityLivingBase) result).setHealth(((EntityLivingBase) result).getMaxHealth());
     }
+
+    result.setPosition(player.posX, player.posY, player.posZ);
+    if (result instanceof EntityLiving) {
+      EntityLiving el = (EntityLiving) result;
+      el.getNavigator().clearPath();
+    }
+
+    EventHandler.isSpawning = true;
+    player.world.spawnEntity(result);
+    EventHandler.isSpawning = false;
 
     return result;
   }
@@ -166,11 +171,6 @@ public class EntityTracking {
   public static UUID getOwnerForEntity(Entity entity) {
     EntityData data = getData();
     return data.entityToOwner.getOrDefault(entity.getUniqueID(), null);
-  }
-
-  public static boolean isTrackingEntity(UUID uuid) {
-    EntityData data = getData();
-    return data.trackedEntities.contains(uuid);
   }
 
   public static String getName(UUID entityId) {

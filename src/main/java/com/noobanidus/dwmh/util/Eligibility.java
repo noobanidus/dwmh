@@ -1,14 +1,13 @@
 package com.noobanidus.dwmh.util;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.EnumCreatureType;
-import net.minecraft.entity.IMerchant;
+import com.noobanidus.dwmh.ConfigHandler;
+import net.minecraft.entity.*;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.UUID;
 
@@ -28,19 +27,16 @@ public class Eligibility {
       AbstractHorse tame = (AbstractHorse) entity;
       if (tame.getOwnerUniqueId() != null && !tame.getOwnerUniqueId().equals(playerId)) return false;
     }
-    if (entity instanceof EntityLivingBase && ((EntityLivingBase) entity).isChild())
+    if (entity instanceof EntityLivingBase && ((EntityLivingBase) entity).isChild()) {
       return false; // This may or may not deal with children
-    if (entity instanceof IMerchant) return false; // No villager adjacent
+    }
+    if (entity instanceof IMerchant) {
+      return false; // No villager adjacent
+    }
 
     if (entity.isCreatureType(EnumCreatureType.MONSTER, false) || entity instanceof IMob) {
-      NBTTagCompound tag = new NBTTagCompound();
-      entity.writeToNBT(tag);
-      for (String key : tag.getKeySet()) {
-        if (key.equals("Owner") || key.equals("OwnerUUID")) {
-          return true; // Primitive Mobs spider, I don't like doing this but oh well
-        }
-      }
-      return false;
+      ResourceLocation rl = EntityList.getKey(entity);
+      return ConfigHandler.getForcedEntities().contains(rl);
     }
 
     return true;

@@ -2,7 +2,7 @@ package com.noobanidus.dwmh.recipes;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.noobanidus.dwmh.init.ConfigHandler;
+import com.noobanidus.dwmh.ConfigHandler;
 import net.minecraft.util.JsonUtils;
 import net.minecraftforge.common.crafting.IConditionFactory;
 import net.minecraftforge.common.crafting.JsonContext;

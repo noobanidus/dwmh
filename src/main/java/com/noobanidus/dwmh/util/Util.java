@@ -7,9 +7,7 @@ import net.minecraft.item.ItemArrow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.management.PlayerList;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.*;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -18,6 +16,8 @@ import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class Util {
+  public static Style DEFAULT_STYLE = new Style().setColor(TextFormatting.BLUE);
+
   public static NBTTagCompound getOrCreateTagCompound(ItemStack stack) {
     NBTTagCompound tagCompound = stack.getTagCompound();
     if (tagCompound == null) {

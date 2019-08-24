@@ -23,7 +23,7 @@
   "conditions": [
     {
       "type": "dwmh:config",
-      "config": "saddle"
+      "recipe": "saddle"
     }
   ]
 }

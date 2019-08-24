@@ -2,6 +2,7 @@ package com.noobanidus.dwmh.events;
 
 import com.noobanidus.dwmh.DWMH;
 import com.noobanidus.dwmh.init.ItemRegistry;
+import com.noobanidus.dwmh.items.ItemOcarina;
 import com.noobanidus.dwmh.util.EntityTracking;
 import com.noobanidus.dwmh.util.Util;
 import com.noobanidus.dwmh.world.EntityData;
@@ -27,6 +28,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 
 import java.util.UUID;
 
@@ -148,6 +150,13 @@ public class EventHandler {
           }
         }
       }
+    }
+  }
+
+  @SubscribeEvent
+  public static void handlePlayerCraft (PlayerEvent.ItemCraftedEvent event) {
+    if (!event.player.world.isRemote && event.crafting.getItem() == ItemRegistry.OCARINA) {
+      ItemOcarina.updateOcarinaNBT(event.crafting, event.player);
     }
   }
 

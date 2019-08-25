@@ -80,13 +80,6 @@ public class EventHandler {
             NBTTagCompound savedEntity = entity.writeToNBT(new NBTTagCompound());
             data.savedEntities.put(entity.getUniqueID(), savedEntity);
             data.entityToResourceLocation.put(entity.getUniqueID(), EntityList.getKey(entity));
-            UUID owner = data.entityToOwner.get(entity.getUniqueID());
-            if (owner != null) {
-              EntityPlayer player = Util.resolvePlayer(owner);
-              if (player != null) {
-                player.sendStatusMessage(new TextComponentTranslation("dwmh.status.saved", Util.resolveName(entity.getUniqueID())).setStyle(Util.DEFAULT_STYLE), true);
-              }
-            }
           }
         }
       }

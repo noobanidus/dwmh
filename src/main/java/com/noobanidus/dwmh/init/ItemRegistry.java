@@ -18,17 +18,17 @@ import java.util.Objects;
 
 @Mod.EventBusSubscriber(modid = DWMH.MODID)
 public class ItemRegistry {
-	public static ItemOcarina OCARINA = (ItemOcarina) new ItemOcarina().setTranslationKey("dwmh.ocarina").setRegistryName(new ResourceLocation(DWMH.MODID, "ocarina")).setCreativeTab(DWMH.TAB);
+  public static ItemOcarina OCARINA = (ItemOcarina) new ItemOcarina().setTranslationKey("dwmh.ocarina").setRegistryName(new ResourceLocation(DWMH.MODID, "ocarina")).setCreativeTab(DWMH.TAB);
 
-	@SubscribeEvent
-	public static void onItemRegister (RegistryEvent.Register<Item> event) {
-		IForgeRegistry<Item> registry = event.getRegistry();
-		registry.register(OCARINA);
-	}
+  @SubscribeEvent
+  public static void onItemRegister(RegistryEvent.Register<Item> event) {
+    IForgeRegistry<Item> registry = event.getRegistry();
+    registry.register(OCARINA);
+  }
 
-	@SubscribeEvent
-	@SideOnly(Side.CLIENT)
-	public static void onModelRegister (ModelRegistryEvent event) {
-		ModelLoader.setCustomModelResourceLocation(OCARINA, 0, new ModelResourceLocation(Objects.requireNonNull(OCARINA.getRegistryName()), "inventory"));
-	}
+  @SubscribeEvent
+  @SideOnly(Side.CLIENT)
+  public static void onModelRegister(ModelRegistryEvent event) {
+    ModelLoader.setCustomModelResourceLocation(OCARINA, 0, new ModelResourceLocation(Objects.requireNonNull(OCARINA.getRegistryName()), "inventory"));
+  }
 }

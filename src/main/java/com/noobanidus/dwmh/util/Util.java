@@ -1,9 +1,7 @@
 package com.noobanidus.dwmh.util;
 
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemArrow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.management.PlayerList;

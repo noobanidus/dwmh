@@ -3,9 +3,7 @@ package com.noobanidus.dwmh;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Config;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Config(modid = DWMH.MODID)

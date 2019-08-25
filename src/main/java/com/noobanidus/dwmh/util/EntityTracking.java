@@ -1,7 +1,7 @@
 package com.noobanidus.dwmh.util;
 
-import com.noobanidus.dwmh.events.EventHandler;
 import com.noobanidus.dwmh.ConfigHandler;
+import com.noobanidus.dwmh.events.EventHandler;
 import com.noobanidus.dwmh.world.DataHelper;
 import com.noobanidus.dwmh.world.EntityData;
 import net.minecraft.entity.Entity;

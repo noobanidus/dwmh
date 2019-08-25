@@ -154,7 +154,7 @@ public class EventHandler {
   }
 
   @SubscribeEvent
-  public static void handlePlayerCraft (PlayerEvent.ItemCraftedEvent event) {
+  public static void handlePlayerCraft(PlayerEvent.ItemCraftedEvent event) {
     if (!event.player.world.isRemote && event.crafting.getItem() == ItemRegistry.OCARINA) {
       ItemOcarina.updateOcarinaNBT(event.crafting, event.player);
     }

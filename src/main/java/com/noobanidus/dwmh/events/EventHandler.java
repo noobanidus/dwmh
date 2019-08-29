@@ -131,8 +131,11 @@ public class EventHandler {
       }
       if (data.trackedEntities.contains(entity.getUniqueID())) {
         // Save it!
+        entity.isDead = false;
+        entity.setHealth(entity.getMaxHealth());
         entity.removePassengers();
         NBTTagCompound savedEntity = entity.writeToNBT(new NBTTagCompound());
+        entity.isDead = true;
         data.savedEntities.put(entity.getUniqueID(), savedEntity);
         data.entityToResourceLocation.put(entity.getUniqueID(), EntityList.getKey(entity));
         UUID owner = data.entityToOwner.get(entity.getUniqueID());

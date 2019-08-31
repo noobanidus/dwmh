@@ -5,6 +5,8 @@ import com.noobanidus.dwmh.init.SoundRegistry;
 import com.noobanidus.dwmh.util.Eligibility;
 import com.noobanidus.dwmh.util.EntityTracking;
 import com.noobanidus.dwmh.util.Util;
+import com.noobanidus.dwmh.world.DataHelper;
+import com.noobanidus.dwmh.world.EntityData;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -140,14 +142,20 @@ public class ItemOcarina extends Item {
           playSound(player, true);
         }
       } else if (entityId != null) {
+        EntityData data = DataHelper.getTrackingData();
+        List<UUID> owned = data.ownerToEntities.get(player.getUniqueID());
         Entity entity = EntityTracking.fetchEntity(entityId, world, player);
         if (entity != null) {
-          entity.setPosition(player.posX, player.posY, player.posZ);
-          if (entity instanceof EntityLiving) {
-            EntityLiving el = (EntityLiving) entity;
-            el.getNavigator().clearPath();
+          if (owned != null && owned.contains(entity.getUniqueID())) {
+            entity.setPosition(player.posX, player.posY, player.posZ);
+            if (entity instanceof EntityLiving) {
+              EntityLiving el = (EntityLiving) entity;
+              el.getNavigator().clearPath();
+            }
+            playSound(player);
+          } else {
+             player.sendStatusMessage(new TextComponentTranslation("dwmh.status.no_entities").setStyle(Util.DEFAULT_STYLE), true);
           }
-          playSound(player);
         } else {
           player.sendStatusMessage(new TextComponentTranslation("dwmh.status.cant_find").setStyle(Util.DEFAULT_STYLE), true);
           playSound(player, true);

@@ -1,10 +1,12 @@
 package com.noobanidus.dwmh;
 
+import com.noobanidus.dwmh.commands.CommandOcarina;
 import com.noobanidus.dwmh.init.ItemRegistry;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import org.apache.logging.log4j.Logger;
 
 @Mod.EventBusSubscriber
@@ -31,5 +33,10 @@ public class DWMH {
   @Mod.EventHandler
   public void preInit(FMLPreInitializationEvent event) {
     LOG = event.getModLog();
+  }
+
+  @Mod.EventHandler
+  public void serverStarting (FMLServerStartingEvent event) {
+    event.registerServerCommand(new CommandOcarina());
   }
 }

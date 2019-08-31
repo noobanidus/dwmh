@@ -45,8 +45,7 @@ public class EntityTracking {
   }
 
   public static EntityData getData() {
-    World world = getWorld();
-    return DataHelper.getTrackingData(world);
+    return DataHelper.getTrackingData();
   }
 
   public static boolean setOwnerForEntity(EntityPlayer player, Entity entity) {

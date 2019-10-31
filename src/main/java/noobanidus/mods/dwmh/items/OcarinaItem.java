@@ -1,5 +1,6 @@
 package noobanidus.mods.dwmh.items;
 
+import net.minecraft.util.text.*;
 import noobanidus.mods.dwmh.DWMH;
 import noobanidus.mods.dwmh.init.SoundRegistry;
 import noobanidus.mods.dwmh.util.Eligibility;
@@ -18,7 +19,6 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -105,5 +105,20 @@ public class OcarinaItem extends Item {
   @OnlyIn(Dist.CLIENT)
   @Override
   public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    if (worldIn == null) return;
+
+    CompoundNBT tag = Util.getOrCreateTagCompound(stack);
+    if (tag.hasUniqueId("target")) {
+      UUID target = tag.getUniqueId("target");
+      int id = EntityTracking.getEntityId(target);
+      Entity entity = worldIn.getEntityByID(id);
+      tooltip.add(new StringTextComponent(""));
+      if (entity != null) {
+        tooltip.add(new TranslationTextComponent("dwmh.currently_tracking", entity.getName()));
+      } else {
+        tooltip.add(new TranslationTextComponent("dwmh.no_target"));
+      }
+      tooltip.add(new TranslationTextComponent("dwmh.uuid_target").setStyle(new Style().setColor(TextFormatting.GRAY)));
+    }
   }
 }

@@ -1,4 +1,4 @@
-package com.noobanidus.dwmh.world;
+package noobanidus.mods.dwmh.world;
 
 import net.minecraft.world.server.ServerWorld;
 

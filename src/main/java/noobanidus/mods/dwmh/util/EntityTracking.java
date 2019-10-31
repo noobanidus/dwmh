@@ -1,7 +1,7 @@
-package com.noobanidus.dwmh.util;
+package noobanidus.mods.dwmh.util;
 
-import com.noobanidus.dwmh.world.DataHelper;
-import com.noobanidus.dwmh.world.EntityData;
+import noobanidus.mods.dwmh.world.DataHelper;
+import noobanidus.mods.dwmh.world.EntityData;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;

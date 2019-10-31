@@ -1,10 +1,10 @@
-package com.noobanidus.dwmh.items;
+package noobanidus.mods.dwmh.items;
 
-import com.noobanidus.dwmh.DWMH;
-import com.noobanidus.dwmh.init.SoundRegistry;
-import com.noobanidus.dwmh.util.Eligibility;
-import com.noobanidus.dwmh.util.EntityTracking;
-import com.noobanidus.dwmh.util.Util;
+import noobanidus.mods.dwmh.DWMH;
+import noobanidus.mods.dwmh.init.SoundRegistry;
+import noobanidus.mods.dwmh.util.Eligibility;
+import noobanidus.mods.dwmh.util.EntityTracking;
+import noobanidus.mods.dwmh.util.Util;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;

@@ -1,4 +1,4 @@
-package com.noobanidus.dwmh.util;
+package noobanidus.mods.dwmh.util;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;

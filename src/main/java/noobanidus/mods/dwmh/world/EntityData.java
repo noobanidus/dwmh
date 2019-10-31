@@ -1,4 +1,4 @@
-package com.noobanidus.dwmh.world;
+package noobanidus.mods.dwmh.world;
 
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.nbt.CompoundNBT;

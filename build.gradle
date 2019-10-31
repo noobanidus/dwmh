@@ -17,8 +17,9 @@ apply plugin: 'maven-publish'
 //if (System.getenv('BUILD_NUMBER') != null) {
 //    version = "${minecraft_version}-${mod_version}-" + System.getenv('BUILD_NUMBER')
 //}
-version = "1.14.4-3.0.1"
-group = "com.noobanidus.dwmh"
+// version = "1.14.4-3.0.1"
+version = "${minecraft_version}-${mod_version}"
+group = "noobanidus.mods.dwmh"
 archivesBaseName = "dwmh"
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.

@@ -1,8 +1,8 @@
-package com.noobanidus.dwmh.events;
+package noobanidus.mods.dwmh.events;
 
-import com.noobanidus.dwmh.DWMH;
-import com.noobanidus.dwmh.init.ItemRegistry;
-import com.noobanidus.dwmh.util.EntityTracking;
+import noobanidus.mods.dwmh.DWMH;
+import noobanidus.mods.dwmh.init.ItemRegistry;
+import noobanidus.mods.dwmh.util.EntityTracking;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;

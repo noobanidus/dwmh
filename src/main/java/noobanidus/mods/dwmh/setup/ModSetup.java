@@ -1,4 +1,4 @@
-package com.noobanidus.dwmh.setup;
+package noobanidus.mods.dwmh.setup;
 
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 

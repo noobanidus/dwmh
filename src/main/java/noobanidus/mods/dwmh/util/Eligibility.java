@@ -1,4 +1,4 @@
-package com.noobanidus.dwmh.util;
+package noobanidus.mods.dwmh.util;
 
 import net.minecraft.entity.*;
 import net.minecraft.entity.merchant.IMerchant;

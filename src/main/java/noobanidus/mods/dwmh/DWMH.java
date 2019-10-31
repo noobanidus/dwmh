@@ -1,7 +1,7 @@
-package com.noobanidus.dwmh;
+package noobanidus.mods.dwmh;
 
-import com.noobanidus.dwmh.init.ItemRegistry;
-import com.noobanidus.dwmh.setup.ModSetup;
+import noobanidus.mods.dwmh.init.ItemRegistry;
+import noobanidus.mods.dwmh.setup.ModSetup;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Mod;

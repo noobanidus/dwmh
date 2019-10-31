@@ -1,6 +1,6 @@
-package com.noobanidus.dwmh.init;
+package noobanidus.mods.dwmh.init;
 
-import com.noobanidus.dwmh.DWMH;
+import noobanidus.mods.dwmh.DWMH;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.event.RegistryEvent;

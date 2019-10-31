@@ -1,6 +1,6 @@
-package com.noobanidus.dwmh.util;
+package noobanidus.mods.dwmh.util;
 
-import com.noobanidus.dwmh.init.SoundRegistry;
+import noobanidus.mods.dwmh.init.SoundRegistry;
 import net.minecraft.util.SoundEvent;
 
 public enum OcarinaSound {

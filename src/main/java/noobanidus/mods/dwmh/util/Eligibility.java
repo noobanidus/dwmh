@@ -28,6 +28,8 @@ public class Eligibility {
     if (entity instanceof IMerchant) return false; // No villager adjacent
     if (entity instanceof IMob) return false; // No deliberate mobs? Might not work for Ice & Fire
 
+    if (entity instanceof PlayerEntity) return false; // Not players... not yet.
+
     return true;
   }
 }

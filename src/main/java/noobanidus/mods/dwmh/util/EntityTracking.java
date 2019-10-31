@@ -1,13 +1,13 @@
 package noobanidus.mods.dwmh.util;
 
-import noobanidus.mods.dwmh.world.DataHelper;
-import noobanidus.mods.dwmh.world.EntityData;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import noobanidus.mods.dwmh.world.DataHelper;
+import noobanidus.mods.dwmh.world.EntityData;
 
 import javax.annotation.Nullable;
 import java.util.UUID;

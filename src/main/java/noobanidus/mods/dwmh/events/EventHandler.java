@@ -1,8 +1,5 @@
 package noobanidus.mods.dwmh.events;
 
-import noobanidus.mods.dwmh.DWMH;
-import noobanidus.mods.dwmh.init.ItemRegistry;
-import noobanidus.mods.dwmh.util.EntityTracking;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -11,6 +8,9 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import noobanidus.mods.dwmh.DWMH;
+import noobanidus.mods.dwmh.init.ItemRegistry;
+import noobanidus.mods.dwmh.util.EntityTracking;
 
 @Mod.EventBusSubscriber(modid = DWMH.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 @SuppressWarnings("unused")

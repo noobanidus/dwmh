@@ -1,11 +1,5 @@
 package noobanidus.mods.dwmh.items;
 
-import net.minecraft.util.text.*;
-import noobanidus.mods.dwmh.DWMH;
-import noobanidus.mods.dwmh.init.SoundRegistry;
-import noobanidus.mods.dwmh.util.Eligibility;
-import noobanidus.mods.dwmh.util.EntityTracking;
-import noobanidus.mods.dwmh.util.Util;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -19,9 +13,15 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import noobanidus.mods.dwmh.DWMH;
+import noobanidus.mods.dwmh.init.SoundRegistry;
+import noobanidus.mods.dwmh.util.Eligibility;
+import noobanidus.mods.dwmh.util.EntityTracking;
+import noobanidus.mods.dwmh.util.Util;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -44,7 +44,7 @@ public class OcarinaItem extends Item {
     return false;
   }
 
-  private static void playSound (PlayerEntity player) {
+  private static void playSound(PlayerEntity player) {
     playSound(player, false);
   }
 
@@ -118,7 +118,7 @@ public class OcarinaItem extends Item {
       } else {
         tooltip.add(new TranslationTextComponent("dwmh.no_target"));
       }
-      tooltip.add(new TranslationTextComponent("dwmh.uuid_target").setStyle(new Style().setColor(TextFormatting.GRAY)));
+      tooltip.add(new TranslationTextComponent("dwmh.uuid_target", target.toString()).setStyle(new Style().setColor(TextFormatting.GRAY)));
     }
   }
 }

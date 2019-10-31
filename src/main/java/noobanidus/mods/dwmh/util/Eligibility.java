@@ -1,6 +1,8 @@
 package noobanidus.mods.dwmh.util;
 
-import net.minecraft.entity.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityClassification;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.merchant.IMerchant;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.TameableEntity;

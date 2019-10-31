@@ -1,11 +1,11 @@
 package noobanidus.mods.dwmh;
 
-import noobanidus.mods.dwmh.init.ItemRegistry;
-import noobanidus.mods.dwmh.setup.ModSetup;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import noobanidus.mods.dwmh.init.ItemRegistry;
+import noobanidus.mods.dwmh.setup.ModSetup;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

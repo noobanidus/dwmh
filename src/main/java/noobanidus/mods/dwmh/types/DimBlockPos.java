@@ -1,7 +1,6 @@
 package noobanidus.mods.dwmh.types;
 
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.dimension.DimensionType;
 
 public class DimBlockPos {

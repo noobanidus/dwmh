@@ -1,12 +1,12 @@
 package noobanidus.mods.dwmh.init;
 
-import noobanidus.mods.dwmh.DWMH;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
+import noobanidus.mods.dwmh.DWMH;
 
 import java.util.Arrays;
 import java.util.List;

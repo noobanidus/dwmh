@@ -1,13 +1,13 @@
 package noobanidus.mods.dwmh.init;
 
-import noobanidus.mods.dwmh.DWMH;
-import noobanidus.mods.dwmh.items.OcarinaItem;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
+import noobanidus.mods.dwmh.DWMH;
+import noobanidus.mods.dwmh.items.OcarinaItem;
 
 @Mod.EventBusSubscriber(modid = DWMH.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ItemRegistry {

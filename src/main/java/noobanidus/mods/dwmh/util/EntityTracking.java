@@ -40,11 +40,19 @@ public class EntityTracking {
     data.entityToOwner.put(entityId, playerId);
     data.entityToId.put(entityId, entityIntId);
     data.trackedEntities.add(entityId);
-    save();
+    save(data);
   }
 
-  public static void save() {
+  public static void unsetOwnerForEntity (Entity entity) {
     EntityData data = getData();
+    UUID entityId = entity.getUniqueID();
+    data.entityToId.removeInt(entityId);
+    data.entityToOwner.remove(entityId);
+    data.trackedEntities.remove(entityId);
+    save(data);
+  }
+
+  public static void save(EntityData data) {
     data.markDirty();
     ServerWorld world = getWorld();
     world.getSavedData().save();
@@ -65,5 +73,6 @@ public class EntityTracking {
     int id = entity.getEntityId();
     EntityData data = getData();
     data.entityToId.put(entity.getUniqueID(), id);
+    save(data);
   }
 }

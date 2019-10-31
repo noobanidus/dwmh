@@ -44,11 +44,15 @@ public class OcarinaItem extends Item {
     return false;
   }
 
-  private static void playSound(PlayerEntity player) {
+  private static void playSound (PlayerEntity player) {
+    playSound(player, false);
+  }
+
+  private static void playSound(PlayerEntity player, boolean minor) {
     if (!canPlay(player)) return;
 
     lastPlayedMap.put(player, System.currentTimeMillis());
-    player.world.playSound(null, player.getPosition(), SoundRegistry.getRandomWhistle(), SoundCategory.PLAYERS, 1f, 1f);
+    player.world.playSound(null, player.getPosition(), minor ? SoundRegistry.getRandomMinorWhistle() : SoundRegistry.getRandomWhistle(), SoundCategory.PLAYERS, 1f, 1f);
   }
 
   public OcarinaItem() {
@@ -57,10 +61,19 @@ public class OcarinaItem extends Item {
 
   public void rightClickEntity(PlayerEntity playerIn, Entity target, ItemStack stack) {
     if (!playerIn.world.isRemote && Eligibility.eligibleToBeTagged(playerIn, target)) {
-      EntityTracking.setOwnerForEntity(playerIn, target);
-      CompoundNBT tag = Util.getOrCreateTagCompound(stack);
-      tag.putUniqueId("target", target.getUniqueID());
-      playSound(playerIn);
+      UUID owner = EntityTracking.getOwnerForEntity(target);
+      if (owner == null) {
+        EntityTracking.setOwnerForEntity(playerIn, target);
+        CompoundNBT tag = Util.getOrCreateTagCompound(stack);
+        tag.putUniqueId("target", target.getUniqueID());
+        playSound(playerIn);
+      } else {
+        EntityTracking.unsetOwnerForEntity(target);
+        CompoundNBT tag = Util.getOrCreateTagCompound(stack);
+        tag.remove("targetMost");
+        tag.remove("targetLeast");
+        playSound(playerIn, true);
+      }
     }
   }
 
@@ -70,7 +83,7 @@ public class OcarinaItem extends Item {
     ItemStack stack = player.getHeldItem(hand);
     CompoundNBT tag = Util.getOrCreateTagCompound(stack);
     if (!world.isRemote) {
-      if (tag.contains("targetLeast")) {
+      if (tag.hasUniqueId("target")) {
         UUID entityId = tag.getUniqueId("target");
         int id = EntityTracking.getEntityId(entityId);
         Entity entity = world.getEntityByID(id);

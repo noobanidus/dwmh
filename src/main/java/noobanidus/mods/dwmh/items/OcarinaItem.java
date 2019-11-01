@@ -5,6 +5,7 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
@@ -19,6 +20,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import noobanidus.mods.dwmh.DWMH;
 import noobanidus.mods.dwmh.init.SoundRegistry;
+import noobanidus.mods.dwmh.network.GetName;
+import noobanidus.mods.dwmh.network.Networking;
 import noobanidus.mods.dwmh.util.Eligibility;
 import noobanidus.mods.dwmh.util.EntityTracking;
 import noobanidus.mods.dwmh.util.Util;
@@ -60,18 +63,23 @@ public class OcarinaItem extends Item {
   }
 
   public void rightClickEntity(PlayerEntity playerIn, Entity target, ItemStack stack) {
-    if (!playerIn.world.isRemote && Eligibility.eligibleToBeTagged(playerIn, target)) {
+    if (!playerIn.world.isRemote() && Eligibility.eligibleToBeTagged(playerIn, target)) {
+      ServerPlayerEntity player = (ServerPlayerEntity) playerIn;
       UUID owner = EntityTracking.getOwnerForEntity(target);
       if (owner == null) {
         EntityTracking.setOwnerForEntity(playerIn, target);
         CompoundNBT tag = Util.getOrCreateTagCompound(stack);
         tag.putUniqueId("target", target.getUniqueID());
+        GetName packet = new GetName(target.getEntityId());
+        Networking.sendTo(packet, playerIn);
         playSound(playerIn);
       } else {
         EntityTracking.unsetOwnerForEntity(target);
         CompoundNBT tag = Util.getOrCreateTagCompound(stack);
         tag.remove("targetMost");
         tag.remove("targetLeast");
+        tag.remove("name");
+        player.sendAllContents(player.openContainer, player.openContainer.getInventory());
         playSound(playerIn, true);
       }
     }
@@ -85,13 +93,13 @@ public class OcarinaItem extends Item {
     if (!world.isRemote) {
       if (tag.hasUniqueId("target")) {
         UUID entityId = tag.getUniqueId("target");
-        int id = EntityTracking.getEntityId(entityId);
-        Entity entity = world.getEntityByID(id);
+        Entity entity = EntityTracking.fetchEntity(entityId);
         if (entity != null && entity.getUniqueID().equals(entityId) && entity.isAlive()) {
           // Update the stack
           entity.setPosition(player.posX, player.posY, player.posZ);
           playSound(player);
         }
+        EntityTracking.clearEntity(entityId);
       }
     }
     return new ActionResult<>(ActionResultType.SUCCESS, stack);
@@ -108,16 +116,14 @@ public class OcarinaItem extends Item {
     if (worldIn == null) return;
 
     CompoundNBT tag = Util.getOrCreateTagCompound(stack);
+    if (tag.contains("name") || tag.hasUniqueId("target")) {
+      tooltip.add(new StringTextComponent(""));
+    }
+    if (tag.contains("name")) {
+      tooltip.add(new TranslationTextComponent("dwmh.currently_tracking", new StringTextComponent(tag.getString("name"))));
+    }
     if (tag.hasUniqueId("target")) {
       UUID target = tag.getUniqueId("target");
-      int id = EntityTracking.getEntityId(target);
-      Entity entity = worldIn.getEntityByID(id);
-      tooltip.add(new StringTextComponent(""));
-      if (entity != null) {
-        tooltip.add(new TranslationTextComponent("dwmh.currently_tracking", entity.getName()));
-      } else {
-        tooltip.add(new TranslationTextComponent("dwmh.no_target"));
-      }
       tooltip.add(new TranslationTextComponent("dwmh.uuid_target", target.toString()).setStyle(new Style().setColor(TextFormatting.GRAY)));
     }
   }

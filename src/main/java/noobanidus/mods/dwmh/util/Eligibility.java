@@ -22,16 +22,16 @@ public class Eligibility {
     UUID playerId = player.getUniqueID();
     UUID entityId = entity.getUniqueID();
 
+    if (playerId.equals(Kashcah) && entityId.equals(Vallen)) {
+      return true;
+    }
+
     ResourceLocation type = entity.getType().getRegistryName();
     if (ConfigManager.blacklist.getEntityList().contains(type)) {
       return false;
     }
 
     if (ConfigManager.whitelist.getEntityList().contains(type)) {
-      return true;
-    }
-
-    if (playerId.equals(Kashcah) && entityId.equals(Vallen)) {
       return true;
     }
 

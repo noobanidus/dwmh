@@ -57,8 +57,11 @@ public class EntityTracking {
   }
 
   public static void unsetOwnerForEntity(Entity entity) {
+    unsetOwnerForEntity(entity.getUniqueID());
+  }
+
+  public static void unsetOwnerForEntity (UUID entityId) {
     EntityData data = getData();
-    UUID entityId = entity.getUniqueID();
     data.entityToId.removeInt(entityId);
     data.entityToOwner.remove(entityId);
     data.trackedEntities.remove(entityId);

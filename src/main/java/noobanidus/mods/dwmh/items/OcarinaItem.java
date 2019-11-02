@@ -67,8 +67,11 @@ public class OcarinaItem extends Item {
       ServerPlayerEntity player = (ServerPlayerEntity) playerIn;
       UUID owner = EntityTracking.getOwnerForEntity(target);
       if (owner == null) {
-        EntityTracking.setOwnerForEntity(playerIn, target);
         CompoundNBT tag = Util.getOrCreateTagCompound(stack);
+        if (tag.hasUniqueId("target")) {
+          EntityTracking.unsetOwnerForEntity(tag.getUniqueId("target"));
+        }
+        EntityTracking.setOwnerForEntity(playerIn, target);
         tag.putUniqueId("target", target.getUniqueID());
         GetName packet = new GetName(target.getEntityId());
         Networking.sendTo(packet, playerIn);

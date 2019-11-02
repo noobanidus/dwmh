@@ -73,6 +73,7 @@ public class OcarinaItem extends Item {
         }
         EntityTracking.setOwnerForEntity(playerIn, target);
         tag.putUniqueId("target", target.getUniqueID());
+        tag.remove("name");
         GetName packet = new GetName(target.getEntityId());
         Networking.sendTo(packet, playerIn);
         playSound(playerIn);

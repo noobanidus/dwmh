@@ -118,7 +118,6 @@ public class EntityTracking {
       return null;
     }
     ChunkPos pos = new ChunkPos(dimpos.getPos());
-    dim.getChunk(pos.x, pos.z);
     dim.forceChunk(pos.x, pos.z, true);
     clearMap.put(uuid, () -> dim.forceChunk(pos.x, pos.z, false));
     return findEntity(dim, uuid);

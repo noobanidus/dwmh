@@ -11,11 +11,11 @@
   ],
   "key": {
     "l": {
-      "item": "minecraft:leather"
+      "tag": "forge:leather"
     },
     "i":
     {
-      "item": "minecraft:iron_ingot"
+      "tag": "forge:ingots/iron"
     }
   }
 }

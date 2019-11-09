@@ -6,10 +6,12 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
 import noobanidus.mods.dwmh.config.ConfigManager;
+import noobanidus.mods.dwmh.events.ClientEventHandler;
 import noobanidus.mods.dwmh.events.EventHandler;
 import noobanidus.mods.dwmh.init.ItemRegistry;
 import noobanidus.mods.dwmh.setup.ModSetup;
@@ -36,8 +38,14 @@ public class DWMH {
   public DWMH() {
     IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
     bus.addListener(setup::init);
+
+    DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+      MinecraftForge.EVENT_BUS.addListener(ClientEventHandler::onClientTick);
+    });
+
     MinecraftForge.EVENT_BUS.register(handler);
-    FMLJavaModLoadingContext.get().getModEventBus().addListener(setup::init);
+
+
     ConfigManager.init();
     ConfigManager.loadConfig(ConfigManager.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve(MODID + "-common.toml"));
   }

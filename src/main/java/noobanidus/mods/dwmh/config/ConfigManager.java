@@ -19,7 +19,10 @@ public class ConfigManager {
   public static Whitelist whitelist = new Whitelist();
   public static Blacklist blacklist = new Blacklist();
 
+  public static ForgeConfigSpec.ConfigValue<Boolean> doSwimBoost;
+
   public static void init () {
+    doSwimBoost = COMMON_BUILDER.comment("allow horses to swim").define("doHorsesSwim", true);
     COMMON_BUILDER.comment("Whitelist").push("whitelist");
     whitelist.apply(COMMON_BUILDER);
     COMMON_BUILDER.pop();

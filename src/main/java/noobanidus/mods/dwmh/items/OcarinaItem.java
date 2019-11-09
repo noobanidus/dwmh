@@ -131,4 +131,14 @@ public class OcarinaItem extends Item {
       tooltip.add(new TranslationTextComponent("dwmh.uuid_target", target.toString()).setStyle(new Style().setColor(TextFormatting.GRAY)));
     }
   }
+
+  @Override
+  @OnlyIn(Dist.CLIENT)
+  public boolean hasEffect(ItemStack stack) {
+    if (stack.hasDisplayName()) {
+      return true;
+    }
+
+    return super.hasEffect(stack);
+  }
 }

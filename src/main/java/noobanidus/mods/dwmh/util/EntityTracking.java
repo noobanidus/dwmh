@@ -34,11 +34,6 @@ public class EntityTracking {
     return DataHelper.getTrackingData(world);
   }
 
-  public static int getEntityId(UUID uuid) {
-    EntityData data = getData();
-    return data.entityToId.getOrDefault(uuid, -1);
-  }
-
   public static void storeEntity(Entity entity, DimBlockPos location) {
     EntityData data = getData();
     data.lastKnownLocation.put(entity.getUniqueID(), location);
@@ -49,9 +44,7 @@ public class EntityTracking {
     EntityData data = getData();
     UUID playerId = player.getUniqueID();
     UUID entityId = entity.getUniqueID();
-    int entityIntId = entity.getEntityId();
     data.entityToOwner.put(entityId, playerId);
-    data.entityToId.put(entityId, entityIntId);
     data.trackedEntities.add(entityId);
     save(data);
   }
@@ -62,7 +55,6 @@ public class EntityTracking {
 
   public static void unsetOwnerForEntity (UUID entityId) {
     EntityData data = getData();
-    data.entityToId.removeInt(entityId);
     data.entityToOwner.remove(entityId);
     data.trackedEntities.remove(entityId);
     save(data);
@@ -80,25 +72,11 @@ public class EntityTracking {
     return data.entityToOwner.getOrDefault(entity.getUniqueID(), null);
   }
 
-  public static boolean isTrackingEntity(UUID uuid) {
-    EntityData data = getData();
-    return data.trackedEntities.contains(uuid);
-  }
-
-  public static void updateEntityId(Entity entity) {
-    int id = entity.getEntityId();
-    EntityData data = getData();
-    data.entityToId.put(entity.getUniqueID(), id);
-    save(data);
-  }
-
   @Nullable
   public static Entity fetchEntity(UUID uuid) {
     EntityData data = getData();
-    ServerWorld overworld = getWorld();
-    int intId = data.entityToId.getInt(uuid);
-    Entity entity = overworld.getEntityByID(intId);
-    if (entity != null && entity.getUniqueID().equals(uuid)) {
+    Entity entity = findEntity(uuid);
+    if (entity != null)  {
       return entity;
     }
 
@@ -107,7 +85,7 @@ public class EntityTracking {
       return loadEntity(uuid, pos);
     }
 
-    return findEntity(uuid);
+    return null;
   }
 
   @Nullable
@@ -120,25 +98,20 @@ public class EntityTracking {
     ChunkPos pos = new ChunkPos(dimpos.getPos());
     dim.forceChunk(pos.x, pos.z, true);
     clearMap.put(uuid, () -> dim.forceChunk(pos.x, pos.z, false));
-    return findEntity(dim, uuid);
+    return dim.getEntityByUuid(uuid);
   }
 
   @Nullable
   public static Entity findEntity(UUID uuid) {
     MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
     for (ServerWorld world : server.getWorlds()) {
-      Entity potential = findEntity(world, uuid);
+      Entity potential = world.getEntityByUuid(uuid);
       if (potential != null) {
         return potential;
       }
     }
 
     return null;
-  }
-
-  @Nullable
-  public static Entity findEntity(ServerWorld world, UUID uuid) {
-    return world.getEntities().filter(o -> o.getUniqueID().equals(uuid)).findFirst().orElse(null);
   }
 
   public static void clearEntity(UUID entity) {

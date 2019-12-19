@@ -9,19 +9,11 @@ import net.minecraftforge.registries.IForgeRegistry;
 import noobanidus.mods.dwmh.DWMH;
 import noobanidus.mods.dwmh.items.OcarinaItem;
 
-@Mod.EventBusSubscriber(modid = DWMH.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ItemRegistry {
   public static OcarinaItem OCARINA = (OcarinaItem) new OcarinaItem().setRegistryName(new ResourceLocation(DWMH.MODID, "ocarina"));
 
-  @SubscribeEvent
   public static void onItemRegister(RegistryEvent.Register<Item> event) {
     IForgeRegistry<Item> registry = event.getRegistry();
     registry.register(OCARINA);
   }
-
-  /*@SubscribeEvent
-  @OnlyIn(Dist.CLIENT)
-  public static void onModelRegister(ModelRegistryEvent event) {
-    ModelLoader.setCustomModelResourceLocation(OCARINA, 0, new ModelResourceLocation(Objects.requireNonNull(OCARINA.getRegistryName()), "inventory"));
-  }*/
 }

@@ -105,8 +105,6 @@ dependencies {
     // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-
-//    deobfCompile "info.tehnut.harvest:Harvest:1.12-1.2.7-20"
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..

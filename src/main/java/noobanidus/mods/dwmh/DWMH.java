@@ -1,7 +1,9 @@
 package noobanidus.mods.dwmh;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.SoundEvent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -14,6 +16,7 @@ import noobanidus.mods.dwmh.config.ConfigManager;
 import noobanidus.mods.dwmh.events.ClientEventHandler;
 import noobanidus.mods.dwmh.events.EventHandler;
 import noobanidus.mods.dwmh.init.ItemRegistry;
+import noobanidus.mods.dwmh.init.SoundRegistry;
 import noobanidus.mods.dwmh.setup.ModSetup;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -38,6 +41,8 @@ public class DWMH {
   public DWMH() {
     IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
     bus.addListener(setup::init);
+    bus.addGenericListener(Item.class, ItemRegistry::onItemRegister);
+    bus.addGenericListener(SoundEvent.class, SoundRegistry::registerSounds);
 
     DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
       MinecraftForge.EVENT_BUS.addListener(ClientEventHandler::onClientTick);

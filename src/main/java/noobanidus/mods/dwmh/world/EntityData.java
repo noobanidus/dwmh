@@ -16,7 +16,6 @@ public class EntityData extends WorldSavedData {
 
   public Set<UUID> trackedEntities = new HashSet<>();
   public Map<UUID, UUID> entityToOwner = new HashMap<>();
-  public Object2IntOpenHashMap<UUID> entityToId = new Object2IntOpenHashMap<>();
   public Map<UUID, DimBlockPos> lastKnownLocation = new HashMap<>();
 
   public EntityData() {
@@ -30,7 +29,6 @@ public class EntityData extends WorldSavedData {
   @Override
   public void read(CompoundNBT nbt) {
     entityToOwner.clear();
-    entityToId.clear();
     trackedEntities.clear();
     lastKnownLocation.clear();
     ListNBT owners = nbt.getList("owners", Constants.NBT.TAG_COMPOUND);
@@ -39,13 +37,6 @@ public class EntityData extends WorldSavedData {
       UUID owner = thisEntry.getUniqueId("owner");
       UUID entity = thisEntry.getUniqueId("entity");
       entityToOwner.put(entity, owner);
-    }
-    ListNBT ids = nbt.getList("ids", Constants.NBT.TAG_COMPOUND);
-    for (int i = 0; i < ids.size(); i++) {
-      CompoundNBT thisEntry = ids.getCompound(i);
-      UUID entity = thisEntry.getUniqueId("entity");
-      int id = thisEntry.getInt("id");
-      entityToId.put(entity, id);
     }
     ListNBT tracked = nbt.getList("tracked", Constants.NBT.TAG_COMPOUND);
     for (int i = 0; i < tracked.size(); i++) {
@@ -74,13 +65,6 @@ public class EntityData extends WorldSavedData {
       thisEntry.putUniqueId("owner", entry.getValue());
       owners.add(thisEntry);
     }
-    ListNBT ids = new ListNBT();
-    for (Map.Entry<UUID, Integer> entry : entityToId.object2IntEntrySet()) {
-      CompoundNBT thisEntry = new CompoundNBT();
-      thisEntry.putUniqueId("entity", entry.getKey());
-      thisEntry.putInt("id", entry.getValue());
-      ids.add(thisEntry);
-    }
     ListNBT tracked = new ListNBT();
     for (UUID entity : trackedEntities) {
       CompoundNBT thisEntry = new CompoundNBT();
@@ -97,7 +81,6 @@ public class EntityData extends WorldSavedData {
     }
     CompoundNBT result = new CompoundNBT();
     result.put("owners", owners);
-    result.put("ids", ids);
     result.put("tracked", tracked);
     result.put("lastknown", lastknown);
     return result;

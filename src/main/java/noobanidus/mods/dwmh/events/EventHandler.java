@@ -25,15 +25,6 @@ import noobanidus.mods.dwmh.world.EntityData;
 @SuppressWarnings("unused")
 public class EventHandler {
   @SubscribeEvent
-  public void handleEntityEvent(LivingEvent.LivingUpdateEvent event) {
-    Entity entity = event.getEntity();
-    if (entity.world.isRemote) return;
-    if (EntityTracking.isTrackingEntity(entity.getUniqueID())) {
-      EntityTracking.updateEntityId(entity);
-    }
-  }
-
-  @SubscribeEvent
   public void onRightClickEntity(PlayerInteractEvent.EntityInteract event) {
     PlayerEntity player = event.getPlayer();
     ItemStack stack = player.getHeldItem(event.getHand());

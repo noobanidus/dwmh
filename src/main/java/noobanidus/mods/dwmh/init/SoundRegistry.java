@@ -12,7 +12,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-@Mod.EventBusSubscriber(modid= DWMH.MODID, bus= Mod.EventBusSubscriber.Bus.MOD)
 public class SoundRegistry {
   public static SoundEvent WHISTLE1 = createSoundEvent("whistle.1");
   public static SoundEvent WHISTLE2 = createSoundEvent("whistle.2");
@@ -48,8 +47,6 @@ public class SoundRegistry {
     return MINOR_WHISTLES.get(random.nextInt(MINOR_WHISTLES.size()));
   }
 
-  @SubscribeEvent
-  @SuppressWarnings("unused")
   public static void registerSounds(RegistryEvent.Register<SoundEvent> event) {
     IForgeRegistry<SoundEvent> registry = event.getRegistry();
     registry.register(WHISTLE_SPECIAL);

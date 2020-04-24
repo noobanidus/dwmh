@@ -1,38 +1,30 @@
 package com.noobanidus.dwmh.items;
 
-import com.noobanidus.dwmh.ConfigHandler;
 import com.noobanidus.dwmh.init.SoundRegistry;
 import com.noobanidus.dwmh.util.Eligibility;
 import com.noobanidus.dwmh.util.EntityTracking;
 import com.noobanidus.dwmh.util.Util;
-import com.noobanidus.dwmh.world.DataHelper;
-import com.noobanidus.dwmh.world.EntityData;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 public class ItemOcarina extends Item {
@@ -72,99 +64,50 @@ public class ItemOcarina extends Item {
   }
 
   public void rightClickEntity(EntityPlayer playerIn, Entity target, ItemStack stack) {
-    if (Eligibility.eligibleToBeTagged(playerIn, target)) {
+    if (!playerIn.world.isRemote && Eligibility.eligibleToBeTagged(playerIn, target)) {
+      EntityPlayerMP player = (EntityPlayerMP) playerIn;
       UUID owner = EntityTracking.getOwnerForEntity(target);
-      NBTTagCompound tag = Util.getOrCreateTagCompound(stack);
       if (owner == null) {
-        boolean result = EntityTracking.setOwnerForEntity(playerIn, target);
-        if (result) {
-          tag.setUniqueId("target", target.getUniqueID());
-          playerIn.sendStatusMessage(new TextComponentTranslation("dwmh.status.success_setting_owner").setStyle(Util.DEFAULT_STYLE), true);
-          playSound(playerIn);
-        } else {
-          int count = EntityTracking.entityCount(playerIn);
-          if (count != ConfigHandler.entityMaximum) {
-            playerIn.sendStatusMessage(new TextComponentTranslation("dwmh.status.data_error").setStyle(Util.DEFAULT_STYLE), true);
-          } else {
-            playerIn.sendStatusMessage(new TextComponentTranslation("dwmh.status.maximum_owned", count, ConfigHandler.entityMaximum).setStyle(Util.DEFAULT_STYLE), true);
-          }
-          playSound(playerIn, true);
+        NBTTagCompound tag = Util.getOrCreateTagCompound(stack);
+        if (tag.hasUniqueId("target")) {
+          EntityTracking.unsetOwnerForEntity(tag.getUniqueId("target"));
         }
+        EntityTracking.setOwnerForEntity(playerIn, target);
+        tag.setUniqueId("target", target.getUniqueID());
+        tag.removeTag("name");
+/*        GetName packet = new GetName(target.getEntityId());
+        Networking.sendTo(packet, playerIn);*/
+        playSound(playerIn);
       } else {
-        boolean result = EntityTracking.unsetOwnerForEntity(playerIn, target);
-        if (result) {
-          UUID nextEntity = EntityTracking.nextEntity(playerIn, target.getUniqueID());
-          if (nextEntity == null) {
-            tag.removeTag("targetMost");
-            tag.removeTag("targetLeast");
-          } else {
-            tag.setUniqueId("target", nextEntity);
-          }
-          playerIn.sendStatusMessage(new TextComponentTranslation("dwmh.status.success_unsetting_owner").setStyle(Util.DEFAULT_STYLE), true);
-        } else {
-          playerIn.sendStatusMessage(new TextComponentTranslation("dwmh.status.data_error").setStyle(Util.DEFAULT_STYLE), true);
-        }
+        EntityTracking.unsetOwnerForEntity(target);
+        NBTTagCompound tag = Util.getOrCreateTagCompound(stack);
+        tag.removeTag("targetMost");
+        tag.removeTag("targetLeast");
+        tag.removeTag("name");
+        player.sendAllContents(player.openContainer, player.openContainer.getInventory());
         playSound(playerIn, true);
       }
-      updateOcarinaNBT(stack, playerIn);
     }
-  }
-
-  public static void updateOcarinaNBT(ItemStack stack, EntityPlayer player) {
-    NBTTagCompound tag = Util.getOrCreateTagCompound(stack);
-    tag.setTag("info", EntityTracking.getTrackedDataNBT(player));
-    // This is always superfluous but I always worry
-    stack.setTagCompound(tag);
   }
 
   @Nonnull
   @Override
-  public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer player, @Nonnull EnumHand hand) {
+  public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
     ItemStack stack = player.getHeldItem(hand);
     NBTTagCompound tag = Util.getOrCreateTagCompound(stack);
-    if (!worldIn.isRemote) {
-      WorldServer world = (WorldServer) worldIn;
-      UUID entityId = null;
-      if (tag.hasKey("targetLeast")) {
-        entityId = tag.getUniqueId("target");
-      }
-      if (player.isSneaking()) {
-        UUID newId = EntityTracking.nextEntity(player, entityId);
-        if (newId != null) {
-          ITextComponent nameComp = Util.resolveName(newId);
-          tag.setUniqueId("target", newId);
-          // THIS IS OVER COMPLICATING THINGS
-          stack.setTagCompound(tag);
-          player.sendStatusMessage(new TextComponentTranslation("dwmh.status.now_tracking", nameComp).setStyle(Util.DEFAULT_STYLE), true);
+    if (!world.isRemote) {
+      if (tag.hasUniqueId("target")) {
+        UUID entityId = tag.getUniqueId("target");
+        Entity entity = EntityTracking.fetchEntity(entityId);
+        if (entity != null && entity.getUniqueID().equals(entityId) && !entity.isDead) {
+          // Update the stack
+          entity.setPosition(player.posX, player.posY, player.posZ);
           playSound(player);
-        } else {
-          player.sendStatusMessage(new TextComponentTranslation("dwmh.status.no_entities").setStyle(Util.DEFAULT_STYLE), true);
-          playSound(player, true);
         }
-      } else if (entityId != null) {
-        EntityData data = DataHelper.getTrackingData();
-        List<UUID> owned = data.ownerToEntities.get(player.getUniqueID());
-        Entity entity = EntityTracking.fetchEntity(entityId, world, player);
-        if (entity != null) {
-          if (owned != null && owned.contains(entity.getUniqueID())) {
-            entity.setPosition(player.posX, player.posY, player.posZ);
-            if (entity instanceof EntityLiving) {
-              EntityLiving el = (EntityLiving) entity;
-              el.getNavigator().clearPath();
-            }
-            playSound(player);
-          } else {
-             player.sendStatusMessage(new TextComponentTranslation("dwmh.status.no_entities").setStyle(Util.DEFAULT_STYLE), true);
-          }
-        } else {
-          player.sendStatusMessage(new TextComponentTranslation("dwmh.status.cant_find").setStyle(Util.DEFAULT_STYLE), true);
-          playSound(player, true);
-        }
-      } else {
-        player.sendStatusMessage(new TextComponentTranslation("dwmh.status.no_entities").setStyle(Util.DEFAULT_STYLE), true);
+        EntityTracking.clearEntity(entityId);
       }
     }
-    return new ActionResult<>(EnumActionResult.SUCCESS, stack);
+    return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
   }
 
   @Override
@@ -174,35 +117,19 @@ public class ItemOcarina extends Item {
 
   @SideOnly(Side.CLIENT)
   @Override
-  public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flags) {
+  public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flags) {
+    if (worldIn == null) return;
+
     NBTTagCompound tag = Util.getOrCreateTagCompound(stack);
-    UUID tracked = null;
+    if (tag.hasKey("name") || tag.hasUniqueId("target")) {
+      tooltip.add("");
+    }
+    if (tag.hasKey("name")) {
+      tooltip.add(I18n.format("dwmh.currently_tracking", tag.getString("name")));
+    }
     if (tag.hasUniqueId("target")) {
-      tracked = tag.getUniqueId("target");
-    }
-
-    tooltip.add("");
-    tooltip.add(I18n.format("dwmh.tooltip.info1"));
-    tooltip.add(I18n.format("dwmh.tooltip.info2"));
-    tooltip.add(I18n.format("dwmh.tooltip.info3"));
-    tooltip.add("");
-
-    NBTTagList info = null;
-
-    if (tag.hasKey("info")) {
-      info = tag.getTagList("info", Constants.NBT.TAG_COMPOUND);
-    }
-
-    if (info != null && !info.isEmpty()) {
-      tooltip.add(I18n.format("dwmh.tooltip.tracking_count", info.tagCount()));
-      for (int i = 0; i < info.tagCount(); i++) {
-        NBTTagCompound entry = info.getCompoundTagAt(i);
-        String name = Util.resolveNameClient(entry.getString("name"));
-        boolean isTracked = tracked != null && Objects.equals(entry.getUniqueId("entity"), tracked);
-        tooltip.add(I18n.format("dwmh.tooltip.tracking_entry", i, name, isTracked ? I18n.format("dwmh.tooltip.tracking_selected") : ""));
-      }
-    } else {
-      tooltip.add(I18n.format("dwmh.tooltip.tracking_empty"));
+      UUID target = tag.getUniqueId("target");
+      tooltip.add(TextFormatting.GRAY + I18n.format("dwmh.uuid_target", target.toString()));
     }
   }
 

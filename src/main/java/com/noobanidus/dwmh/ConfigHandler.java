@@ -13,24 +13,37 @@ public class ConfigHandler {
   @Config.Name("Enable Saddle recipe")
   public static boolean enableSaddle = true;
 
-  @Config.Comment("The total number of claimed entities a single player can have")
-  @Config.Name("Claimed Entity Maximum")
-  public static int entityMaximum = 10;
-
-  @Config.Comment("A list of entities that should be considerable summonable regardless of their state (in the format of minecraft:horse, 1 per line)")
-  @Config.Name("Forced Allowed Entities")
-  public static String[] forcedEntities = new String[]{"primitivemobs:baby_spider", "minecraft:enderman"};
+  @Config.Comment("A whitelist of entities that should be considerable summonable regardless of their state (in the format of minecraft:horse, 1 per line)")
+  @Config.Name("Whitelisted Entities")
+  public static String[] whitelistRaw = new String[]{"primitivemobs:baby_spider"};
 
   @Config.Ignore
-  private static Set<ResourceLocation> forcedEntityResources = null;
+  private static Set<ResourceLocation> whitelist = null;
 
-  public static Set<ResourceLocation> getForcedEntities() {
-    if (forcedEntityResources == null) {
-      forcedEntityResources = new HashSet<>();
-      for (String rl : forcedEntities) {
-        forcedEntityResources.add(new ResourceLocation(rl));
+  public static Set<ResourceLocation> getWhitelist() {
+    if (whitelist == null) {
+      whitelist = new HashSet<>();
+      for (String rl : whitelistRaw) {
+        whitelist.add(new ResourceLocation(rl));
       }
     }
-    return forcedEntityResources;
+    return whitelist;
+  }
+
+  @Config.Comment("A blacklist of entities that should NOT be considerable summonable regardless of their state (in the format of minecraft:horse, 1 per line)")
+  @Config.Name("Whitelisted Entities")
+  public static String[] blacklistRaw = new String[]{""};
+
+  @Config.Ignore
+  private static Set<ResourceLocation> blacklist = null;
+
+  public static Set<ResourceLocation> getBlacklist() {
+    if (blacklist == null) {
+      blacklist = new HashSet<>();
+      for (String rl : blacklistRaw) {
+        blacklist.add(new ResourceLocation(rl));
+      }
+    }
+    return blacklist;
   }
 }

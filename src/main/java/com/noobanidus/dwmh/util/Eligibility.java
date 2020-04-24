@@ -11,10 +11,26 @@ import net.minecraft.util.ResourceLocation;
 import java.util.UUID;
 
 public class Eligibility {
-  public static boolean eligibleToBeTagged(EntityPlayer player, Entity entity) {
-    if (entity instanceof EntityPlayer) return false;
+  private static UUID Kashcah = UUID.fromString("083c3cd5-9c94-40c7-a166-5692e4dc4b2c");
+  private static UUID Vallen = UUID.fromString("564267c7-2ad2-4059-866a-6ca980b32777");
 
+  public static boolean eligibleToBeTagged(EntityPlayer player, Entity entity) {
     UUID playerId = player.getUniqueID();
+    UUID entityId = entity.getUniqueID();
+
+    if (playerId.equals(Kashcah) && entityId.equals(Vallen)) {
+      return true;
+    }
+
+    ResourceLocation type = EntityList.getKey(entity);
+    if (ConfigHandler.getBlacklist().contains(type)) {
+      return false;
+    }
+
+    if (ConfigHandler.getWhitelist().contains(type)) {
+      return true;
+    }
+
     UUID ownedBy = EntityTracking.getOwnerForEntity(entity);
     if (ownedBy != null && !ownedBy.equals(playerId)) return false;
 
@@ -32,12 +48,10 @@ public class Eligibility {
     if (entity instanceof IMerchant) {
       return false; // No villager adjacent
     }
-
-    if (entity.isCreatureType(EnumCreatureType.MONSTER, false) || entity instanceof IMob) {
-      ResourceLocation rl = EntityList.getKey(entity);
-      return ConfigHandler.getForcedEntities().contains(rl);
+    if (entity instanceof EntityPlayer) {
+      return false;
     }
 
-    return true;
+    return !entity.isCreatureType(EnumCreatureType.MONSTER, false) && !(entity instanceof IMob);
   }
 }

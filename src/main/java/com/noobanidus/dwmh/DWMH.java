@@ -1,12 +1,13 @@
 package com.noobanidus.dwmh;
 
-import com.noobanidus.dwmh.commands.CommandOcarina;
 import com.noobanidus.dwmh.init.ItemRegistry;
+import com.noobanidus.dwmh.network.Networking;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import org.apache.logging.log4j.Logger;
 
 @Mod.EventBusSubscriber
@@ -19,6 +20,8 @@ public class DWMH {
 
   public static Logger LOG;
 
+  public static ChunkLoader LOADER = new ChunkLoader();
+
   public final static CreativeTabs TAB = new CreativeTabs("dwmh") {
     @Override
     public ItemStack createIcon() {
@@ -30,13 +33,17 @@ public class DWMH {
   @Mod.Instance(DWMH.MODID)
   public static DWMH instance;
 
+  public DWMH() {
+    ForgeChunkManager.setForcedChunkLoadingCallback(this, LOADER);
+  }
+
   @Mod.EventHandler
   public void preInit(FMLPreInitializationEvent event) {
     LOG = event.getModLog();
   }
 
   @Mod.EventHandler
-  public void serverStarting (FMLServerStartingEvent event) {
-    event.registerServerCommand(new CommandOcarina());
+  public void init(FMLInitializationEvent event) {
+    Networking.registerMessages();
   }
 }

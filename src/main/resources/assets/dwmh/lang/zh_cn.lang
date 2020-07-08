@@ -1,0 +1,7 @@
+item.dwmh.ocarina.name=陶笛
+itemGroup.dwmh=嘿！我马呢？
+item.dwmh.ocarina=陶笛
+dwmh.currently_tracking=当前记录目标: %s.
+dwmh.no_target=当前记录目标：未知实体
+dwmh.uuid_target=UUID: %s
+

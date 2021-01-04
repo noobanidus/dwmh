@@ -1,0 +1,6 @@
+item.dwmh.ocarina.name=Окарина
+itemGroup.dwmh=Чувак! Где моя Лошадь?
+item.dwmh.ocarina=Окарина
+dwmh.currently_tracking=Текущее отслеживание: %s.
+dwmh.no_target=Текущее отслеживание: неизвестная сущность.
+dwmh.uuid_target=UUID: %s

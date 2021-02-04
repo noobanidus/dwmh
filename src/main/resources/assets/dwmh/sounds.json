@@ -2,67 +2,100 @@
   "whistle.1": {
     "category": "ambient",
     "sounds": [
-      "dwmh:whistle1"
+      {
+        "name": "dwmh:whistle1",
+        "volume": 0.3
+      }
     ]
   },
   "whistle.2": {
     "category": "ambient",
     "sounds": [
-      "dwmh:whistle2"
+      {
+        "name": "dwmh:whistle2",
+        "volume": 0.3
+      }
     ]
   },
   "whistle.3": {
     "category": "ambient",
     "sounds": [
-      "dwmh:whistle3"
+      {
+        "name": "dwmh:whistle3",
+        "volume": 0.3
+      }
     ]
   },
   "whistle.4": {
     "category": "ambient",
     "sounds": [
-      "dwmh:whistle4"
+      {
+        "name": "dwmh:whistle4",
+        "volume": 0.3
+      }
     ]
   },
   "whistle.5": {
     "category": "ambient",
     "sounds": [
-      "dwmh:whistle5"
+      {
+        "name": "dwmh:whistle5",
+        "volume": 0.3
+      }
     ]
   },
   "whistle.6": {
     "category": "ambient",
     "sounds": [
-      "dwmh:whistle6"
+      {
+        "name": "dwmh:whistle6",
+        "volume": 0.3
+      }
     ]
   },
   "whistle.7": {
     "category": "ambient",
     "sounds": [
-      "dwmh:whistle7"
+      {
+        "name": "dwmh:whistle7",
+        "volume": 0.3
+      }
     ]
   },
   "whistle.special": {
     "category": "ambient",
     "sounds": [
-      "dwmh:whistle_special"
+      {
+        "name": "dwmh:whistle_special",
+        "volume": 0.3
+      }
     ]
   },
   "whistle.minor.1": {
     "category": "ambient",
     "sounds": [
-      "dwmh:whistle_minor1"
+      {
+        "name": "dwmh:whistle_minor1",
+        "volume": 0.3
+      }
     ]
   },
   "whistle.minor.2": {
     "category": "ambient",
     "sounds": [
-      "dwmh:whistle_minor2"
+      {
+        "name": "dwmh:whistle_minor2",
+        "volume": 0.3
+      }
     ]
   },
   "whistle.broken": {
     "category": "ambient",
     "sounds": [
-      "dwmh:whistle_broken"
+      {
+        "name": "dwmh:whistle_broken",
+        "volume": 0.3
+      }
     ]
   }
 }

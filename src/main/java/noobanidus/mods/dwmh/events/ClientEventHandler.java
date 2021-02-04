@@ -3,7 +3,7 @@ package noobanidus.mods.dwmh.events;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.passive.horse.AbstractHorseEntity;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
@@ -20,7 +20,7 @@ public class ClientEventHandler {
         if (player != null && player.getRidingEntity() instanceof AbstractHorseEntity) {
           AbstractHorseEntity horse = (AbstractHorseEntity) player.getRidingEntity();
           if (horse.isInLava() || horse.isInWater()) {
-            Vec3d motion = horse.getMotion();
+            Vector3d motion = horse.getMotion();
             float x = (float) (motion.x * 0.08f);
             float y = 0.0125f;
             float z = (float) (motion.z * 0.08f);

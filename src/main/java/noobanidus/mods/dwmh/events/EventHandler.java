@@ -59,7 +59,7 @@ public class EventHandler {
     for (ClassInheritanceMultiMap<Entity> entityList : chunk.getEntityLists()) {
       for (Entity entity : entityList) {
         if (data.trackedEntities.contains(entity.getUniqueID())) {
-          DimBlockPos dbp = new DimBlockPos(entity.getPosition(), world.getDimension().getType());
+          DimBlockPos dbp = new DimBlockPos(entity.getPosition(), world.getDimensionKey());
           EntityTracking.storeEntity(entity, dbp);
         }
       }

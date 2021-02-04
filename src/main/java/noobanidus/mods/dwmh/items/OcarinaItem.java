@@ -55,7 +55,7 @@ public class OcarinaItem extends Item {
     if (!canPlay(player)) return;
 
     lastPlayedMap.put(player, System.currentTimeMillis());
-    player.world.playSound(null, player.getPosition(), minor ? SoundRegistry.getRandomMinorWhistle() : SoundRegistry.getRandomWhistle(), SoundCategory.PLAYERS, 1f, 1f);
+    player.world.playSound(null, player.getPosition(), minor ? SoundRegistry.getRandomMinorWhistle() : SoundRegistry.getRandomWhistle(), SoundCategory.PLAYERS, 0.2f, 1f);
   }
 
   public OcarinaItem() {
@@ -80,8 +80,7 @@ public class OcarinaItem extends Item {
       } else {
         EntityTracking.unsetOwnerForEntity(target);
         CompoundNBT tag = Util.getOrCreateTagCompound(stack);
-        tag.remove("targetMost");
-        tag.remove("targetLeast");
+        tag.remove("target");
         tag.remove("name");
         player.sendAllContents(player.openContainer, player.openContainer.getInventory());
         playSound(playerIn, true);
@@ -100,7 +99,7 @@ public class OcarinaItem extends Item {
         Entity entity = EntityTracking.fetchEntity(entityId);
         if (entity != null && entity.getUniqueID().equals(entityId) && entity.isAlive()) {
           // Update the stack
-          entity.setPosition(player.posX, player.posY, player.posZ);
+          entity.setPosition(player.getPosX(), player.getPosY(), player.getPosZ());
           playSound(player);
         }
         EntityTracking.clearEntity(entityId);
@@ -124,11 +123,12 @@ public class OcarinaItem extends Item {
       tooltip.add(new StringTextComponent(""));
     }
     if (tag.contains("name")) {
-      tooltip.add(new TranslationTextComponent("dwmh.currently_tracking", new StringTextComponent(tag.getString("name"))));
+      tooltip.add(new TranslationTextComponent("dwmh.currently_tracking", ITextComponent.Serializer.getComponentFromJson(tag.getString("name"))));
     }
+
     if (tag.hasUniqueId("target")) {
       UUID target = tag.getUniqueId("target");
-      tooltip.add(new TranslationTextComponent("dwmh.uuid_target", target.toString()).setStyle(new Style().setColor(TextFormatting.GRAY)));
+      tooltip.add(new TranslationTextComponent("dwmh.uuid_target", target.toString()).setStyle(Style.EMPTY.setColor(Color.fromTextFormatting(TextFormatting.GRAY))));
     }
   }
 

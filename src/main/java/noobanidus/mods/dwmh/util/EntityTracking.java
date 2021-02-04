@@ -3,10 +3,11 @@ package noobanidus.mods.dwmh.util;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.DimensionType;
+import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import noobanidus.mods.dwmh.types.DimBlockPos;
 import noobanidus.mods.dwmh.world.DataHelper;
@@ -20,13 +21,13 @@ import java.util.UUID;
 public class EntityTracking {
   public static Map<UUID, Runnable> clearMap = new HashMap<>();
 
-  private static ServerWorld getWorld(DimensionType dim, boolean load) {
-    MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-    return DimensionManager.getWorld(server, dim, false, load);
+  @Nullable
+  private static ServerWorld getWorld(RegistryKey<World> dim, boolean load) {
+    return ServerLifecycleHooks.getCurrentServer().getWorld(dim);
   }
 
   private static ServerWorld getWorld() {
-    return getWorld(DimensionType.OVERWORLD, true);
+    return getWorld(World.OVERWORLD, true);
   }
 
   public static EntityData getData() {
@@ -91,7 +92,7 @@ public class EntityTracking {
   @Nullable
   public static Entity loadEntity(UUID uuid, DimBlockPos dimpos) {
     MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-    ServerWorld dim = DimensionManager.getWorld(server, dimpos.getDim(), false, true);
+    ServerWorld dim = server.getWorld(dimpos.getDim());
     if (dim == null) {
       return null;
     }

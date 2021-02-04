@@ -38,7 +38,7 @@ public class SendName {
         if (player.getHeldItem(hand).getItem() == ItemRegistry.OCARINA) {
           ItemStack stack = player.getHeldItem(hand);
           CompoundNBT tag = Util.getOrCreateTagCompound(stack);
-          tag.putString("name", this.name.getFormattedText());
+          tag.putString("name", ITextComponent.Serializer.toJson(name));
           stack.setTag(tag);
           player.setHeldItem(hand, stack);
           player.sendAllContents(player.openContainer, player.openContainer.getInventory());

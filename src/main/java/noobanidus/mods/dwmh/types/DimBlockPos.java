@@ -1,13 +1,15 @@
 package noobanidus.mods.dwmh.types;
 
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.DimensionType;
+import net.minecraft.world.World;
 
 public class DimBlockPos {
   private BlockPos pos;
-  private DimensionType dim;
+  private RegistryKey<World> dim;
 
-  public DimBlockPos(BlockPos pos, DimensionType dim) {
+  public DimBlockPos(BlockPos pos, RegistryKey<World> dim) {
     this.pos = pos;
     this.dim = dim;
   }
@@ -16,7 +18,7 @@ public class DimBlockPos {
     return pos;
   }
 
-  public DimensionType getDim() {
+  public RegistryKey<World> getDim() {
     return dim;
   }
 }

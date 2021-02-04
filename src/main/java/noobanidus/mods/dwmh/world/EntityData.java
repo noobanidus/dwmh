@@ -2,8 +2,10 @@ package noobanidus.mods.dwmh.world;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.common.util.Constants;
 import noobanidus.mods.dwmh.types.DimBlockPos;
@@ -48,9 +50,9 @@ public class EntityData extends WorldSavedData {
       for (int i = 0; i < lastKnown.size(); i++) {
         CompoundNBT thisEntry = lastKnown.getCompound(i);
         BlockPos pos = BlockPos.fromLong(thisEntry.getLong("pos"));
-        int dimId = thisEntry.getInt("dim");
+        String dimId = thisEntry.getString("dim");
         UUID entity = thisEntry.getUniqueId("entity");
-        lastKnownLocation.put(entity, new DimBlockPos(pos, DimensionType.getById(dimId)));
+        lastKnownLocation.put(entity, new DimBlockPos(pos, RegistryKey.getOrCreateKey(Registry.WORLD_KEY, new ResourceLocation(dimId))));
       }
     }
   }
@@ -75,7 +77,7 @@ public class EntityData extends WorldSavedData {
       CompoundNBT thisEntry = new CompoundNBT();
       thisEntry.putUniqueId("entity", entry.getKey());
       thisEntry.putLong("pos", entry.getValue().getPos().toLong());
-      thisEntry.putInt("dim", entry.getValue().getDim().getId());
+      thisEntry.putString("dim", entry.getValue().getDim().getRegistryName().toString());
       lastknown.add(thisEntry);
     }
     CompoundNBT result = new CompoundNBT();

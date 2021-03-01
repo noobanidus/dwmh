@@ -16,6 +16,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.text.*;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import noobanidus.mods.dwmh.DWMH;
@@ -98,8 +99,7 @@ public class OcarinaItem extends Item {
         UUID entityId = tag.getUniqueId("target");
         Entity entity = EntityTracking.fetchEntity(entityId);
         if (entity != null && entity.getUniqueID().equals(entityId) && entity.isAlive()) {
-          // Update the stack
-          entity.setPosition(player.getPosX(), player.getPosY(), player.getPosZ());
+          entity.setPositionAndUpdate(player.getPosX(), player.getPosY(), player.getPosZ());
           playSound(player);
         }
         EntityTracking.clearEntity(entityId);
